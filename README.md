@@ -1,5 +1,8 @@
 # XMPP-Grid Broker
 
+[![Build Status](https://travis-ci.org/xmpp-grid-broker/xmpp-grid-broker.svg?branch=master)](https://travis-ci.org/xmpp-grid-broker/xmpp-grid-broker)
+
+
 The XMPP-Grid Broker is an client web application to simplify the management of an [XMPP-Grid](https://tools.ietf.org/id/draft-ietf-mile-xmpp-grid-05.html) 
 
 ## Developer Information
