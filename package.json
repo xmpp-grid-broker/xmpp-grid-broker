@@ -25,7 +25,8 @@
     "core-js": "^2.4.1",
     "ng": "0.0.0-rc6",
     "rxjs": "^5.5.6",
-    "zone.js": "^0.8.19"
+    "zone.js": "^0.8.19",
+    "spectre.css": "^0.5.1"
   },
   "devDependencies": {
     "@angular/cli": "^1.7.3",
