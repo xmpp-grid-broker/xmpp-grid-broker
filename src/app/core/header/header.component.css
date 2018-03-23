@@ -1,6 +1,6 @@
 header {
-  height: 2.5rem;
-  padding: 1rem;
+  /*height: 2.5rem;*/
+  padding: 0.5rem;
   background-color: #5755d9;
   color: white;
   position: fixed;
@@ -11,4 +11,10 @@ header {
 
 .navbar-brand{
   color: white;
+}
+
+.logo{
+  max-width: 1.5rem;
+  max-height: 1.5rem;
+  margin-right: 0.5rem;
 }

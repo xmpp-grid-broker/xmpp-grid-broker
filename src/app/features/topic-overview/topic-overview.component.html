@@ -1,8 +1,12 @@
+<h2>xmpp.hsr.ch</h2>
 <!--TODO: move into overview component-->
 <app-tab-view>
-  <app-tab-item [routerLink]="['/start']">First</app-tab-item>
-  <app-tab-item [routerLink]="['/']">Second</app-tab-item>
-  <app-tab-item [isActive]="true">Third</app-tab-item>
-  <app-tab-item>Next</app-tab-item>
-  <app-tab-item>Another...</app-tab-item>
+  <!--TODO: use app-tab-item or a directive instead of li and a...-->
+  <li class="tab-item"><a [routerLink]="['/topics/root']" routerLinkActive="active">Root Collections </a></li>
+
+  <li class="tab-item"><a [routerLink]="['/topics/all']" routerLinkActive="active">All Topics </a></li>
+
+  <li class="tab-item"><a [routerLink]="['/topics/collections']" routerLinkActive="active">All Collections </a></li>
+
 </app-tab-view>
+<router-outlet></router-outlet>

@@ -2,18 +2,16 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {TopicOverviewModule} from '../features/topic-overview/topic-overview.module';
+import {FeaturesModule} from '../features/features.module';
 
 const routes: Routes = [
   {
-    path: 'topics',
+    path: '',
     loadChildren: () => (
       // TODO: Proper lazy loading...
-      TopicOverviewModule
+      FeaturesModule
     )
-  }, {
-    path: '**',
-    component: NotFoundComponent
-  },
+  }, {path: '**', component: NotFoundComponent},
 ];
 
 @NgModule({
