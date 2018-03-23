@@ -1,85 +1,13 @@
-<div class="tile">
-  <div class="tile-icon">
-    x
-  </div>
-  <div class="tile-content">
-    <p class="tile-title">The Avengers</p>
-    <p class="tile-subtitle text-gray">Earth's Mightiest Heroes joined forces to take on threats that were too big for any one hero to tackle...</p>
-  </div>
-  <div class="tile-action">
-    <button class="btn btn-primary">Join</button>
-  </div>
-</div>
+<app-list *ngIf="isLoaded; else loading">
+  <app-list-item *ngFor="let node of nodes">{{node.title}}</app-list-item>
+</app-list>
+<ng-template #loading><div class="loading loading-lg"></div></ng-template>
 
-<div class="tile">
-  <div class="tile-icon">
-    x
-  </div>
-  <div class="tile-content">
-    <p class="tile-title">The Avengers</p>
-    <p class="tile-subtitle text-gray">Earth's Mightiest Heroes joined forces to take on threats that were too big for any one hero to tackle...</p>
-  </div>
-  <div class="tile-action">
-    <button class="btn btn-primary">Join</button>
-  </div>
-</div>
-<div class="tile">
-  <div class="tile-icon">
-    x
-  </div>
-  <div class="tile-content">
-    <p class="tile-title">The Avengers</p>
-    <p class="tile-subtitle text-gray">Earth's Mightiest Heroes joined forces to take on threats that were too big for any one hero to tackle...</p>
-  </div>
-  <div class="tile-action">
-    <button class="btn btn-primary">Join</button>
-  </div>
-</div>
-<div class="tile">
-  <div class="tile-icon">
-    x
-  </div>
-  <div class="tile-content">
-    <p class="tile-title">The Avengers</p>
-    <p class="tile-subtitle text-gray">Earth's Mightiest Heroes joined forces to take on threats that were too big for any one hero to tackle...</p>
-  </div>
-  <div class="tile-action">
-    <button class="btn btn-primary">Join</button>
-  </div>
-</div>
-<div class="tile">
-  <div class="tile-icon">
-    x
-  </div>
-  <div class="tile-content">
-    <p class="tile-title">The Avengers</p>
-    <p class="tile-subtitle text-gray">Earth's Mightiest Heroes joined forces to take on threats that were too big for any one hero to tackle...</p>
-  </div>
-  <div class="tile-action">
-    <button class="btn btn-primary">Join</button>
-  </div>
-</div>
-<div class="tile">
-  <div class="tile-icon">
-    x
-  </div>
-  <div class="tile-content">
-    <p class="tile-title">The Avengers</p>
-    <p class="tile-subtitle text-gray">Earth's Mightiest Heroes joined forces to take on threats that were too big for any one hero to tackle...</p>
-  </div>
-  <div class="tile-action">
-    <button class="btn btn-primary">Join</button>
-  </div>
-</div>
-<div class="tile">
-  <div class="tile-icon">
-    x
-  </div>
-  <div class="tile-content">
-    <p class="tile-title">The Avengers</p>
-    <p class="tile-subtitle text-gray">Earth's Mightiest Heroes joined forces to take on threats that were too big for any one hero to tackle...</p>
-  </div>
-  <div class="tile-action">
-    <button class="btn btn-primary">Join</button>
-  </div>
-</div>
+<ul class="pagination">
+  <li class="page-item disabled">
+    <a href="#" tabindex="-1">Previous</a>
+  </li>
+  <li class="page-item">
+    <a href="#">Next</a>
+  </li>
+</ul>

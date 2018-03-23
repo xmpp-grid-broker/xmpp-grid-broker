@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root-topics',
@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RootTopicsComponent implements OnInit {
 
-  constructor() { }
+  isLoaded = false;
+  nodes: [{ title: string }] = [{title: 'Node #1'}, {title: 'Node #2'}, {title: 'Node #3'}];
+
+  constructor() {
+  }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.isLoaded = true;
+    }, 800);
   }
 
 }
