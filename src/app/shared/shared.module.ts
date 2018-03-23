@@ -7,6 +7,7 @@ import {LayoutsModule} from './layouts/layouts.module';
     CommonModule,
     LayoutsModule
   ],
+  exports: [LayoutsModule],
   declarations: [],
 })
 export class SharedModule {

@@ -1,4 +1,6 @@
 <li [ngClass]="{'tab-item': true, 'active': isActive}">
-  <!--TODO: Accept routerLink-->
-  <a ><ng-content></ng-content></a>
+  <!--TODO: implement router link properly...-->
+  <a routerLink="foo">
+    <ng-content></ng-content>
+  </a>
 </li>
