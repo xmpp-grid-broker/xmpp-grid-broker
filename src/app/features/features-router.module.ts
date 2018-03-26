@@ -1,6 +1,5 @@
 import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
-import {TopicOverviewModule} from './topic-overview/topic-overview.module';
+import {RouterModule, Routes} from '@angular/router';
 
 
 const routes: Routes = [
@@ -11,11 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'topics',
-    loadChildren: () => (
-      // TODO: Proper lazy loading...
-      // TODO: ensure `/root` does not work....
-      TopicOverviewModule
-    )
+    loadChildren: './topic-overview/topic-overview.module#TopicOverviewModule'
   }
 ];
 
