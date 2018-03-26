@@ -5,6 +5,9 @@ import {AppComponent} from './app.component';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
+/**
+ * Root-Module of the XMPP-Grid Broker App.
+ */
 @NgModule({
   declarations: [
     AppComponent

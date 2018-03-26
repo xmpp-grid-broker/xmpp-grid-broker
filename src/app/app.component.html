@@ -1,4 +1,5 @@
 <app-header></app-header>
 <div class="container grid-lg">
-  <router-outlet></router-outlet>
+  <div *ngIf="loading" class="loading loading-lg"></div>
+  <router-outlet *ngIf="!loading"></router-outlet>
 </div>

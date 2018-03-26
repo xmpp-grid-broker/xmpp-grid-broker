@@ -1,5 +1,4 @@
-import {Component, Inject, Input, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-tab-item',
@@ -8,9 +7,6 @@ import {ActivatedRoute} from '@angular/router';
 export class TabItemComponent implements OnInit {
   @Input() isActive: boolean;
   @Input() routerLink: any[] | string;
-
-  constructor(private route: ActivatedRoute) {
-  }
 
   ngOnInit() {
 
