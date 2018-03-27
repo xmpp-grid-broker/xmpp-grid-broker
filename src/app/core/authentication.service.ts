@@ -23,7 +23,7 @@ export class AuthenticationService {
       (resolve) => {
         setTimeout(() => {
           resolve(this.loggedIn);
-        }, 800);
+        }, 100);
       }
     );
   }
