@@ -1,12 +1,8 @@
-<h2>xmpp.hsr.ch</h2>
-<!--TODO: move into overview component-->
-<app-tab-view>
-  <!--TODO: use app-tab-item or a directive instead of li and a...-->
-  <li class="tab-item"><a [routerLink]="['/topics/root']" routerLinkActive="active">Root Collections </a></li>
+<h2>{{server.title}}</h2>
+<app-tabs>
+  <app-tab [routerLink]="['/topics/root']" tabTitle="Root Collections"></app-tab>
+  <app-tab [routerLink]="['/topics/all']" tabTitle="All Topics"></app-tab>
+  <app-tab [routerLink]="['/topics/collections']" tabTitle="All Topics">All Collections</app-tab>
+</app-tabs>
 
-  <li class="tab-item"><a [routerLink]="['/topics/all']" routerLinkActive="active">All Topics </a></li>
-
-  <li class="tab-item"><a [routerLink]="['/topics/collections']" routerLinkActive="active">All Collections </a></li>
-
-</app-tab-view>
 <router-outlet></router-outlet>

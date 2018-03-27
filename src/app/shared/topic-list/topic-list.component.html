@@ -1,0 +1,12 @@
+<app-list *ngIf="!topicList.hasError && topicList.isLoaded">
+  <app-list-item *ngFor="let node of topicList.topics">{{node.title}}</app-list-item>
+  <div class="empty" *ngIf="topicList.topics.length == 0">
+    <p class="empty-title h5">No Topics found</p>
+  </div>
+</app-list>
+<div *ngIf="!topicList.hasError && !topicList.isLoaded" class="loading loading-lg"></div>
+
+<div *ngIf="topicList.hasError" class="empty">
+  <p class="empty-title h5">Oops, an error occurred!</p>
+  <p class="empty-subtitle">{{topicList.errorMessage}}</p>
+</div>

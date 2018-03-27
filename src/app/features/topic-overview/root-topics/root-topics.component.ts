@@ -1,22 +1,25 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {RootTopicService} from '../root-topic.service';
+import {TopicList} from '../../../shared/topic-list/topic-list.component';
+
 
 @Component({
   selector: 'app-root-topics',
-  templateUrl: './root-topics.component.html',
-  styleUrls: ['./root-topics.component.css']
+  templateUrl: './root-topics.component.html'
 })
-export class RootTopicsComponent implements OnInit {
+export class RootTopicsComponent implements OnInit, OnDestroy {
 
-  isLoaded = false;
-  nodes: [{ title: string }] = [{title: 'Node #1'}, {title: 'Node #2'}, {title: 'Node #3'}];
+  topicList: TopicList = new TopicList();
 
-  constructor() {
+  constructor(private rootTopicService: RootTopicService) {
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.isLoaded = true;
-    }, 800);
+    this.topicList.subscribe(this.rootTopicService.rootTopics());
+  }
+
+  ngOnDestroy() {
+    this.topicList.unsubscribe();
   }
 
 }

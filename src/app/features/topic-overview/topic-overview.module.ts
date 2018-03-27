@@ -4,6 +4,7 @@ import {TopicOverviewComponent} from './topic-overview.component';
 import {SharedModule} from '../../shared/shared.module';
 import {TopicOverviewRoutingModule} from './topic-overview-router.module';
 import { RootTopicsComponent } from './root-topics/root-topics.component';
+import { RootTopicService } from './root-topic.service';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { RootTopicsComponent } from './root-topics/root-topics.component';
     SharedModule
   ],
   declarations: [TopicOverviewComponent, RootTopicsComponent],
-  exports: []
+  exports: [],
+  providers: [RootTopicService]
 })
 export class TopicOverviewModule {
 }

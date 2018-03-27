@@ -1,14 +1,16 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {TabItemComponent} from './tab-view/tab-item.component';
-import {TabViewComponent} from './tab-view/tab-view.component';
+import {TabComponent} from './tabs/tab.component';
+import {TabsComponent} from './tabs/tabs.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
-  declarations: [TabItemComponent, TabViewComponent],
-  exports: [TabItemComponent, TabViewComponent]
+  declarations: [TabComponent, TabsComponent],
+  exports: [TabComponent, TabsComponent]
 
 })
 export class LayoutsModule {
