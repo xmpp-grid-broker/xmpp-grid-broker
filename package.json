@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
+    "webdriver-manager": "webdriver-manager",
     "start": "ng serve --aot",
     "build": "ng build --prod",
     "test": "ng test --code-coverage",

@@ -10,6 +10,6 @@ describe('Routes', () => {
 
   it('root should redirect to topics overview', () => {
     browser.get('/');
-    expect(browser.getCurrentUrl()).toEqual(topicsOverview.landingUrl);
+    expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + topicsOverview.landingUrl);
   });
 });
