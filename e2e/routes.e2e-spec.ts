@@ -1,4 +1,4 @@
-import { AppPage } from './app.po';
+import { AppPage } from './page-objects/app.po';
 
 describe('xmpp-grid-broker App', () => {
   let page: AppPage;
@@ -7,7 +7,7 @@ describe('xmpp-grid-broker App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should redirect to topics page', () => {
     page.navigateTo();
     expect(page.getParagraphText()).toEqual('Welcome to app!');
   });
