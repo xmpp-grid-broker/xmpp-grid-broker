@@ -2,7 +2,7 @@ import {Component, ContentChildren, QueryList, AfterContentInit} from '@angular/
 import {TabComponent} from './tab.component';
 
 @Component({
-  selector: 'app-tabs',
+  selector: 'xgb-tabs',
   template: `
     <ul class="tab tab-block">
       <li *ngFor="let tab of tabs" class="tab-item">

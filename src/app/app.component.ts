@@ -6,7 +6,7 @@ import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Route
  * Provides a router outlet and shows a loading indicator while new pages are fetched.
  */
 @Component({
-  selector: 'app-root',
+  selector: 'xgb-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

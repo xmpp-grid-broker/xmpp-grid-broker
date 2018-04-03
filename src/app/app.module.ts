@@ -1,9 +1,10 @@
-import {FeaturesModule} from './features/features.module';
 import {SharedModule} from './shared/shared.module';
 import {CoreModule} from './core/core.module';
 import {AppComponent} from './app.component';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {RouterModule} from '@angular/router';
+import {AppRoutingModule} from './app-routing.module';
 
 /**
  * Root-Module of the XMPP-Grid Broker App.
@@ -14,9 +15,10 @@ import {BrowserModule} from '@angular/platform-browser';
   ],
   imports: [
     BrowserModule,
+    RouterModule,
     CoreModule,
     SharedModule,
-    FeaturesModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

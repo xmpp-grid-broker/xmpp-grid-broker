@@ -1,14 +1,15 @@
-import { AppPage } from './page-objects/app.po';
+import {browser} from 'protractor';
+import {TopicsOverviewPage} from './page-objects/topics-overview.po';
 
-describe('xmpp-grid-broker App', () => {
-  let page: AppPage;
+describe('Routes', () => {
+  let topicsOverview: TopicsOverviewPage;
 
   beforeEach(() => {
-    page = new AppPage();
+    topicsOverview = new TopicsOverviewPage();
   });
 
-  it('should redirect to topics page', () => {
-    page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to app!');
+  it('root should redirect to topics overview', () => {
+    browser.get('/');
+    expect(browser.getCurrentUrl()).toEqual(topicsOverview.landingUrl);
   });
 });
