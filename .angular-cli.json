@@ -17,9 +17,12 @@
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
-      "prefix": "app",
+      "prefix": "xgb",
       "styles": [
-        "styles.css"
+        "styles.css",
+        "../node_modules/spectre.css/dist/spectre.min.css",
+        "../node_modules/spectre.css/dist/spectre-exp.min.css",
+        "../node_modules/spectre.css/dist/spectre-icons.min.css"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

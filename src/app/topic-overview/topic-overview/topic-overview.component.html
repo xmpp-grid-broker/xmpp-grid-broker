@@ -1,0 +1,9 @@
+<h2 *ngIf="serverTitle === undefined"><i>loading...</i></h2>
+<h2 *ngIf="serverTitle !== undefined">{{serverTitle}}</h2>
+<xgb-tabs>
+  <xgb-tab [routerLink]="['/topics/root']" tabTitle="Root Collections"></xgb-tab>
+  <xgb-tab [routerLink]="['/topics/all']" tabTitle="All Topics"></xgb-tab>
+  <xgb-tab [routerLink]="['/topics/collections']" tabTitle="All Collections"></xgb-tab>
+</xgb-tabs>
+
+<xgb-topics [topicList]="topicList"></xgb-topics>

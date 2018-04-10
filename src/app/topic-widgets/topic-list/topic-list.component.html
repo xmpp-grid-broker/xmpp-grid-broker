@@ -1,0 +1,12 @@
+<xgb-list *ngIf="!topicList.hasError && topicList.isLoaded">
+  <xgb-list-item *ngFor="let node of topicList.topics">{{node.title}}</xgb-list-item>
+  <div class="empty" *ngIf="topicList.topics.length == 0">
+    <p class="empty-title h5">No Topics found</p>
+  </div>
+</xgb-list>
+<div *ngIf="!topicList.hasError && !topicList.isLoaded" class="loading loading-lg">Loading...</div>
+
+<div *ngIf="topicList.hasError" class="empty">
+  <p class="empty-title h5">Oops, an error occurred!</p>
+  <p class="empty-subtitle">{{topicList.errorMessage}}</p>
+</div>
