@@ -11,7 +11,7 @@
     "test-nc": "ng test -sm=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "compodoc": "compodoc -p src/tsconfig.app.json"
+    "compodoc": "compodoc --disableCoverage -p src/tsconfig.app.json"
   },
   "private": true,
   "dependencies": {
