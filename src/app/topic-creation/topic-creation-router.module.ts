@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {TopicCreationComponent} from './topic-creation/topic-config.component';
+import {TopicCreationComponent} from './topic-creation/topic-creation.component';
 
 
 const routes: Routes = [
