@@ -1,32 +1,27 @@
-import {async, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HeaderComponent} from './header.component';
 
-function setup(): {
-  fixture: ComponentFixture<HeaderComponent>,
-  de: HTMLElement
-} {
-
-  TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [HeaderComponent]
-  });
-
-  const fixture = TestBed.createComponent(HeaderComponent);
-  const de = fixture.debugElement.nativeElement;
-
-  return {fixture, de};
-}
 
 describe('HeaderComponent', () => {
+  let fixture: ComponentFixture<HeaderComponent>;
+  let de: HTMLElement;
 
-  it('should link to / on the title', async(() => {
-    const {fixture, de} = setup();
+  beforeEach(() => {
 
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      declarations: [HeaderComponent]
+    });
+
+    fixture = TestBed.createComponent(HeaderComponent);
+    de = fixture.debugElement.nativeElement;
     fixture.detectChanges();
+    return {fixture, de};
+  });
 
+  it('should link to / on the title', () => {
     expect(de.querySelector('a').getAttribute('href')).toBe('/');
-  }));
-
+  });
 });
