@@ -2,7 +2,6 @@ import {async, TestBed} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HeaderComponent} from './header.component';
-import {detectChanges} from '@angular/core/src/render3';
 
 function setup(): {
   fixture: ComponentFixture<HeaderComponent>,

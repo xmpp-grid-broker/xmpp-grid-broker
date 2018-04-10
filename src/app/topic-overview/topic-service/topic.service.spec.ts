@@ -1,5 +1,3 @@
-import {async} from '@angular/core/testing';
-
 import {TopicService} from './topic.service';
 import {Topics} from '../../core/models/topic';
 

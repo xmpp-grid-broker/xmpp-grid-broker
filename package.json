@@ -8,6 +8,7 @@
     "start": "ng serve --aot",
     "build": "ng build --prod",
     "test": "ng test --code-coverage",
+    "test-nc": "ng test -sm=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "compodoc": "compodoc -p src/tsconfig.app.json"
@@ -26,8 +27,9 @@
     "core-js": "^2.4.1",
     "ng": "0.0.0-rc6",
     "rxjs": "^5.5.6",
-    "zone.js": "^0.8.19",
-    "spectre.css": "^0.5.1"
+    "spectre.css": "^0.5.1",
+    "stylelint": "^9.2.0",
+    "zone.js": "^0.8.19"
   },
   "devDependencies": {
     "@angular/cli": "^1.7.3",
@@ -46,6 +48,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~5.1.2",
+    "stylelint-config-recommended": "^2.1.0",
     "ts-node": "~4.1.0",
     "tslint": "~5.9.1",
     "typescript": "~2.5.3"

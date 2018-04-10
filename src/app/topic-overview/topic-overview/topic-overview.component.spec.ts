@@ -1,4 +1,4 @@
-import {async, discardPeriodicTasks, fakeAsync, flush, flushMicrotasks, TestBed, tick} from '@angular/core/testing';
+import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {RouterTestingModule} from '@angular/router/testing';
 import {TopicService} from '../topic-service/topic.service';
@@ -14,6 +14,8 @@ class MockTopicService {
               private _allCollections = []) {
   }
 
+  // Disabled because it is used via Mock
+  // noinspection JSUnusedGlobalSymbols
   getServerTitle() {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -43,7 +45,7 @@ function setup(serviceMock, route): {
 } {
 
   const activatedRouteMock = {
-    snapshot: {url: [{path: route}]}
+    snapshot: {url: [{path: route}], data: {filter: route}}
   };
   TestBed.configureTestingModule({
     imports: [RouterTestingModule, TopicWidgetsModule, SharedModule],

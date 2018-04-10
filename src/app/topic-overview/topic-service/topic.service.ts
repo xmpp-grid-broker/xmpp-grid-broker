@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {Topic, Topics} from '../../core/models/topic';
+import {Topics} from '../../core/models/topic';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
 

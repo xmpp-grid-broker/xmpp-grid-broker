@@ -1,3 +1,4 @@
+// noinspection JSUnusedGlobalSymbols
 /**
  * Production environment configuration.
  */

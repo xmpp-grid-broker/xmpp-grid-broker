@@ -25,7 +25,7 @@ export class TopicOverviewComponent implements OnInit, OnDestroy {
     });
     let subscription;
 
-    switch (this.route.snapshot.url[0].path) {
+    switch (this.route.snapshot.data.filter) {
       case 'root':
         subscription = this.topicService.rootTopics();
         break;
