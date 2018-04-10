@@ -1,7 +1,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {TopicConfigComponent} from './topic-config.component';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppDataValueFormField} from '../FormModels';
+import {XmppDataForm, XmppDataFormFieldType, XmppDataValueFormField} from '../../core/models/FormModels';
+import {SharedModule} from '../../shared/shared.module';
 
 
 describe('TopicConfigComponent', () => {
@@ -12,7 +13,7 @@ describe('TopicConfigComponent', () => {
 
   beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [],
+        imports: [SharedModule],
         declarations: [TopicConfigComponent],
       });
 
@@ -21,6 +22,7 @@ describe('TopicConfigComponent', () => {
       de = fixture.debugElement.nativeElement;
     }
   );
+  // TODO: shallow tests: ensure the form-field components are filled up properly and only verify "specific" parts.
 
   describe('given a hidden field', () => {
 
@@ -67,6 +69,70 @@ describe('TopicConfigComponent', () => {
       expect(de.querySelector('#title')
         .getAttribute('placeholder'))
         .toBe(`Enter title`);
+    }));
+
+    it('should render the label in the popover box', (() => {
+      expect(de.querySelector('.popover-container .card-body').textContent)
+        .toBe(TEST_FIELD.label);
+    }));
+  });
+
+  describe('given a text-multi field', () => {
+    const TEST_FIELD = new XmppDataValueFormField(
+      XmppDataFormFieldType.textMulti,
+      'pubsub#children',
+      '',
+      'The child nodes (leaf or collection) associated with a collection'
+    );
+
+    beforeEach(() => {
+      component.form = new XmppDataForm([
+        TEST_FIELD
+      ]);
+      fixture.detectChanges();
+    });
+    it('should render it', (() => {
+      expect(de.querySelector('form').childElementCount).toBe(1);
+    }));
+
+    it('should render variable name as field label', (() => {
+      expect(de.querySelector('.form-label').innerHTML).toBe('children');
+    }));
+
+    it('should render variable name in placeholder', (() => {
+      expect(de.querySelector('textarea#children')
+        .getAttribute('placeholder'))
+        .toBe(`List children`);
+    }));
+
+    it('should render the label in the popover box', (() => {
+      expect(de.querySelector('.popover-container .card-body').textContent)
+        .toBe(TEST_FIELD.label);
+    }));
+  });
+
+
+  describe('given a boolean field', () => {
+    const TEST_FIELD = new XmppDataValueFormField(
+      XmppDataFormFieldType.boolean,
+      'pubsub#deliver_notifications',
+      'true',
+      'Whether to deliver event notifications'
+    );
+
+    beforeEach(() => {
+      component.form = new XmppDataForm([
+        TEST_FIELD
+      ]);
+      fixture.detectChanges();
+    });
+    it('should render it', (() => {
+      expect(de.querySelector('form').childElementCount).toBe(1);
+    }));
+
+    it('should render variable name as field label', (() => {
+      expect(de.querySelector('.form-switch').textContent.trim())
+        .toBe('deliver_notifications');
     }));
 
     it('should render the label in the popover box', (() => {

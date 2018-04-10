@@ -1,0 +1,3 @@
+:host:not(:last-child) .form-group {
+  margin-bottom: 0.4rem;
+}

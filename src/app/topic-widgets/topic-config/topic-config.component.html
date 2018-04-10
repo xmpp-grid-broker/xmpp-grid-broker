@@ -1,200 +1,166 @@
 <h2>Create New Topic</h2>
-<form class="form-horizontal" *ngFor="let field of form.fields">
+<form xgbForm>
+  <ng-container *ngFor="let field of form.fields">
 
-  <div *ngIf="field.type === fieldType.textSingle" class="form-group">
-    <div class="col-3 col-sm-12">
-      <label class="form-label" [for]="field.variable">{{field.variable}}</label>
-    </div>
+    <xgb-form-field *ngIf="field.type === fieldType.textSingle"
+                    [fieldId]="field.variable"
+                    [fieldLabel]="field.variable"
+                    [fieldHelp]="field.label">
 
-    <div class="col-9 col-sm-12">
-      <div class="input-group">
-        <input type="text" class="form-input" [id]="field.variable" [placeholder]="'Enter ' + field.variable">
+      <input type="text"
+             xgbFormInput
+             [id]="field.variable"
+             [placeholder]="'Enter ' + field.variable">
 
-        <div class="popover popover-left">
-          <i class="btn btn-link">?</i>
-          <div class="popover-container">
-            <div class="card">
-              <div class="card-body">{{field.label}}</div>
-            </div>
-          </div>
+    </xgb-form-field>
 
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!--&lt;!&ndash; text-multi &ndash;&gt;-->
+    <xgb-form-field *ngIf="field.type === fieldType.textMulti"
+                    [fieldId]="field.variable"
+                    [fieldLabel]="field.variable"
+                    [fieldHelp]="field.label">
 
-  <!--<div class="form-group">-->
+        <textarea type="text"
+                  xgbFormInput
+                  [id]="field.variable"
+                  [placeholder]="'List ' + field.variable"
+                  rows="3"></textarea>
 
+    </xgb-form-field>
+
+
+    <xgb-form-field *ngIf="field.type === fieldType.boolean"
+                    [fieldId]="field.variable"
+                    [fieldHelp]="field.label">
+
+      <!--TODO: Create custom component to remove direct spectre.css dependency-->
+      <label class="form-switch">
+        <input type="checkbox">
+        <i class="form-icon"></i> {{field.variable}}
+      </label>
+
+    </xgb-form-field>
+
+    <!--&lt;!&ndash; list-single &ndash;&gt;-->
+
+    <!--<div class="form-group">-->
     <!--<div class="col-3 col-sm-12">-->
-      <!--<label class="form-label" for="text-multi">text-multi</label>-->
+    <!--<label class="form-label" for="list-single">list-single</label>-->
     <!--</div>-->
 
     <!--<div class="col-9 col-sm-12">-->
-      <!--<div class="input-group">-->
-        <!--<textarea type="text" class="form-input" id="text-multi" placeholder="text-multi" rows="3"></textarea>-->
+    <!--<div class="input-group">-->
 
-        <!--<div class="popover popover-left">-->
-          <!--<i class="btn btn-link">?</i>-->
-          <!--<div class="popover-container">-->
-            <!--<div class="card">-->
-              <!--<div class="card-body">-->
-                <!--The URL of an XSL transformation which can be applied to payloads in order to generate an appropriate-->
-                <!--message body element.-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
+    <!--<select id="list-single" class="form-select">-->
+    <!--<option>authorize</option>-->
+    <!--<option>open</option>-->
+    <!--<option>presence</option>-->
+    <!--</select>-->
 
-        <!--</div>-->
-      <!--</div>-->
+    <!--<div class="popover popover-left">-->
+    <!--<i class="btn btn-link">?</i>-->
+    <!--<div class="popover-container">-->
+    <!--<div class="card">-->
+    <!--<div class="card-header">Forms enabling configuration of pubsub nodes</div>-->
+    <!--<div class="card-body">-->
+    <!--<dl>-->
+    <!--<dt>authorize</dt>-->
+    <!--<dd>-->
+    <!--Subscription requests must be approved and only subscribers may retrieve items-->
+    <!--</dd>-->
+    <!--</dl>-->
     <!--</div>-->
-  <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
-  <!--&lt;!&ndash; list-single &ndash;&gt;-->
 
-  <!--<div class="form-group">-->
+    <!--&lt;!&ndash;list-multi &ndash;&gt;-->
+
+    <!--<div class="form-group">-->
     <!--<div class="col-3 col-sm-12">-->
-      <!--<label class="form-label" for="list-single">list-single</label>-->
+    <!--<label class="form-label" for="list-multi">list-multi</label>-->
     <!--</div>-->
 
     <!--<div class="col-9 col-sm-12">-->
-      <!--<div class="input-group">-->
+    <!--<div class="input-group">-->
 
-        <!--<select id="list-single" class="form-select">-->
-          <!--<option>authorize</option>-->
-          <!--<option>open</option>-->
-          <!--<option>presence</option>-->
-        <!--</select>-->
+    <!--<select id="list-multi" class="form-select" multiple>-->
+    <!--<option>authorize</option>-->
+    <!--<option>open</option>-->
+    <!--<option>presence</option>-->
+    <!--</select>-->
 
-        <!--<div class="popover popover-left">-->
-          <!--<i class="btn btn-link">?</i>-->
-          <!--<div class="popover-container">-->
-            <!--<div class="card">-->
-              <!--<div class="card-header">Forms enabling configuration of pubsub nodes</div>-->
-              <!--<div class="card-body">-->
-                <!--<dl>-->
-                  <!--<dt>authorize</dt>-->
-                  <!--<dd>-->
-                    <!--Subscription requests must be approved and only subscribers may retrieve items-->
-                  <!--</dd>-->
-                <!--</dl>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
+    <!--<div class="popover popover-left">-->
+    <!--<i class="btn btn-link">?</i>-->
+    <!--<div class="popover-container">-->
+    <!--<div class="card">-->
+    <!--<div class="card-header">Forms enabling configuration of pubsub nodes</div>-->
+    <!--<div class="card-body">-->
+    <!--<dl>-->
+    <!--<dt>authorize</dt>-->
+    <!--<dd>-->
+    <!--Subscription requests must be approved and only subscribers may retrieve items-->
+    <!--</dd>-->
+    <!--</dl>-->
     <!--</div>-->
-  <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
 
 
-  <!--&lt;!&ndash;list-multi &ndash;&gt;-->
-
-  <!--<div class="form-group">-->
+    <!--&lt;!&ndash;jid-multi &ndash;&gt;-->
+    <!--<div class="form-group">-->
     <!--<div class="col-3 col-sm-12">-->
-      <!--<label class="form-label" for="list-multi">list-multi</label>-->
+    <!--<label class="form-label" for="list-multi">jid-multi</label>-->
     <!--</div>-->
 
     <!--<div class="col-9 col-sm-12">-->
-      <!--<div class="input-group">-->
-
-        <!--<select id="list-multi" class="form-select" multiple>-->
-          <!--<option>authorize</option>-->
-          <!--<option>open</option>-->
-          <!--<option>presence</option>-->
-        <!--</select>-->
-
-        <!--<div class="popover popover-left">-->
-          <!--<i class="btn btn-link">?</i>-->
-          <!--<div class="popover-container">-->
-            <!--<div class="card">-->
-              <!--<div class="card-header">Forms enabling configuration of pubsub nodes</div>-->
-              <!--<div class="card-body">-->
-                <!--<dl>-->
-                  <!--<dt>authorize</dt>-->
-                  <!--<dd>-->
-                    <!--Subscription requests must be approved and only subscribers may retrieve items-->
-                  <!--</dd>-->
-                <!--</dl>-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
+    <!--<div class="input-group">-->
+    <!--<div class="container">-->
+    <!--<div class="columns form-group">-->
+    <!--<div class="column col-10">user@domain.xyz</div>-->
+    <!--<div class="column col-2"><button class="btn">remove</button></div>-->
     <!--</div>-->
-  <!--</div>-->
-
-  <!--&lt;!&ndash;boolean &ndash;&gt;-->
-
-  <!--<div class="form-group">-->
-    <!--<div class="col-9 col-sm-12 col-ml-auto">-->
-      <!--<div class="input-group">-->
-
-        <!--<label class="form-switch">-->
-          <!--<input type="checkbox">-->
-          <!--<i class="form-icon"></i> boolean-->
-        <!--</label>-->
-
-        <!--<div class="popover popover-left">-->
-          <!--<i class="btn btn-link">?</i>-->
-          <!--<div class="popover-container">-->
-            <!--<div class="card">-->
-              <!--<div class="card-body">-->
-                <!--Whether to allow subscriptions-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
+    <!--<div class="columns form-group">-->
+    <!--<div class="column col-10"><input type="text" class="form-input" id="jid-multi" placeholder="jid-multi"></div>-->
+    <!--<div class="column col-2"><button class="btn">add</button></div>-->
     <!--</div>-->
-  <!--</div>-->
-
-  <!--&lt;!&ndash;jid-multi &ndash;&gt;-->
-  <!--<div class="form-group">-->
-    <!--<div class="col-3 col-sm-12">-->
-      <!--<label class="form-label" for="list-multi">jid-multi</label>-->
+    <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+    <!--&lt;!&ndash;<td>user@domain.xyz</td>&ndash;&gt;-->
+    <!--&lt;!&ndash;<td>&ndash;&gt;-->
+    <!--&lt;!&ndash;<button class="btn">remove</button>&ndash;&gt;-->
+    <!--&lt;!&ndash;</td>&ndash;&gt;-->
+    <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+    <!--&lt;!&ndash;<tr>&ndash;&gt;-->
+    <!--&lt;!&ndash;<td></td>&ndash;&gt;-->
+    <!--&lt;!&ndash;<td>&ndash;&gt;-->
+    <!--&lt;!&ndash;<button class="btn">add</button>&ndash;&gt;-->
+    <!--&lt;!&ndash;</td>&ndash;&gt;-->
     <!--</div>-->
 
-    <!--<div class="col-9 col-sm-12">-->
-      <!--<div class="input-group">-->
-        <!--<div class="container">-->
-          <!--<div class="columns form-group">-->
-            <!--<div class="column col-10">user@domain.xyz</div>-->
-            <!--<div class="column col-2"><button class="btn">remove</button></div>-->
-          <!--</div>-->
-          <!--<div class="columns form-group">-->
-            <!--<div class="column col-10"><input type="text" class="form-input" id="jid-multi" placeholder="jid-multi"></div>-->
-            <!--<div class="column col-2"><button class="btn">add</button></div>-->
-          <!--</div>-->
-          <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-          <!--&lt;!&ndash;<td>user@domain.xyz</td>&ndash;&gt;-->
-          <!--&lt;!&ndash;<td>&ndash;&gt;-->
-          <!--&lt;!&ndash;<button class="btn">remove</button>&ndash;&gt;-->
-          <!--&lt;!&ndash;</td>&ndash;&gt;-->
-          <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-          <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-          <!--&lt;!&ndash;<td></td>&ndash;&gt;-->
-          <!--&lt;!&ndash;<td>&ndash;&gt;-->
-          <!--&lt;!&ndash;<button class="btn">add</button>&ndash;&gt;-->
-          <!--&lt;!&ndash;</td>&ndash;&gt;-->
-        <!--</div>-->
 
-
-        <!--<div class="popover popover-left">-->
-          <!--<i class="btn btn-link">?</i>-->
-          <!--<div class="popover-container">-->
-            <!--<div class="card">-->
-              <!--<div class="card-body">-->
-                <!--Whether to allow subscriptions-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
+    <!--<div class="popover popover-left">-->
+    <!--<i class="btn btn-link">?</i>-->
+    <!--<div class="popover-container">-->
+    <!--<div class="card">-->
+    <!--<div class="card-body">-->
+    <!--Whether to allow subscriptions-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
     <!--</div>-->
 
-  <!--</div>-->
-
+    <!--</div>-->
+  </ng-container>
 </form>
 
 

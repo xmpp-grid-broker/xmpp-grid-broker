@@ -43,6 +43,8 @@ export abstract class XmppDataFormField {
 //   }
 // }
 
+// TODO: value for multi text should be an array of strings...
+
 export class XmppDataValueFormField extends XmppDataFormField {
   constructor(type: XmppDataFormFieldType,
               variable: string,

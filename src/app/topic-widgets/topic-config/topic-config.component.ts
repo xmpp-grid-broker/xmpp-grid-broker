@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {XmppDataForm, XmppDataFormFieldType, XmppDataValueFormField} from '../FormModels';
+import {XmppDataForm, XmppDataFormFieldType, XmppDataValueFormField} from '../../core/models/FormModels';
 
 @Component({
   selector: 'xgb-topic-config',
@@ -14,26 +14,6 @@ export class TopicConfigComponent implements OnInit {
   public configForm: FormGroup;
 
   ngOnInit() {
-    // this.form = new XmppDataForm([
-    //   new XmppDataValueFormField(
-    //     XmppDataFormFieldType.hidden,
-    //     'FORM_TYPE',
-    //     'http://jabber.org/protocol/pubsub#node_config'
-    //   ),
-    //   new XmppDataValueFormField(
-    //     XmppDataFormFieldType.textSingle,
-    //     'pubsub#title',
-    //     'Princely Musings (Atom)',
-    //     'A friendly name for the node'
-    //   ),
-    //   new XmppDataValueFormField(
-    //     XmppDataFormFieldType.boolean,
-    //     'pubsub#deliver_notifications',
-    //     'true',
-    //     'Whether to deliver payloads with event notifications'
-    //   ),
-    // ]);
-
     // TODO: can the filed change?! What if async?
 
     const controls: { [fieldName: string]: FormControl } = {};

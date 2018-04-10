@@ -7,6 +7,9 @@ import {TabComponent} from './tabs/tab.component';
 import {RouterModule} from '@angular/router';
 import {ActionButtonDirective} from './action-button.directive';
 import {ActionBarComponent} from './action-bar/action-bar.component';
+import {FormDirective} from './form/form.directive';
+import {FormFieldComponent} from './form/form-field.component';
+import {FormInputDirective} from './form/form-input.directive';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,
@@ -14,7 +17,10 @@ const EXPORTED_DECLARATIONS = [
   TabsComponent,
   TabComponent,
   ActionButtonDirective,
-  ActionBarComponent
+  ActionBarComponent,
+  FormDirective,
+  FormInputDirective,
+  FormFieldComponent
 ];
 
 @NgModule({
