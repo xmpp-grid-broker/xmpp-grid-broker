@@ -25,12 +25,13 @@ server {
     # support up to ~20MB uploads
     client_max_body_size 20M;
 
+    # security headers
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';";
+    add_header 'Access-Control-Allow-Origin' 'xgb.localhost.redbackup.org';
+
     # Openfire BOSH
     location /http-bind {
         if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-            add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
             add_header 'Content-Type' 'text/plain; charset=utf-8';
             add_header 'Content-Length' 0;
             return 204;
