@@ -66,7 +66,7 @@ To edit the Openfire Configuration (e.g. for adding new users or TLS certificate
 
 ```bash
 export UID
-docker-compose up -f docker-compose.yml -f docker-compose.openfire-admin.yml
+docker-compose -f docker-compose.openfire-admin.yml -f docker-compose.yml up
 
 # clean up access permissions after finishing
 sudo chown -R $UID stack/openfire
