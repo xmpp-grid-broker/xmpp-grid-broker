@@ -53,9 +53,14 @@ To authenticate to the XMPP-Grid Broker, you can add the according client-certif
 If you want to generate a new CA and certificates (which is probably a good idea), execute the following steps:
 ```bash
 # Requires openssl binary and bash.
-cd stack/certs/
-rm -r keys/
-./generate.bash
+pushd stack/certs/
+  rm -r keys/
+  ./generate.bash
+popd
+
+pushd stack/
+  ./add_certs_to_openfire.bash
+popd
 ```
 
 (Note that if you want to directly connect to the Openfire XMPP server, you also have to update its CA and host-certificates trough the administration interface; also see next section.)

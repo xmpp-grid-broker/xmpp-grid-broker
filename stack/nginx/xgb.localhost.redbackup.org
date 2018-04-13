@@ -98,11 +98,4 @@ server {
         proxy_pass http://xgb_development_server;
         break;
     }
-
-#     location / {
-#         root   /var/www/${host}/html/;
-#         index  index.html index.htm;
-#     }
-
-
 }
