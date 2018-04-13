@@ -10,6 +10,7 @@ import {ActionBarComponent} from './action-bar/action-bar.component';
 import {FormDirective} from './form/form.directive';
 import {FormFieldComponent} from './form/form-field.component';
 import {FormInputDirective} from './form/form-input.directive';
+import {FormSwitchComponent} from './form/form-switch.component';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,
@@ -20,6 +21,7 @@ const EXPORTED_DECLARATIONS = [
   ActionBarComponent,
   FormDirective,
   FormInputDirective,
+  FormSwitchComponent,
   FormFieldComponent
 ];
 

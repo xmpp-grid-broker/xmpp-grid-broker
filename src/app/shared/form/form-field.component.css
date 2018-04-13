@@ -1,3 +1,7 @@
-:host:not(:last-child) .form-group {
+:host:not(:last-child) > div {
   margin-bottom: 0.4rem;
+}
+
+.card-body:empty {
+  padding-top: 0;
 }

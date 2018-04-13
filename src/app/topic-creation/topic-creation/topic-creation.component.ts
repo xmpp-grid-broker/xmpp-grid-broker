@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {XmppDataForm, XmppDataFormFieldType, XmppDataValueFormField} from '../../core/models/FormModels';
+import {Component} from '@angular/core';
+import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 
 @Component({
   selector: 'xgb-topic-creation',
@@ -10,28 +10,54 @@ export class TopicCreationComponent {
 
   constructor() {
     this.form = new XmppDataForm([
-      new XmppDataValueFormField(
+      new XmppDataFormField(
         XmppDataFormFieldType.hidden,
         'FORM_TYPE',
         'http://jabber.org/protocol/pubsub#node_config'
       ),
-      new XmppDataValueFormField(
+      new XmppDataFormField(
         XmppDataFormFieldType.textMulti,
         'pubsub#children',
-        '',
+        'child1\nchild2',
         'The child nodes (leaf or collection) associated with a collection'
       ),
-      new XmppDataValueFormField(
+      new XmppDataFormField(
         XmppDataFormFieldType.textSingle,
         'pubsub#title',
         'Princely Musings (Atom)',
         'A friendly name for the node'
       ),
-      new XmppDataValueFormField(
+      new XmppDataFormField(
         XmppDataFormFieldType.boolean,
         'pubsub#deliver_notifications',
-        'true',
+        true,
         'Whether to deliver payloads with event notifications'
+      ),
+      new XmppDataFormField(
+        XmppDataFormFieldType.listSingle,
+        'pubsub#access_model',
+        null,
+        'Specify the subscriber model',
+        [
+          new ListOption('authorize', 'Subscription requests must be approved and only subscribers may retrieve items'),
+          new ListOption('open', 'Anyone may subscribe and retrieve items'),
+          new ListOption('presence', 'Anyone with a presence subscription of both or from may subscribe and retrieve items'),
+          new ListOption('roster', 'Anyone in the specified roster group(s) may subscribe and retrieve items'),
+          new ListOption('whitelist', 'Only those on a whitelist may subscribe and retrieve items'),
+        ]
+      ),
+      new XmppDataFormField(
+        XmppDataFormFieldType.listMulti,
+        'pubsub#show-values',
+        ['dnd', 'chat'],
+        'The presence states for which an entity wants to receive notifications',
+        [
+          new ListOption('away', 'XMPP Show Value of Away'),
+          new ListOption('chat', 'XMPP Show Value of Chat'),
+          new ListOption('dnd', 'XMPP Show Value of DND (Do Not Disturb)'),
+          new ListOption('online', 'Mere Availability in XMPP (No Show Value)'),
+          new ListOption('xa', 'XMPP Show Value of XA (Extended Away)'),
+        ],
       ),
     ]);
 

@@ -1,118 +1,78 @@
 <h2>Create New Topic</h2>
-<form xgbForm>
+<form xgbForm [formGroup]="configForm" (ngSubmit)="submit()">
   <ng-container *ngFor="let field of form.fields">
 
     <xgb-form-field *ngIf="field.type === fieldType.textSingle"
                     [fieldId]="field.variable"
-                    [fieldLabel]="field.variable"
+                    [fieldLabel]="field.variable | FormFieldName"
                     [fieldHelp]="field.label">
-
       <input type="text"
+             [formControlName]="field.variable"
              xgbFormInput
-             [id]="field.variable"
-             [placeholder]="'Enter ' + field.variable">
-
+             [hasError]="!configForm.get(field.variable).valid"
+             [id]="field.variable | FormFieldName"
+             [placeholder]="'Enter ' + (field.variable | FormFieldName)">
     </xgb-form-field>
 
 
     <xgb-form-field *ngIf="field.type === fieldType.textMulti"
-                    [fieldId]="field.variable"
-                    [fieldLabel]="field.variable"
+                    [fieldId]="field.variable | FormFieldName"
+                    [fieldLabel]="field.variable | FormFieldName"
                     [fieldHelp]="field.label">
-
         <textarea type="text"
+                  [formControlName]="field.variable"
                   xgbFormInput
-                  [id]="field.variable"
-                  [placeholder]="'List ' + field.variable"
+                  [hasError]="!configForm.get(field.variable).valid"
+                  [id]="field.variable | FormFieldName"
+                  [placeholder]="'List ' + (field.variable | FormFieldName)"
                   rows="3"></textarea>
-
     </xgb-form-field>
 
 
     <xgb-form-field *ngIf="field.type === fieldType.boolean"
-                    [fieldId]="field.variable"
+                    [fieldId]="field.variable | FormFieldName"
                     [fieldHelp]="field.label">
-
-      <!--TODO: Create custom component to remove direct spectre.css dependency-->
-      <label class="form-switch">
-        <input type="checkbox">
-        <i class="form-icon"></i> {{field.variable}}
-      </label>
-
+      <xgb-form-switch [fieldLabel]="field.variable | FormFieldName">
+        <input type="checkbox" [formControlName]="field.variable">
+      </xgb-form-switch>
     </xgb-form-field>
 
-    <!--&lt;!&ndash; list-single &ndash;&gt;-->
+    <!-- list-single -->
+    <xgb-form-field *ngIf="field.type === fieldType.listSingle || field.type === fieldType.listMulti"
+                    [fieldId]="field.variable | FormFieldName"
+                    [fieldLabel]="field.variable | FormFieldName"
+                    [fieldHelp]="field.label">
 
-    <!--<div class="form-group">-->
-    <!--<div class="col-3 col-sm-12">-->
-    <!--<label class="form-label" for="list-single">list-single</label>-->
-    <!--</div>-->
+      <ng-container *ngIf="field.type === fieldType.listSingle">
+        <select [id]="field.variable | FormFieldName"
+                [formControlName]="field.variable"
+                xgbFormInput
+                [hasError]="!configForm.get(field.variable).valid">
+          <option [value]="null">-- none --</option>
+          <option *ngFor="let option of field.options;" [value]="option.value">{{option.value}}</option>
+        </select>
+      </ng-container>
 
-    <!--<div class="col-9 col-sm-12">-->
-    <!--<div class="input-group">-->
+      <ng-container *ngIf="field.type === fieldType.listMulti">
+        <select [id]="field.variable | FormFieldName"
+                [formControlName]="field.variable"
+                xgbFormInput
+                [hasError]="!configForm.get(field.variable).valid"
+                multiple
+                [size]="field.type === fieldType.listMulti ? field.options.length : null">
+          <option *ngFor="let option of field.options;" [value]="option.value">{{option.value}}</option>
+        </select>
+      </ng-container>
 
-    <!--<select id="list-single" class="form-select">-->
-    <!--<option>authorize</option>-->
-    <!--<option>open</option>-->
-    <!--<option>presence</option>-->
-    <!--</select>-->
-
-    <!--<div class="popover popover-left">-->
-    <!--<i class="btn btn-link">?</i>-->
-    <!--<div class="popover-container">-->
-    <!--<div class="card">-->
-    <!--<div class="card-header">Forms enabling configuration of pubsub nodes</div>-->
-    <!--<div class="card-body">-->
-    <!--<dl>-->
-    <!--<dt>authorize</dt>-->
-    <!--<dd>-->
-    <!--Subscription requests must be approved and only subscribers may retrieve items-->
-    <!--</dd>-->
-    <!--</dl>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-
-    <!--&lt;!&ndash;list-multi &ndash;&gt;-->
-
-    <!--<div class="form-group">-->
-    <!--<div class="col-3 col-sm-12">-->
-    <!--<label class="form-label" for="list-multi">list-multi</label>-->
-    <!--</div>-->
-
-    <!--<div class="col-9 col-sm-12">-->
-    <!--<div class="input-group">-->
-
-    <!--<select id="list-multi" class="form-select" multiple>-->
-    <!--<option>authorize</option>-->
-    <!--<option>open</option>-->
-    <!--<option>presence</option>-->
-    <!--</select>-->
-
-    <!--<div class="popover popover-left">-->
-    <!--<i class="btn btn-link">?</i>-->
-    <!--<div class="popover-container">-->
-    <!--<div class="card">-->
-    <!--<div class="card-header">Forms enabling configuration of pubsub nodes</div>-->
-    <!--<div class="card-body">-->
-    <!--<dl>-->
-    <!--<dt>authorize</dt>-->
-    <!--<dd>-->
-    <!--Subscription requests must be approved and only subscribers may retrieve items-->
-    <!--</dd>-->
-    <!--</dl>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
+      <div xgbFieldHelp>
+        <dl>
+          <ng-container *ngFor="let option of field.options">
+            <dt>{{option.value}}</dt>
+            <dd>{{option.label}}</dd>
+          </ng-container>
+        </dl>
+      </div>
+    </xgb-form-field>
 
 
     <!--&lt;!&ndash;jid-multi &ndash;&gt;-->
@@ -161,7 +121,5 @@
 
     <!--</div>-->
   </ng-container>
+  <button type="submit" xgbActionButton>{{submitLabel}}</button>
 </form>
-
-
-<p>Form value: {{ configForm.value | json }}</p>
