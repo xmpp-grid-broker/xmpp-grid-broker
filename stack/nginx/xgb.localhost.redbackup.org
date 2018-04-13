@@ -1,5 +1,5 @@
-upstream openfire_http_bind {
-    server openfire:7070 fail_timeout=0;
+upstream openfire {
+    server openfire:7443 fail_timeout=0;
 }
 
 upstream xgb_development_server {
@@ -10,12 +10,12 @@ server {
     listen 443 ssl http2;
     server_name xgb.localhost.redbackup.org;
 
-    ssl_certificate /etc/dehydrated/certs/xgb.localhost.redbackup.org/fullchain.pem;
-    ssl_certificate_key /etc/dehydrated/certs/xgb.localhost.redbackup.org/privkey.pem;
+    ssl_certificate /etc/dehydrated/certs/host/xgb.localhost.redbackup.org/fullchain.pem;
+    ssl_certificate_key /etc/dehydrated/certs/host/xgb.localhost.redbackup.org/privkey.pem;
     include /etc/nginx/tls-include.conf;
 
     ssl_verify_client on;
-    ssl_client_certificate /etc/dehydrated/ca-crt.pem;
+    ssl_client_certificate /etc/dehydrated/certs/ca-fullchain.pem;
 
     access_log /var/log/nginx/${host}.access.log;
     error_log /var/log/nginx/${host}.error.log info;
@@ -27,7 +27,8 @@ server {
 
     # security headers
     add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';";
-    add_header 'Access-Control-Allow-Origin' 'xgb.localhost.redbackup.org';
+    add_header 'Access-Control-Allow-Origin' 'xgb.localhost.redbackup.org' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, PUT, POST, DELETE, HEAD, OPTIONS' always;
 
     # Openfire BOSH
     location /http-bind {
@@ -42,7 +43,13 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-        proxy_pass http://openfire_http_bind/http-bind;
+        proxy_ssl_certificate /etc/dehydrated/certs/client/admin@openfire/fullchain.pem;
+        proxy_ssl_certificate_key /etc/dehydrated/certs/client/admin@openfire/privkey.pem;
+        proxy_ssl_trusted_certificate /etc/dehydrated/certs/ca-fullchain.pem;
+        proxy_ssl_verify on;
+        proxy_ssl_session_reuse off;
+
+        proxy_pass https://openfire/http-bind;
         break;
     }
 
@@ -58,7 +65,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-        proxy_pass http://openfire_http_bind/ws;
+        proxy_pass https://openfire/ws;
         break;
     }
 

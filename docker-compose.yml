@@ -24,8 +24,7 @@ services:
     image: fabianhauser/nginx-dehydrated
     volumes:
       - ./stack/nginx:/etc/nginx/sites:ro
-      - ./stack/certs/keys/host:/etc/dehydrated/certs:ro
-      - ./stack/certs/keys/ca-fullchain.pem:/etc/dehydrated/ca-crt.pem:ro
+      - ./stack/certs/keys:/etc/dehydrated/certs:ro
     ports:
       - 443:443
       - 80:80
