@@ -1,9 +1,11 @@
 = Installation Guide
 
 This guide assumes following example URLs:
-|XMPP-Grid Broker hosting server |`xgb.example.com` |
-|XMPP BOSH/WebSocket server |`bosh.example.com` |
-|XMPP server |`xmpp.example.com  |
+|===
+|XMPP-Grid Broker hosting server |`xgb.example.com`
+|XMPP BOSH/WebSocket server |`bosh.example.com`
+|XMPP server |`xmpp.example.com
+|===
 
 == Production Build and Deployment
 
@@ -17,10 +19,12 @@ This guide assumes following example URLs:
 
 HTTP Security Headers (excluding SSL/TLS security headers):
 
-|Header |Value |
+|===
+|Header |Value
 
-|`Content-Security-Policy` |`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self'; style-src 'self' 'unsafe-inline';` |
-|`Access-Control-Allow-Origin` |`xgb.example.com bosh.example.com` |
+|`Content-Security-Policy` |`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self'; style-src 'self' 'unsafe-inline';`
+|`Access-Control-Allow-Origin` |`xgb.example.com bosh.example.com`
+|===
 
 === XMPP BOSH/WebSocket server
 

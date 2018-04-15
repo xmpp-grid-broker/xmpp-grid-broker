@@ -21,25 +21,29 @@ The development stack consists of three components: A openfire XMPP server, node
 
 Following services are provided:
 
-|Service |URL |Authentication |
+|===
+|Service |URL |Authentication
 
-|XMPP-Grid Broker with auto-reload on changes |https://xgb.localhost.redbackup.org/ |TLS client certificate (see below) |
-|Openfire BOSH |https://xgb.localhost.redbackup.org/http-bind/ |TLS client certificate (see below) |
-|Openfire WebSocket |https://xgb.localhost.redbackup.org/ws/ |TLS client certificate (see below) |
-|Openfire administration interface |https://openfire-admin.localhost.redbackup.org/ |Username: `admin`, Password: `1q2w3e4r` |
+|XMPP-Grid Broker with auto-reload on changes |https://xgb.localhost.redbackup.org/ |TLS client certificate (see below)
+|Openfire BOSH |https://xgb.localhost.redbackup.org/http-bind/ |TLS client certificate (see below)
+|Openfire WebSocket |https://xgb.localhost.redbackup.org/ws/ |TLS client certificate (see below)
+|Openfire administration interface |https://openfire-admin.localhost.redbackup.org/ |Username: `admin`, Password: `1q2w3e4r`
+|===
 
 `*.localhost.redbackup.org` is an alias for `127.0.0.1`; if you want to work offline, simply add that to your `/etc/hosts` file.
 
 === TLS Certificates and Test Users
 
-All TLS server and client certificates as well as the according test-CA are provided in `stack/certs/`. 
+All TLS server and client certificates as well as the according test-CA are provided in `stack/certs/`.
 
 To authenticate to the XMPP-Grid Broker, you can add the according client-certificate to your browser beforehand:
 
-|JID |Password |Certificate |
+|===
+|JID |Password |Certificate
 
-|eva@openfire |123456 |`stack/certs/keys/client/eva@openfire/eva@openfire.p12` |
-|_admin_ |_1q2w3e4r_ |- |
+|eva@openfire |123456 |`stack/certs/keys/client/eva@openfire/eva@openfire.p12`
+|_admin_ |_1q2w3e4r_ |-
+|===
 
 
 === Generate new Certificates
