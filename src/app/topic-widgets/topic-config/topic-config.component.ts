@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 
@@ -8,8 +8,24 @@ import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core
   styleUrls: ['./topic-config.component.css']
 })
 export class TopicConfigComponent implements OnInit {
+  /**
+   * The data form to render.
+   * Must be available at `onInit`.
+   */
   @Input() public form: XmppDataForm;
+  /**
+   * The label of the submit button, eg. `save configuration` or `create topic`
+   */
   @Input() public submitLabel: string;
+
+  /**
+   * This event will be fired if the form is valid
+   * and is submitted.
+   *
+   * The payload is a copy of the given `form` (@Input), that only
+   * contains elements which value has changed.
+   */
+  @Output() public formSubmitted = new EventEmitter<XmppDataForm>();
 
   // This is a reference to be able to check types in the angular templates
   public readonly fieldType = XmppDataFormFieldType;
@@ -17,7 +33,6 @@ export class TopicConfigComponent implements OnInit {
   public configForm: FormGroup;
 
   ngOnInit() {
-    // TODO: lazy load form via service...
     const controls: { [fieldName: string]: FormControl } = {};
 
     this.form.fields.forEach((field: XmppDataFormField) => {
@@ -29,30 +44,27 @@ export class TopicConfigComponent implements OnInit {
     this.configForm = new FormGroup(controls);
   }
 
-  // TODO: IMPLEMENT SUBMIT
-
   submit() {
-  //   // TODO: check validity
-  //   const items = [];
-  //   this.form.fields.forEach((field: XmppDataFormField) => {
-  //       const newValue = this.configForm.get(field.variable).value;
-  //       const oldValue = field.value;
-  //       if (newValue === oldValue) {
-  //         return;
-  //       }
-  //       items.push(new XmppDataFormField(
-  //         field.type,
-  //         field.variable,
-  //         newValue,
-  //         // THESE SHOULD NOT BE REQUIRED...?!
-  //         field.label,
-  //         field.options
-  //       ));
-  //     }
-  //   );
-  //
-  //   // TODO: submit on service!
-  //   const diffForm = new XmppDataForm(items);
-  //   console.log(diffForm);
+    // TODO: check validity
+
+    const items = [];
+    this.form.fields.forEach((field: XmppDataFormField) => {
+        const newValue = this.configForm.get(field.variable).value;
+        const oldValue = field.value;
+        if (newValue === oldValue) {
+          return;
+        }
+        items.push(new XmppDataFormField(
+          field.type,
+          field.variable,
+          newValue,
+          field.label,
+          field.options
+        ));
+      }
+    );
+
+    const diffForm = new XmppDataForm(items);
+    this.formSubmitted.emit(diffForm);
   }
 }

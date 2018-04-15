@@ -1,5 +1,5 @@
 <xgb-header></xgb-header>
 <div class="container grid-lg">
-  <div *ngIf="loading" class="loading loading-lg"></div>
+  <xgb-spinner *ngIf="loading"></xgb-spinner>
   <router-outlet *ngIf="!loading"></router-outlet>
 </div>

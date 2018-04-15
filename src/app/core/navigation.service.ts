@@ -13,6 +13,11 @@ export class NavigationService {
     this.goToUrl('/topics/new');
   }
 
+  public goToHome(): void {
+    this.goToUrl('/');
+  }
+
+
   constructor(private router: Router) {
   }
 }

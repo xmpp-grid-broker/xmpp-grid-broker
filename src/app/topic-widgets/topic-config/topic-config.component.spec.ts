@@ -8,6 +8,50 @@ import {FormFieldComponent} from '../../shared/form/form-field.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FormFieldNamePipe} from './form-field-name.pipe';
 
+const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(
+  XmppDataFormFieldType.textSingle,
+  'pubsub#title',
+  'Princely Musings (Atom)',
+  'A friendly name for the node'
+);
+const TEST_FIELD_TEXT_MULTI = new XmppDataFormField(
+  XmppDataFormFieldType.textMulti,
+  'pubsub#children',
+  '',
+  'The child nodes (leaf or collection) associated with a collection'
+);
+const TEST_FIELD_BOOLEAN = new XmppDataFormField(
+  XmppDataFormFieldType.boolean,
+  'pubsub#deliver_notifications',
+  true,
+  'Whether to deliver event notifications'
+);
+const TEST_FIELD_LIST_SINGLE = new XmppDataFormField(
+  XmppDataFormFieldType.listSingle,
+  'pubsub#access_model',
+  null,
+  'Specify the subscriber model',
+  [
+    new ListOption('authorize', 'Subscription requests must be approved and only subscribers may retrieve items'),
+    new ListOption('open', 'Anyone may subscribe and retrieve items'),
+    new ListOption('presence', 'Anyone with a presence subscription of both or from may subscribe and retrieve items'),
+    new ListOption('roster', 'Anyone in the specified roster group(s) may subscribe and retrieve items'),
+    new ListOption('whitelist', 'Only those on a whitelist may subscribe and retrieve items'),
+  ],
+);
+const TEST_FIELD_LIST_MULTI = new XmppDataFormField(
+  XmppDataFormFieldType.listMulti,
+  'pubsub#show-values',
+  null,
+  'The presence states for which an entity wants to receive notifications',
+  [
+    new ListOption('away', 'XMPP Show Value of Away'),
+    new ListOption('chat', 'XMPP Show Value of Chat'),
+    new ListOption('dnd', 'XMPP Show Value of DND (Do Not Disturb)'),
+    new ListOption('online', 'Mere Availability in XMPP (No Show Value)'),
+    new ListOption('xa', 'XMPP Show Value of XA (Extended Away)'),
+  ]
+);
 
 describe('TopicConfigComponent', () => {
 
@@ -27,8 +71,8 @@ describe('TopicConfigComponent', () => {
       de = fixture.debugElement.nativeElement;
     }
   );
-  describe('given a hidden field', () => {
 
+  describe('given a hidden field', () => {
     beforeEach(() => {
       component.form = new XmppDataForm([
         new XmppDataFormField(
@@ -47,20 +91,14 @@ describe('TopicConfigComponent', () => {
   });
 
   describe('given a text-single field', () => {
-    const TEST_FIELD = new XmppDataFormField(
-      XmppDataFormFieldType.textSingle,
-      'pubsub#title',
-      'Princely Musings (Atom)',
-      'A friendly name for the node'
-    );
-
     beforeEach(() => {
       component.form = new XmppDataForm([
-        TEST_FIELD
+        TEST_FIELD_TEXT_SINGLE
       ]);
       fixture.detectChanges();
       formFieldComponent = fixture.debugElement.query(By.css('xgb-form-field')).componentInstance;
     });
+
     it('should render it', (() => {
       expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
     }));
@@ -90,20 +128,14 @@ describe('TopicConfigComponent', () => {
   });
 
   describe('given a text-multi field', () => {
-    const TEST_FIELD = new XmppDataFormField(
-      XmppDataFormFieldType.textMulti,
-      'pubsub#children',
-      '',
-      'The child nodes (leaf or collection) associated with a collection'
-    );
-
     beforeEach(() => {
       component.form = new XmppDataForm([
-        TEST_FIELD
+        TEST_FIELD_TEXT_MULTI
       ]);
       fixture.detectChanges();
       formFieldComponent = fixture.debugElement.query(By.css('xgb-form-field')).componentInstance;
     });
+
     it('should render it', (() => {
       expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
     }));
@@ -135,20 +167,14 @@ describe('TopicConfigComponent', () => {
 
 
   describe('given a boolean field', () => {
-    const TEST_FIELD = new XmppDataFormField(
-      XmppDataFormFieldType.boolean,
-      'pubsub#deliver_notifications',
-      true,
-      'Whether to deliver event notifications'
-    );
-
     beforeEach(() => {
       component.form = new XmppDataForm([
-        TEST_FIELD
+        TEST_FIELD_BOOLEAN
       ]);
       fixture.detectChanges();
       formFieldComponent = fixture.debugElement.query(By.css('xgb-form-field')).componentInstance;
     });
+
     it('should render it', (() => {
       expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
     }));
@@ -176,27 +202,14 @@ describe('TopicConfigComponent', () => {
   });
 
   describe('given a list-single field', () => {
-    const TEST_FIELD = new XmppDataFormField(
-      XmppDataFormFieldType.listSingle,
-      'pubsub#access_model',
-      null,
-      'Specify the subscriber model',
-      [
-        new ListOption('authorize', 'Subscription requests must be approved and only subscribers may retrieve items'),
-        new ListOption('open', 'Anyone may subscribe and retrieve items'),
-        new ListOption('presence', 'Anyone with a presence subscription of both or from may subscribe and retrieve items'),
-        new ListOption('roster', 'Anyone in the specified roster group(s) may subscribe and retrieve items'),
-        new ListOption('whitelist', 'Only those on a whitelist may subscribe and retrieve items'),
-      ],
-    );
-
     beforeEach(() => {
       component.form = new XmppDataForm([
-        TEST_FIELD
+        TEST_FIELD_LIST_SINGLE
       ]);
       fixture.detectChanges();
       formFieldComponent = fixture.debugElement.query(By.css('xgb-form-field')).componentInstance;
     });
+
     it('should render it', (() => {
       expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
     }));
@@ -220,7 +233,7 @@ describe('TopicConfigComponent', () => {
     it('should render the label plus all option labels as help message', (() => {
       const dl = de.querySelector('[xgbFieldHelp] dl');
 
-      expect(formFieldComponent.fieldHelp).toBe(TEST_FIELD.label);
+      expect(formFieldComponent.fieldHelp).toBe(TEST_FIELD_LIST_SINGLE.label);
       expect(dl.childElementCount).toBe(10);
       expect(dl.firstElementChild.innerHTML).toBe('authorize');
       expect(dl.lastElementChild.innerHTML).toBe('Only those on a whitelist may subscribe and retrieve items');
@@ -251,23 +264,9 @@ describe('TopicConfigComponent', () => {
   });
 
   describe('given a list-multi field', () => {
-    const TEST_FIELD = new XmppDataFormField(
-      XmppDataFormFieldType.listMulti,
-      'pubsub#show-values',
-      null,
-      'The presence states for which an entity wants to receive notifications',
-      [
-        new ListOption('away', 'XMPP Show Value of Away'),
-        new ListOption('chat', 'XMPP Show Value of Chat'),
-        new ListOption('dnd', 'XMPP Show Value of DND (Do Not Disturb)'),
-        new ListOption('online', 'Mere Availability in XMPP (No Show Value)'),
-        new ListOption('xa', 'XMPP Show Value of XA (Extended Away)'),
-      ]
-    );
-
     beforeEach(() => {
       component.form = new XmppDataForm([
-        TEST_FIELD
+        TEST_FIELD_LIST_MULTI
       ]);
       fixture.detectChanges();
       formFieldComponent = fixture.debugElement.query(By.css('xgb-form-field')).componentInstance;
@@ -296,7 +295,7 @@ describe('TopicConfigComponent', () => {
     it('should render the label plus all option labels as help message', (() => {
       const dl = de.querySelector('[xgbFieldHelp] dl');
 
-      expect(formFieldComponent.fieldHelp).toBe(TEST_FIELD.label);
+      expect(formFieldComponent.fieldHelp).toBe(TEST_FIELD_LIST_MULTI.label);
       expect(dl.childElementCount).toBe(10);
       expect(dl.firstElementChild.innerHTML).toBe('away');
       expect(dl.lastElementChild.innerHTML).toBe('XMPP Show Value of XA (Extended Away)');
@@ -316,5 +315,54 @@ describe('TopicConfigComponent', () => {
     }));
   });
 
+  describe('given a three fields', () => {
 
+    let submitButton: HTMLElement;
+
+    beforeEach(() => {
+      component.form = new XmppDataForm([
+        TEST_FIELD_BOOLEAN,
+        TEST_FIELD_TEXT_SINGLE,
+        TEST_FIELD_TEXT_MULTI,
+        TEST_FIELD_LIST_SINGLE,
+        TEST_FIELD_LIST_MULTI
+      ]);
+      fixture.detectChanges();
+      submitButton = fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement;
+    });
+
+    it('should emmit an empty form if nothing has changed', ((done) => {
+      component.formSubmitted.subscribe((form: XmppDataForm) => {
+        expect(form.fields.length).toBe(0);
+        done();
+      });
+
+      submitButton.click();
+      fixture.detectChanges();
+    }));
+
+    it('should emmit the changed fields and values', ((done) => {
+      component.formSubmitted.subscribe((form: XmppDataForm) => {
+        expect(form.fields[0].variable).toBe('pubsub#deliver_notifications');
+        expect(form.fields[0].value).toBe(false);
+
+        expect(form.fields.length).toBe(2);
+        expect(form.fields[1].variable).toBe('pubsub#title');
+        expect(form.fields[1].value).toBe('Foo baa');
+
+        done();
+      });
+
+      const titleInput = de.querySelector('#title');
+      titleInput['value'] = 'Foo baa';
+      titleInput.dispatchEvent(new Event('input'));
+
+      const notificationCheckbox = de.querySelector('#deliver_notifications');
+      notificationCheckbox['checked'] = false;
+      notificationCheckbox.dispatchEvent(new Event('change'));
+
+      submitButton.click();
+      fixture.detectChanges();
+    }));
+  });
 });

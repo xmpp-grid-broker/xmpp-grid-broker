@@ -11,6 +11,7 @@ import {FormDirective} from './form/form.directive';
 import {FormFieldComponent} from './form/form-field.component';
 import {FormInputDirective} from './form/form-input.directive';
 import {FormSwitchComponent} from './form/form-switch.component';
+import {SpinnerComponent} from './spinner/spinner.component';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,
@@ -22,7 +23,8 @@ const EXPORTED_DECLARATIONS = [
   FormDirective,
   FormInputDirective,
   FormSwitchComponent,
-  FormFieldComponent
+  FormFieldComponent,
+  SpinnerComponent
 ];
 
 @NgModule({
