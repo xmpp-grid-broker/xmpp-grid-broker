@@ -4,13 +4,14 @@ import {ErrorPageComponent} from './error-page/error-page.component';
 import {HeaderComponent} from './header/header.component';
 import {RouterModule} from '@angular/router';
 import {NavigationService} from './navigation.service';
+import {XmppService} from './xmpp/xmpp.service';
 
 
 @NgModule({
   imports: [CommonModule, RouterModule],
   declarations: [HeaderComponent, ErrorPageComponent],
   exports: [HeaderComponent],
-  providers: [NavigationService]
+  providers: [NavigationService, XmppService],
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

@@ -3,6 +3,7 @@ import {Observable} from 'rxjs/Observable';
 import {Topics} from '../../core/models/topic';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
+import {XmppService} from '../../core/xmpp/xmpp.service';
 
 @Injectable()
 export class TopicService {
@@ -22,11 +23,12 @@ export class TopicService {
     {title: 'Root #2', children: []}
   ];
 
-  constructor() {
+  constructor(private xmppService: XmppService) {
   }
 
   rootTopics(): Observable<Topics> {
-    return Observable.of(this.flatItems().filter((it) => it.title.startsWith('Root'))).delay(300);
+    // this.xmppService.createNode('testnode');
+    return this.xmppService.getTopics();
   }
 
   allTopics(): Observable<Topics> {
