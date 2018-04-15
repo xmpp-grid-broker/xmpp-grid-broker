@@ -1,0 +1,31 @@
+= Installation Guide
+
+This guide assumes following example URLs:
+|===
+|XMPP-Grid Broker hosting server |`xgb.example.com`
+|XMPP BOSH/WebSocket server |`bosh.example.com`
+|XMPP server |`xmpp.example.com`
+|===
+
+== Production Build and Deployment
+
+1. TODO: Configuration (https://project.redbackup.org/browse/XGB-121[XGB-121])
+2. Execute `./build.bash`
+3. Copy the contents of `./dist/` to you XMPP-Grid Broker hosting server.
+
+== Security Considerations
+
+=== XMPP-Grid Broker Hosting Server
+
+HTTP Security Headers (excluding SSL/TLS security headers):
+
+|===
+|Header |Value
+
+|`Content-Security-Policy` |`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self'; style-src 'self' 'unsafe-inline';`
+|`Access-Control-Allow-Origin` |`xgb.example.com bosh.example.com`
+|===
+
+=== XMPP BOSH/WebSocket server
+
+It is recommended to proxy the XMPP server with a reverse web proxy that handles TLS authentication (e.g. nginx), to lower the attack surface.
