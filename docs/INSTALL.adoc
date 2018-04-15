@@ -4,7 +4,7 @@ This guide assumes following example URLs:
 |===
 |XMPP-Grid Broker hosting server |`xgb.example.com`
 |XMPP BOSH/WebSocket server |`bosh.example.com`
-|XMPP server |`xmpp.example.com
+|XMPP server |`xmpp.example.com`
 |===
 
 == Production Build and Deployment
