@@ -9,7 +9,7 @@ This guide assumes following example URLs:
 
 == Production Build and Deployment
 
-1. TODO: Configuration
+1. TODO: Configuration (https://project.redbackup.org/browse/XGB-121[XGB-121])
 2. Execute `./build.bash`
 3. Copy the contents of `./dist/` to you XMPP-Grid Broker hosting server.
 

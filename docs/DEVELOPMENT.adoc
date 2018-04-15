@@ -17,7 +17,7 @@ export UID
 docker-compose up
 ```
 
-The development stack consists of three components: A openfire XMPP server, node server with application server, and a nginx server to proxy both.
+The development stack consists of three components: A openfire XMPP server, node as an application server, and a nginx server to proxy both.
 
 Following services are provided:
 
@@ -36,21 +36,28 @@ Following services are provided:
 
 All TLS server and client certificates as well as the according test-CA are provided in `stack/certs/`.
 
-To authenticate to the XMPP-Grid Broker, you can add the according client-certificate to your browser beforehand:
+
+To authenticate to the XMPP-Grid Broker, you can add the according client-certificate to your browser beforehand.
+
+In Firefox, you can add them in the Preferences under `Privacy & Security` -> `View-Certificates` -> `Your Certificates`.
+
+Importing the CA is not recommended because it's public key is publicly accessible!
+In Firefox, add a permanent exception when accessing `https://xgb.localhost.redbackup.org/` for the first time.
 
 |===
-|JID |Password |Certificate
+|JID |Password |Certificate | P12-Password |
 
-|eva@openfire |123456 |`stack/certs/keys/client/eva@openfire/eva@openfire.p12`
-|_admin_ |_1q2w3e4r_ |-
+|eva@openfire |123456 |`stack/certs/keys/client/eva@openfire/eva@openfire.p12`| _no password_|
+|admin |1q2w3e4r | `stack/certs/keys/client/eva@openfire/eva@openfire.p12`|_no password_|
 |===
 
+The `admin` certificate is used by nginx to authenticate itself on the xmpp server (openfire).
 
 === Generate new Certificates
 
 If you want to generate a new CA and certificates, execute the following steps:
 ```bash
-= Requires openssl binary and bash.
+# Requires openssl binary and bash.
 pushd stack/certs/
   rm -r keys/
   ./generate.bash

@@ -5,9 +5,9 @@ The XMPP-Grid Broker is a client web application to simplify the management of a
 
 == Documentation
 
-- link:docs/DEVELOPMENT.md[Development Information]
-- link:docs/INSTALL.md[Installation Guide]
-- link:docs/SECURITY.md[Security Reference]
+- link:docs/DEVELOPMENT.adoc[Development Information]
+- link:docs/INSTALL.adoc[Installation Guide]
+- link:docs/SECURITY.adoc[Security Reference]
 
 == Thesis
 
