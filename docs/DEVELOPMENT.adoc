@@ -45,10 +45,10 @@ Importing the CA is not recommended because it's public key is publicly accessib
 In Firefox, add a permanent exception when accessing `https://xgb.localhost.redbackup.org/` for the first time.
 
 |===
-|JID |Password |Certificate | P12-Password |
+|JID |Password |Certificate | P12-Password
 
-|eva@openfire |123456 |`stack/certs/keys/client/eva@openfire/eva@openfire.p12`| _no password_|
-|admin |1q2w3e4r | `stack/certs/keys/client/eva@openfire/eva@openfire.p12`|_no password_|
+|eva@openfire |123456 |`stack/certs/keys/client/eva@openfire/eva@openfire.p12`| _no password_
+|admin |1q2w3e4r | `stack/certs/keys/client/eva@openfire/eva@openfire.p12`|_no password_
 |===
 
 The `admin` certificate is used by nginx to authenticate itself on the xmpp server (openfire).
