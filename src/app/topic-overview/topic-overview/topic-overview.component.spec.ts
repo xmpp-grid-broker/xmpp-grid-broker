@@ -3,7 +3,7 @@ import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {RouterTestingModule} from '@angular/router/testing';
 import {TopicService} from '../topic-service/topic.service';
 import {TopicOverviewComponent} from './topic-overview.component';
-import {TopicWidgetsModule} from '../../topic-widgets/topicWidgets.module';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
 import {Observable} from 'rxjs/Observable';

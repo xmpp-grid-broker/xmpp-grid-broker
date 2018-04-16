@@ -5,8 +5,9 @@ import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from
 import {SharedModule} from '../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {FormFieldComponent} from '../../shared/form/form-field.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FormFieldNamePipe} from './form-field-name.pipe';
+import {JidMultiComponent} from '../jid-multi/jid-multi.component';
 
 const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(
   XmppDataFormFieldType.textSingle,
@@ -53,6 +54,20 @@ const TEST_FIELD_LIST_MULTI = new XmppDataFormField(
   ]
 );
 
+const TEST_FIELD_JID_SINGLE = new XmppDataFormField(
+  XmppDataFormFieldType.jidSingle,
+  'pubsub#subscriber_jid',
+  'eva@openfire',
+  'The address (JID) of the subscriber'
+);
+const TEST_FIELD_JID_MULTI = new XmppDataFormField(
+  XmppDataFormFieldType.jidMulti,
+  'pubsub#contact',
+  ['eva@openfire', 'admin@openfire'],
+  'The JIDs of those to contact with questions'
+);
+
+
 describe('TopicConfigComponent', () => {
 
   let component: TopicConfigComponent;
@@ -62,8 +77,8 @@ describe('TopicConfigComponent', () => {
 
   beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [SharedModule, ReactiveFormsModule],
-        declarations: [FormFieldNamePipe, TopicConfigComponent],
+        imports: [SharedModule, FormsModule, ReactiveFormsModule],
+        declarations: [FormFieldNamePipe, TopicConfigComponent, JidMultiComponent],
       });
 
       fixture = TestBed.createComponent(TopicConfigComponent);
@@ -315,7 +330,7 @@ describe('TopicConfigComponent', () => {
     }));
   });
 
-  describe('given a three fields', () => {
+  describe('given three fields', () => {
 
     let submitButton: HTMLElement;
 
@@ -325,10 +340,11 @@ describe('TopicConfigComponent', () => {
         TEST_FIELD_TEXT_SINGLE,
         TEST_FIELD_TEXT_MULTI,
         TEST_FIELD_LIST_SINGLE,
-        TEST_FIELD_LIST_MULTI
+        TEST_FIELD_LIST_MULTI,
+        TEST_FIELD_JID_MULTI
       ]);
       fixture.detectChanges();
-      submitButton = fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement;
+      submitButton = fixture.debugElement.query(By.css('button[type="submit"][primary]')).nativeElement;
     });
 
     it('should emmit an empty form if nothing has changed', ((done) => {
@@ -365,4 +381,42 @@ describe('TopicConfigComponent', () => {
       fixture.detectChanges();
     }));
   });
+
+  describe('given a jid-single field', () => {
+    beforeEach(() => {
+      component.form = new XmppDataForm([
+        TEST_FIELD_JID_SINGLE
+      ]);
+      fixture.detectChanges();
+      formFieldComponent = fixture.debugElement.query(By.css('xgb-form-field')).componentInstance;
+    });
+
+    it('should render it', (() => {
+      expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
+    }));
+
+    it('should render variable name as field label', (() => {
+      expect(formFieldComponent.fieldLabel).toBe('subscriber_jid');
+    }));
+
+    it('should render variable name in placeholder', (() => {
+      expect(de.querySelector('#subscriber_jid')
+        .getAttribute('placeholder'))
+        .toBe(`Enter subscriber_jid`);
+    }));
+
+    it('should render the label as help message', (() => {
+      expect(formFieldComponent.fieldHelp).toBe('The address (JID) of the subscriber');
+    }));
+
+    it('should update the form binding when changed', (() => {
+      const input = de.querySelector('input');
+      input.value = 'eva@openfire';
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      const formControl = component.configForm.get('pubsub#subscriber_jid');
+      expect(formControl.value).toBe('eva@openfire');
+    }));
+  });
+
 });

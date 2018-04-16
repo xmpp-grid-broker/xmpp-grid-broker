@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SharedModule} from '../shared/shared.module';
-import {TopicWidgetsModule} from '../topic-widgets/topicWidgets.module';
+import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
 import {TopicCreationComponent} from './topic-creation/topic-creation.component';
 import {TopicCreationRoutingModule} from './topic-creation-router.module';
 import { TopicCreationService } from './topic-creation.service';

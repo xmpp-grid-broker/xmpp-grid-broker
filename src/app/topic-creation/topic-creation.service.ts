@@ -59,6 +59,12 @@ export class TopicCreationService {
           new ListOption('xa', 'XMPP Show Value of XA (Extended Away)'),
         ],
       ),
+      new XmppDataFormField(
+        XmppDataFormFieldType.jidMulti,
+        'pubsub#contact',
+        ['eva@openfire', 'admin@openfire'],
+        'The JIDs of those to contact with questions'
+      )
     ]);
     return new Promise(resolve => {
       setTimeout(() => {

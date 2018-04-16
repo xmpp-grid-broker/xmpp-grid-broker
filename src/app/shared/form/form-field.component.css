@@ -2,6 +2,6 @@
   margin-bottom: 0.4rem;
 }
 
-.card-body:empty {
+.card-body {
   padding-top: 0;
 }

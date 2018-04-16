@@ -1,7 +1,7 @@
 <form xgbForm [formGroup]="configForm" (ngSubmit)="submit()">
   <ng-container *ngFor="let field of form.fields">
 
-    <xgb-form-field *ngIf="field.type === fieldType.textSingle"
+    <xgb-form-field *ngIf="field.type === fieldType.textSingle || field.type === fieldType.jidSingle"
                     [fieldId]="field.variable"
                     [fieldLabel]="field.variable | FormFieldName"
                     [fieldHelp]="field.label">
@@ -37,7 +37,6 @@
       </xgb-form-switch>
     </xgb-form-field>
 
-    <!-- list-single -->
     <xgb-form-field *ngIf="field.type === fieldType.listSingle || field.type === fieldType.listMulti"
                     [fieldId]="field.variable | FormFieldName"
                     [fieldLabel]="field.variable | FormFieldName"
@@ -75,51 +74,14 @@
     </xgb-form-field>
 
 
-    <!--&lt;!&ndash;jid-multi &ndash;&gt;-->
-    <!--<div class="form-group">-->
-    <!--<div class="col-3 col-sm-12">-->
-    <!--<label class="form-label" for="list-multi">jid-multi</label>-->
-    <!--</div>-->
+    <xgb-form-field *ngIf="field.type === fieldType.jidMulti"
+                    [fieldId]="field.variable"
+                    [fieldLabel]="field.variable | FormFieldName"
+                    [fieldHelp]="field.label">
+      <xgb-jid-multi
+        [formControlName]="field.variable"></xgb-jid-multi>
+    </xgb-form-field>
 
-    <!--<div class="col-9 col-sm-12">-->
-    <!--<div class="input-group">-->
-    <!--<div class="container">-->
-    <!--<div class="columns form-group">-->
-    <!--<div class="column col-10">user@domain.xyz</div>-->
-    <!--<div class="column col-2"><button class="btn">remove</button></div>-->
-    <!--</div>-->
-    <!--<div class="columns form-group">-->
-    <!--<div class="column col-10"><input type="text" class="form-input" id="jid-multi" placeholder="jid-multi"></div>-->
-    <!--<div class="column col-2"><button class="btn">add</button></div>-->
-    <!--</div>-->
-    <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-    <!--&lt;!&ndash;<td>user@domain.xyz</td>&ndash;&gt;-->
-    <!--&lt;!&ndash;<td>&ndash;&gt;-->
-    <!--&lt;!&ndash;<button class="btn">remove</button>&ndash;&gt;-->
-    <!--&lt;!&ndash;</td>&ndash;&gt;-->
-    <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-    <!--&lt;!&ndash;<tr>&ndash;&gt;-->
-    <!--&lt;!&ndash;<td></td>&ndash;&gt;-->
-    <!--&lt;!&ndash;<td>&ndash;&gt;-->
-    <!--&lt;!&ndash;<button class="btn">add</button>&ndash;&gt;-->
-    <!--&lt;!&ndash;</td>&ndash;&gt;-->
-    <!--</div>-->
-
-
-    <!--<div class="popover popover-left">-->
-    <!--<i class="btn btn-link">?</i>-->
-    <!--<div class="popover-container">-->
-    <!--<div class="card">-->
-    <!--<div class="card-body">-->
-    <!--Whether to allow subscriptions-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-    <!--</div>-->
-
-    <!--</div>-->
   </ng-container>
-  <button type="submit" xgbActionButton>{{submitLabel}}</button>
+  <button type="submit" xgbActionButton primary>{{submitLabel}}</button>
 </form>

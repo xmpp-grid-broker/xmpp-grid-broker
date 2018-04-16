@@ -36,7 +36,6 @@ export class TopicConfigComponent implements OnInit {
     const controls: { [fieldName: string]: FormControl } = {};
 
     this.form.fields.forEach((field: XmppDataFormField) => {
-      // TODO: Add validators here...
       const validators = [];
       controls[field.variable] = new FormControl(field.value, validators);
     });
@@ -45,13 +44,10 @@ export class TopicConfigComponent implements OnInit {
   }
 
   submit() {
-    // TODO: check validity
-
     const items = [];
     this.form.fields.forEach((field: XmppDataFormField) => {
         const newValue = this.configForm.get(field.variable).value;
-        const oldValue = field.value;
-        if (newValue === oldValue) {
+      if (newValue === field.value) {
           return;
         }
         items.push(new XmppDataFormField(

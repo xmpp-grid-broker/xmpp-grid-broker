@@ -1,4 +1,3 @@
-// TODO: Implement validators to conform to XEP-0004, XEP-0060 and XEP-0248...if this is possible...
 export enum XmppDataFormFieldType {
   hidden,
   boolean,
@@ -10,8 +9,8 @@ export enum XmppDataFormFieldType {
   listMulti,
   listSingle,
 
-  // others, that will be ignored...
   jidSingle,
+  // others, that will are currently ignored...
   fixed,
   textPrivate,
 }

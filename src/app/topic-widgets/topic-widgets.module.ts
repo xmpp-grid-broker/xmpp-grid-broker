@@ -5,12 +5,13 @@ import {NgModule} from '@angular/core';
 import {TopicConfigComponent} from './topic-config/topic-config.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FormFieldNamePipe} from './topic-config/form-field-name.pipe';
+import { JidMultiComponent } from './jid-multi/jid-multi.component';
 
 const EXPORTED_DECLARATIONS = [TopicListComponent, TopicConfigComponent, FormFieldNamePipe];
 
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
-  declarations: [...EXPORTED_DECLARATIONS],
+  declarations: [...EXPORTED_DECLARATIONS, JidMultiComponent],
   exports: [...EXPORTED_DECLARATIONS]
 })
 export class TopicWidgetsModule {

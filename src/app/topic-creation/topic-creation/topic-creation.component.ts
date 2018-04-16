@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
+import {XmppDataForm} from '../../core/models/FormModels';
 import {TopicCreationService} from '../topic-creation.service';
 import {NavigationService} from '../../core/navigation.service';
 
