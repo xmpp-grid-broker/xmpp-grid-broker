@@ -1,16 +1,22 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
-import {JID, Client, createClient } from 'stanza.io';
-import {Topic, Topics} from '../../core/models/topic';
+import {Observer} from 'rxjs/Observer';
+import {JID, Client, createClient} from 'stanza.io';
+
+enum ConnectionState {
+  Down = 0,
+  Up = 1,
+  Connecting = 2,
+}
 
 @Injectable()
 export class XmppService {
   private _client: any;
-  private _config: any;
-  private _state = 'disconnected';
-  // TODO: Extract configuration
+  private readonly _config: any;
+  readonly jid: any;
+  private _state = ConnectionState.Down;
 
-
+  // TODO: Extract configuration (XGB-122)
   constructor() {
     const config = {
       jid: 'admin@openfire',
@@ -19,8 +25,9 @@ export class XmppService {
       url: 'https://xgb.localhost.redbackup.org/http-bind'
     };
 
+    this.jid = new JID(config.jid);
     this._config = {
-      jid: new JID(config.jid),
+      jid: this.jid,
       sasl: [ 'EXTERNAL' ],
       useStreamManagement: true,
       transport: config.transport,
@@ -40,55 +47,35 @@ export class XmppService {
     }
 
     this._client = createClient(this._config);
-    this._client.on('session:started', () => this._state = 'connected');
-    this._client.on('session:end', () => this._state = 'disconnected');
+    this._client.on('session:started', () => this._state = ConnectionState.Up);
+    this._client.on('session:end', () => this._state = ConnectionState.Down);
 
-    // TODO: Error handling -> global exception handler
     this._client.on('auth:failed', (err) => {
+      this._state = ConnectionState.Down;
       throw Error('XMPP authentication failed');
     });
 
     this._client.on('session:error', (err) => {
+      this._state = ConnectionState.Down;
       throw Error('XMPP session error');
     });
-
-    // Open connection
-    this._client.connect();
   }
 
-  public getTopics(collection?: string): Observable<Topics> {
+  public connect() {
+    if (this._state === ConnectionState.Down) {
+      this._state = ConnectionState.Connecting;
+      this._client.connect();
+    }
+  }
+
+  public query<T>(cb: (client: any, observer: Observer<T>) => any): Observable<T> {
     return new Observable((observer) => {
-
-      // Postpone request, if no connection is available yet
-      if (this._state === 'disconnected') {
-        this._client.on('session:started', () => this.getTopics(collection).subscribe((res) => {
-          observer.next(res);
-          observer.complete();
-        }));
-        return;
+      if (this._state === ConnectionState.Up) {
+        cb(this._client, observer);
+      } else {
+        this._client.on('session:started', () => this.query(cb).subscribe(observer));
+        this.connect();
       }
-
-      this._client.getDiscoItems(`pubsub.${this._config.jid.domain}`, collection, (err?: any, data?: any) => {
-        if (err != null) {
-          // TODO: Error handling -> Global exception handling?
-          observer.error(err);
-        } else {
-          console.log(data); // TODO: Remove
-
-          // TODO: Filter out all collections -> With Search?
-
-          const topics = data.discoItems.items.map((e) => new Topic(e.node));
-          observer.next(topics);
-          observer.complete();
-        }
-      });
-    });
-  }
-
-  public createNode(name: string) {
-    this._client.createNode(`pubsub.${this._config.jid.domain}`, name, (err: Object) => {
-      // TODO: Error handling
-      throw Error('Could not create topic');
     });
   }
 }
