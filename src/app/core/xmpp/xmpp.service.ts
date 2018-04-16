@@ -43,7 +43,7 @@ export class XmppService {
     this._client.on('session:started', () => this._state = 'connected');
     this._client.on('session:end', () => this._state = 'disconnected');
 
-    // TODO: Error handling
+    // TODO: Error handling -> global exception handler
     this._client.on('auth:failed', (err) => {
       throw Error('XMPP authentication failed');
     });
@@ -70,12 +70,12 @@ export class XmppService {
 
       this._client.getDiscoItems(`pubsub.${this._config.jid.domain}`, collection, (err?: any, data?: any) => {
         if (err != null) {
-          // TODO: Error handling
+          // TODO: Error handling -> Global exception handling?
           observer.error(err);
         } else {
           console.log(data); // TODO: Remove
 
-          // TODO: Filter out all collections
+          // TODO: Filter out all collections -> With Search?
 
           const topics = data.discoItems.items.map((e) => new Topic(e.node));
           observer.next(topics);
