@@ -8,28 +8,24 @@ import 'rxjs/add/observable/throw';
 import {Subject} from 'rxjs/Subject';
 
 
-function setup(): {
-  component: TopicListComponent,
-  fixture: ComponentFixture<TopicListComponent>,
-  de: HTMLElement
-} {
-
-  TestBed.configureTestingModule({
-    imports: [SharedModule],
-    declarations: [TopicListComponent],
-  });
-
-  const fixture = TestBed.createComponent(TopicListComponent);
-  const component = fixture.componentInstance;
-  const de = fixture.debugElement.nativeElement;
-
-  return {component, fixture, de};
-}
-
 describe('TopicListComponent', () => {
 
+  let component: TopicListComponent;
+  let fixture: ComponentFixture<TopicListComponent>;
+  let de: HTMLElement;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [SharedModule],
+      declarations: [TopicListComponent],
+    });
+
+    fixture = TestBed.createComponent(TopicListComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement.nativeElement;
+  });
+
   it('should show loading spinner when uninitialized', async(() => {
-    const {component, fixture, de} = setup();
     component.topicList = new TopicList();
 
     fixture.detectChanges();
@@ -39,10 +35,8 @@ describe('TopicListComponent', () => {
   }));
 
   it('should hide loading spinner when initialized', async(() => {
-    const {component, fixture, de} = setup();
     component.topicList = new TopicList();
     component.topicList.subscribe(Observable.of([]));
-
 
     fixture.detectChanges();
 
@@ -51,7 +45,6 @@ describe('TopicListComponent', () => {
 
 
   it('should show empty screen when no topics are present', async(() => {
-    const {component, fixture, de} = setup();
     component.topicList = new TopicList();
     component.topicList.subscribe(Observable.of([]));
 
@@ -62,7 +55,6 @@ describe('TopicListComponent', () => {
   }));
 
   it('should show error screen when failed to load topics', async(() => {
-    const {component, fixture, de} = setup();
     component.topicList = new TopicList();
     component.topicList.subscribe(Observable.throw(new Error('a problem')));
 
@@ -74,7 +66,6 @@ describe('TopicListComponent', () => {
   }));
 
   it('should list topics when topics are provided', async(() => {
-    const {component, fixture, de} = setup();
     component.topicList = new TopicList();
     component.topicList.subscribe(Observable.of([new Topic('Topic #1'), new Topic('Topic #2')]));
 
@@ -85,7 +76,6 @@ describe('TopicListComponent', () => {
   }));
 
   it('should show topic name when topics are provided', async(() => {
-    const {component, fixture, de} = setup();
     component.topicList = new TopicList();
     component.topicList.subscribe(Observable.of([new Topic('Topic #1'), new Topic('Topic #2')]));
 
@@ -97,7 +87,6 @@ describe('TopicListComponent', () => {
   }));
 
   it('should not update after unsubscribe is called', async(() => {
-    const {component, fixture, de} = setup();
     const subject = new Subject<Topic[]>();
     component.topicList = new TopicList();
     component.topicList.subscribe(subject);

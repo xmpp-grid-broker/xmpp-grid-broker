@@ -1,5 +1,8 @@
 <h2 *ngIf="serverTitle === undefined"><i>loading...</i></h2>
 <h2 *ngIf="serverTitle !== undefined">{{serverTitle}}</h2>
+<xgb-action-bar>
+  <button xgbActionButton (click)="createNewTopic()">Create New Topic</button>
+</xgb-action-bar>
 <xgb-tabs>
   <xgb-tab [routerLink]="['/topics/root']" tabTitle="Root Collections"></xgb-tab>
   <xgb-tab [routerLink]="['/topics/all']" tabTitle="All Topics"></xgb-tab>

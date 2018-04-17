@@ -13,32 +13,64 @@ class MockActivatedRoute {
   }
 }
 
-
-function setup(activatedRouteMock): {
-  component: ErrorPageComponent,
-  fixture: ComponentFixture<ErrorPageComponent>,
-  de: HTMLElement
-} {
-
-  TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    declarations: [ErrorPageComponent],
-    providers: [{provide: ActivatedRoute, useValue: activatedRouteMock}]
-  });
-
-  const fixture = TestBed.createComponent(ErrorPageComponent);
-  const component = fixture.componentInstance;
-  const de = fixture.debugElement.nativeElement;
-
-  return {component, fixture, de};
-}
-
 describe('ErrorPageComponent', () => {
 
+  let component: ErrorPageComponent;
+  let fixture: ComponentFixture<ErrorPageComponent>;
+  let de: HTMLElement;
+  let activatedRouteMock: MockActivatedRoute;
+
+  function setup(errorCode: string) {
+    activatedRouteMock = new MockActivatedRoute(errorCode);
+
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      declarations: [ErrorPageComponent],
+      providers: [{provide: ActivatedRoute, useValue: activatedRouteMock}]
+    });
+
+    fixture = TestBed.createComponent(ErrorPageComponent);
+    component = fixture.componentInstance;
+    de = fixture.debugElement.nativeElement;
+  }
+
+  describe('given 404 as an error code', () => {
+    beforeEach(() => {
+      setup('404');
+      fixture.detectChanges();
+    });
+
+    it('should contain 404 message', () => {
+      expect(de.querySelector('p').textContent).toBe('We can\'t seem to find the page you\'re looking for.');
+      expect(de.querySelector('.error-code').textContent).toBe('Error Code: 404');
+    });
+
+  });
+
+  describe('given 500 as an error code', () => {
+    beforeEach(() => {
+      setup('500');
+      fixture.detectChanges();
+    });
+
+    it('should contain generic message', () => {
+      expect(component.errorCode).toBe('500');
+      expect(de.querySelector('p').textContent).toBe('Something didn\'t work out the way we planned!');
+      expect(de.querySelector('.error-code').textContent).toBe('Error Code: 500');
+    });
+
+    it('should contain show a link to home', () => {
+      expect(component.errorCode).toBe('500');
+      expect(de.querySelectorAll('p').item(2).textContent).toBe('Go back to home');
+      expect(de.querySelector('p > a').getAttribute('href')).toBe('/');
+    });
+
+  });
+
+
   it('should subscribe to router data on init', async(() => {
-    const mock = new MockActivatedRoute('404');
-    const routeSpy = spyOn(mock.data, 'subscribe').and.callThrough();
-    const {component, fixture} = setup(mock);
+    setup('404');
+    const routeSpy = spyOn(activatedRouteMock.data, 'subscribe').and.callThrough();
 
     fixture.detectChanges();
 
@@ -46,37 +78,5 @@ describe('ErrorPageComponent', () => {
     expect(component.errorCode).toBe('404');
   }));
 
-  it('should contain 404 message when error code is 404', () => {
-    const mock = new MockActivatedRoute('404');
-    const {fixture, de} = setup(mock);
-
-    fixture.detectChanges();
-
-    expect(de.querySelector('p').textContent).toBe('We can\'t seem to find the page you\'re looking for.');
-    expect(de.querySelector('.error-code').textContent).toBe('Error Code: 404');
-  });
-
-  it('should contain generic message when error code is not 404', () => {
-    const mock = new MockActivatedRoute('500');
-    const {component, fixture, de} = setup(mock);
-
-    fixture.detectChanges();
-
-    expect(component.errorCode).toBe('500');
-    expect(de.querySelector('p').textContent).toBe('Something didn\'t work out the way we planned!');
-    expect(de.querySelector('.error-code').textContent).toBe('Error Code: 500');
-  });
-
-
-  it('should contain show a link to home', () => {
-    const mock = new MockActivatedRoute('500');
-    const {component, fixture, de} = setup(mock);
-
-    fixture.detectChanges();
-
-    expect(component.errorCode).toBe('500');
-    expect(de.querySelectorAll('p').item(2).textContent).toBe('Go back to home');
-    expect(de.querySelector('p > a').getAttribute('href')).toBe('/');
-  });
 
 });

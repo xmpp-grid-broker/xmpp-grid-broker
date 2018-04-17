@@ -3,6 +3,7 @@ import {TopicList} from '../../topic-widgets/topic-list/topic-list.component';
 import {TopicService} from '../topic-service/topic.service';
 import {ActivatedRoute} from '@angular/router';
 import 'rxjs/add/operator/filter';
+import {NavigationService} from '../../core/navigation.service';
 
 
 @Component({
@@ -15,7 +16,8 @@ export class TopicOverviewComponent implements OnInit, OnDestroy {
 
   serverTitle: string;
 
-  constructor(private topicService: TopicService,
+  constructor(private navigationService: NavigationService,
+              private topicService: TopicService,
               private route: ActivatedRoute) {
   }
 
@@ -43,4 +45,7 @@ export class TopicOverviewComponent implements OnInit, OnDestroy {
     this.topicList.unsubscribe();
   }
 
+  createNewTopic() {
+    this.navigationService.goToNewTopic();
+  }
 }

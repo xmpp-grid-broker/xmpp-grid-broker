@@ -4,7 +4,7 @@
     <p class="empty-title h5">No Topics found</p>
   </div>
 </xgb-list>
-<div *ngIf="!topicList.hasError && !topicList.isLoaded" class="loading loading-lg">Loading...</div>
+<xgb-spinner *ngIf="!topicList.hasError && !topicList.isLoaded"></xgb-spinner>
 
 <div *ngIf="topicList.hasError" class="empty">
   <p class="empty-title h5">Oops, an error occurred!</p>
