@@ -17,6 +17,8 @@ For further information, checkout the https://developer.mozilla.org/en-US/docs/W
 == Use a Reverse Proxy for TLS
 
 Proxy the XMPP server with a reverse web proxy that handles TLS authentication (e.g. nginx), to lower the attack surface.
+The web proxy does not allow XMPP-access if users are not TLS-authenticated.
+An XMPP server on the other hand has to expose some XMPP-features without authentication, so that other SASL authentication options can be used.
 
 == Verify the Origin Header
 
