@@ -5,7 +5,7 @@ import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from
 import {SharedModule} from '../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {FormFieldComponent} from '../../shared/form/form-field.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FormFieldNamePipe} from './form-field-name.pipe';
 import {JidMultiComponent} from '../jid-multi/jid-multi.component';
 
@@ -60,13 +60,6 @@ const TEST_FIELD_JID_SINGLE = new XmppDataFormField(
   'eva@openfire',
   'The address (JID) of the subscriber'
 );
-const TEST_FIELD_JID_MULTI = new XmppDataFormField(
-  XmppDataFormFieldType.jidMulti,
-  'pubsub#contact',
-  ['eva@openfire', 'admin@openfire'],
-  'The JIDs of those to contact with questions'
-);
-
 
 describe('TopicConfigComponent', () => {
 
@@ -83,13 +76,14 @@ describe('TopicConfigComponent', () => {
 
       fixture = TestBed.createComponent(TopicConfigComponent);
       component = fixture.componentInstance;
+      component.formGroup = new FormGroup({});
       de = fixture.debugElement.nativeElement;
     }
   );
 
   describe('given a hidden field', () => {
     beforeEach(() => {
-      component.form = new XmppDataForm([
+      component.xmppDataForm = new XmppDataForm([
         new XmppDataFormField(
           XmppDataFormFieldType.hidden,
           'FORM_TYPE',
@@ -100,14 +94,14 @@ describe('TopicConfigComponent', () => {
     });
 
     it('should not render it', (() => {
-      expect(de.querySelector('form').childElementCount).toBe(1); // the submit Button
+      expect(de.childElementCount).toBe(0);
     }));
 
   });
 
   describe('given a text-single field', () => {
     beforeEach(() => {
-      component.form = new XmppDataForm([
+      component.xmppDataForm = new XmppDataForm([
         TEST_FIELD_TEXT_SINGLE
       ]);
       fixture.detectChanges();
@@ -115,7 +109,7 @@ describe('TopicConfigComponent', () => {
     });
 
     it('should render it', (() => {
-      expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
+      expect(de.childElementCount).toBe(1);
     }));
 
     it('should render variable name as field label', (() => {
@@ -137,14 +131,14 @@ describe('TopicConfigComponent', () => {
       input.value = 'Foo baa';
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      const formControl = component.configForm.get('pubsub#title');
+      const formControl = component.formGroup.get('pubsub#title');
       expect(formControl.value).toBe('Foo baa');
     }));
   });
 
   describe('given a text-multi field', () => {
     beforeEach(() => {
-      component.form = new XmppDataForm([
+      component.xmppDataForm = new XmppDataForm([
         TEST_FIELD_TEXT_MULTI
       ]);
       fixture.detectChanges();
@@ -152,7 +146,7 @@ describe('TopicConfigComponent', () => {
     });
 
     it('should render it', (() => {
-      expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
+      expect(de.childElementCount).toBe(1);
     }));
 
     it('should render variable name as field label', (() => {
@@ -174,7 +168,7 @@ describe('TopicConfigComponent', () => {
       input.value = 'Foo\nbaa';
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      const formControl = component.configForm.get('pubsub#children');
+      const formControl = component.formGroup.get('pubsub#children');
       expect(formControl.value).toBe('Foo\nbaa');
     }));
 
@@ -183,7 +177,7 @@ describe('TopicConfigComponent', () => {
 
   describe('given a boolean field', () => {
     beforeEach(() => {
-      component.form = new XmppDataForm([
+      component.xmppDataForm = new XmppDataForm([
         TEST_FIELD_BOOLEAN
       ]);
       fixture.detectChanges();
@@ -191,7 +185,7 @@ describe('TopicConfigComponent', () => {
     });
 
     it('should render it', (() => {
-      expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
+      expect(de.childElementCount).toBe(1);
     }));
 
     it('should render variable name as field label', (() => {
@@ -204,7 +198,7 @@ describe('TopicConfigComponent', () => {
     }));
 
     it('should update the form binding when changed', (() => {
-      const formControl = component.configForm.get('pubsub#deliver_notifications');
+      const formControl = component.formGroup.get('pubsub#deliver_notifications');
       expect(formControl.value).toBeTruthy();
 
       const input = de.querySelector('input');
@@ -218,7 +212,7 @@ describe('TopicConfigComponent', () => {
 
   describe('given a list-single field', () => {
     beforeEach(() => {
-      component.form = new XmppDataForm([
+      component.xmppDataForm = new XmppDataForm([
         TEST_FIELD_LIST_SINGLE
       ]);
       fixture.detectChanges();
@@ -226,7 +220,7 @@ describe('TopicConfigComponent', () => {
     });
 
     it('should render it', (() => {
-      expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
+      expect(de.childElementCount).toBe(1);
     }));
 
     it('should render variable name as field label', (() => {
@@ -259,7 +253,7 @@ describe('TopicConfigComponent', () => {
       selectBox.querySelectorAll('option')[5].selected = true;
       selectBox.dispatchEvent(new Event('change'));
       fixture.detectChanges();
-      const valueInForm = component.configForm.get('pubsub#access_model').value;
+      const valueInForm = component.formGroup.get('pubsub#access_model').value;
       expect(valueInForm).toBe('whitelist');
     }));
 
@@ -269,18 +263,18 @@ describe('TopicConfigComponent', () => {
       selectBox.querySelectorAll('option')[1].selected = true;
       selectBox.dispatchEvent(new Event('change'));
       fixture.detectChanges();
-      expect(component.configForm.get('pubsub#access_model').value).toBe('authorize');
+      expect(component.formGroup.get('pubsub#access_model').value).toBe('authorize');
       selectBox.querySelectorAll('option')[0].selected = true;
       selectBox.dispatchEvent(new Event('change'));
       fixture.detectChanges();
 
-      expect(component.configForm.get('pubsub#access_model').value).toBe('null');
+      expect(component.formGroup.get('pubsub#access_model').value).toBe('null');
     }));
   });
 
   describe('given a list-multi field', () => {
     beforeEach(() => {
-      component.form = new XmppDataForm([
+      component.xmppDataForm = new XmppDataForm([
         TEST_FIELD_LIST_MULTI
       ]);
       fixture.detectChanges();
@@ -288,7 +282,7 @@ describe('TopicConfigComponent', () => {
     });
 
     it('should render it', (() => {
-      expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
+      expect(de.childElementCount).toBe(1);
     }));
 
     it('should render variable name as field label', (() => {
@@ -323,68 +317,16 @@ describe('TopicConfigComponent', () => {
       selectBox.dispatchEvent(new Event('change'));
       fixture.detectChanges();
 
-      const valueInForm = component.configForm.get('pubsub#show-values').value;
+      const valueInForm = component.formGroup.get('pubsub#show-values').value;
       expect(valueInForm).toContain('chat');
       expect(valueInForm).toContain('dnd');
       expect(valueInForm.length).toBe(2);
     }));
   });
 
-  describe('given three fields', () => {
-
-    let submitButton: HTMLElement;
-
-    beforeEach(() => {
-      component.form = new XmppDataForm([
-        TEST_FIELD_BOOLEAN,
-        TEST_FIELD_TEXT_SINGLE,
-        TEST_FIELD_TEXT_MULTI,
-        TEST_FIELD_LIST_SINGLE,
-        TEST_FIELD_LIST_MULTI,
-        TEST_FIELD_JID_MULTI
-      ]);
-      fixture.detectChanges();
-      submitButton = fixture.debugElement.query(By.css('button[type="submit"][primary]')).nativeElement;
-    });
-
-    it('should emmit an empty form if nothing has changed', ((done) => {
-      component.formSubmitted.subscribe((form: XmppDataForm) => {
-        expect(form.fields.length).toBe(0);
-        done();
-      });
-
-      submitButton.click();
-      fixture.detectChanges();
-    }));
-
-    it('should emmit the changed fields and values', ((done) => {
-      component.formSubmitted.subscribe((form: XmppDataForm) => {
-        expect(form.fields[0].variable).toBe('pubsub#deliver_notifications');
-        expect(form.fields[0].value).toBe(false);
-
-        expect(form.fields.length).toBe(2);
-        expect(form.fields[1].variable).toBe('pubsub#title');
-        expect(form.fields[1].value).toBe('Foo baa');
-
-        done();
-      });
-
-      const titleInput = de.querySelector('#title');
-      titleInput['value'] = 'Foo baa';
-      titleInput.dispatchEvent(new Event('input'));
-
-      const notificationCheckbox = de.querySelector('#deliver_notifications');
-      notificationCheckbox['checked'] = false;
-      notificationCheckbox.dispatchEvent(new Event('change'));
-
-      submitButton.click();
-      fixture.detectChanges();
-    }));
-  });
-
   describe('given a jid-single field', () => {
     beforeEach(() => {
-      component.form = new XmppDataForm([
+      component.xmppDataForm = new XmppDataForm([
         TEST_FIELD_JID_SINGLE
       ]);
       fixture.detectChanges();
@@ -392,7 +334,7 @@ describe('TopicConfigComponent', () => {
     });
 
     it('should render it', (() => {
-      expect(de.querySelector('form').childElementCount).toBe(2); // The field + the submit Button
+      expect(de.childElementCount).toBe(1);
     }));
 
     it('should render variable name as field label', (() => {
@@ -414,7 +356,7 @@ describe('TopicConfigComponent', () => {
       input.value = 'eva@openfire';
       input.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      const formControl = component.configForm.get('pubsub#subscriber_jid');
+      const formControl = component.formGroup.get('pubsub#subscriber_jid');
       expect(formControl.value).toBe('eva@openfire');
     }));
   });

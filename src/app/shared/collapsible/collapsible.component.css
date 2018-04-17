@@ -1,0 +1,30 @@
+.collapsible {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.collapsible .icon {
+  transform: rotate(90deg);
+  transition: transform .3s;
+}
+
+.collapsible-header {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.collapsible:not(.isVisible) .icon {
+  transform: rotate(0deg);
+}
+
+.collapsible-body {
+  transition: all 0.1s ease-in-out;
+  overflow: hidden;
+  padding-top: 1rem;
+  padding-left: 1.3rem;
+}
+
+:not(.isVisible) .collapsible-body {
+  height: 0;
+  padding: 0;
+}
