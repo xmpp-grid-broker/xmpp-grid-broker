@@ -68,6 +68,7 @@ export class TopicService {
         Observable.from(data.discoItems.items)
           .map((e:any) => this.getTopicByName(e.node, recursive)).mergeAll()
           .subscribe(observer);
+        observer.complete();
       });
     });
   }
@@ -86,7 +87,7 @@ export class TopicService {
   private concenateAndSortTopics(topicObservable: Observable<Topic>): Observable<Topics> {
     return topicObservable
             .reduce((topics: Topics, topic: Topic) => topics.concat([topic]), [])
-            .map((topics: Topics) => topics.sort().reverse());
+            .map((topics: Topics) => topics.sort((a: Topic, b: Topic) => a.title.localeCompare(b.title)));
   }
 
   getServerTitle(): Promise<string> {
