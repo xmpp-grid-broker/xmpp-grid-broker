@@ -18,11 +18,11 @@ export class XmppClientFactory {
 
 @Injectable()
 export class XmppService {
+  readonly jid: any;
+
   private _client: any;
   private readonly _config: any;
   private _state = ConnectionState.Down;
-
-  readonly jid: any;
 
   // TODO: Extract configuration (XGB-122)
   constructor(private xmppClientFactory: XmppClientFactory) {
