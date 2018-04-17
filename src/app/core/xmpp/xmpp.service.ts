@@ -10,6 +10,13 @@ enum ConnectionState {
 }
 
 @Injectable()
+export class XmppClientFactory {
+  public createClient(config: any): any {
+    return createClient(config);
+  }
+}
+
+@Injectable()
 export class XmppService {
   private _client: any;
   private readonly _config: any;
@@ -18,8 +25,8 @@ export class XmppService {
   readonly jid: any;
 
   // TODO: Extract configuration (XGB-122)
-  constructor() {
-    const config = {
+  constructor(private xmppClientFactory: XmppClientFactory) {
+    const config: any = {
       jid: 'admin@openfire',
       jid_domain: 'openfire',
       transport: 'bosh', // or websocket
@@ -27,8 +34,9 @@ export class XmppService {
     };
 
     this.jid = new JID(config.jid);
+
     this._config = {
-      jid: this.jid,
+      jid: new JID(config.jid),
       sasl: [ 'EXTERNAL' ],
       useStreamManagement: true,
       transport: config.transport,
@@ -43,11 +51,24 @@ export class XmppService {
       case 'bosh':
         this._config.boshURL = config.url;
         break;
-      default:
-        throw new Error(`Unsupported Transport "${config.transport}"`);
     }
 
-    this._client = createClient(this._config);
+    this.createClient();
+  }
+
+  public query<T>(cb: (client: any, observer: Observer<T>) => any): Observable<T> {
+    return new Observable((observer) => {
+      if (this._state === ConnectionState.Up) {
+        cb(this._client, observer);
+      } else {
+        this._client.on('session:started', () => this.query(cb).subscribe(observer));
+        this.connect();
+      }
+    });
+  }
+
+  private createClient() {
+    this._client = this.xmppClientFactory.createClient(this._config);
     this._client.on('session:started', () => this._state = ConnectionState.Up);
     this._client.on('session:end', () => this._state = ConnectionState.Down);
 
@@ -59,17 +80,6 @@ export class XmppService {
     this._client.on('session:error', (err) => {
       this._state = ConnectionState.Down;
       throw Error('XMPP session error');
-    });
-  }
-
-  public query<T>(cb: (client: any, observer: Observer<T>) => any): Observable<T> {
-    return new Observable((observer) => {
-      if (this._state === ConnectionState.Up) {
-        cb(this._client, observer);
-      } else {
-        this._client.on('session:started', () => this.query(cb).subscribe(observer));
-        this.connect();
-      }
     });
   }
 
