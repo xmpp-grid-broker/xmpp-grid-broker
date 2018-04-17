@@ -3,7 +3,7 @@ import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {TopicList, TopicListComponent} from './topic-list.component';
 import {SharedModule} from '../../shared/shared.module';
 import {Observable} from 'rxjs/Observable';
-import {Topic} from '../../core/models/topic';
+import {Leaf, Topics} from '../../core/models/topic';
 import 'rxjs/add/observable/throw';
 import {Subject} from 'rxjs/Subject';
 
@@ -67,7 +67,7 @@ describe('TopicListComponent', () => {
 
   it('should list topics when topics are provided', async(() => {
     component.topicList = new TopicList();
-    component.topicList.subscribe(Observable.of([new Topic('Topic #1'), new Topic('Topic #2')]));
+    component.topicList.subscribe(Observable.of([new Leaf('Topic #1'), new Leaf('Topic #2')]));
 
     fixture.detectChanges();
 
@@ -77,7 +77,7 @@ describe('TopicListComponent', () => {
 
   it('should show topic name when topics are provided', async(() => {
     component.topicList = new TopicList();
-    component.topicList.subscribe(Observable.of([new Topic('Topic #1'), new Topic('Topic #2')]));
+    component.topicList.subscribe(Observable.of([new Leaf('Topic #1'), new Leaf('Topic #2')]));
 
     fixture.detectChanges();
 
@@ -87,14 +87,14 @@ describe('TopicListComponent', () => {
   }));
 
   it('should not update after unsubscribe is called', async(() => {
-    const subject = new Subject<Topic[]>();
+    const subject = new Subject<Topics>();
     component.topicList = new TopicList();
     component.topicList.subscribe(subject);
-    subject.next([new Topic('Topic #1'), new Topic('Topic #2')]);
+    subject.next([new Leaf('Topic #1'), new Leaf('Topic #2')]);
 
     fixture.detectChanges();
     component.topicList.unsubscribe();
-    subject.next([new Topic('Topic #3')]);
+    subject.next([new Leaf('Topic #3')]);
     fixture.detectChanges();
 
     expect(de.querySelector('xgb-list')).toBeTruthy();
