@@ -61,7 +61,7 @@ export class XmppService {
     });
   }
 
-  public connect() {
+  private connect() {
     if (this._state === ConnectionState.Down) {
       this._state = ConnectionState.Connecting;
       this._client.connect();
