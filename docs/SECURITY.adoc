@@ -5,6 +5,8 @@
 The Content Security Policy (CSP) helps to mitigate certain types of attacks such as Cross Site Scripting (XSS) as a second line of defence.
 For further information, checkout the https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP[MDN article] and the https://www.w3.org/TR/CSP3/[The W3C Working Draft].
 
+The following configuration is the most restrictive policy that is required by the XMPP Grid Broker angular application (manually evaluated).
+
 |===
 |Header |Value |Notes
 
