@@ -13,8 +13,9 @@ enum ConnectionState {
 export class XmppService {
   private _client: any;
   private readonly _config: any;
-  readonly jid: any;
   private _state = ConnectionState.Down;
+
+  readonly jid: any;
 
   // TODO: Extract configuration (XGB-122)
   constructor() {
@@ -61,13 +62,6 @@ export class XmppService {
     });
   }
 
-  private connect() {
-    if (this._state === ConnectionState.Down) {
-      this._state = ConnectionState.Connecting;
-      this._client.connect();
-    }
-  }
-
   public query<T>(cb: (client: any, observer: Observer<T>) => any): Observable<T> {
     return new Observable((observer) => {
       if (this._state === ConnectionState.Up) {
@@ -77,5 +71,12 @@ export class XmppService {
         this.connect();
       }
     });
+  }
+
+  private connect() {
+    if (this._state === ConnectionState.Down) {
+      this._state = ConnectionState.Connecting;
+      this._client.connect();
+    }
   }
 }

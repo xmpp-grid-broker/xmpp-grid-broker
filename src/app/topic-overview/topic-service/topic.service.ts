@@ -17,13 +17,33 @@ export class TopicService {
   readonly jid: any;
 
   constructor(private xmppService: XmppService) {
-    this.jid = new JID(`pubsub.${xmppService.jid.domain}`)
+    this.jid = new JID(`pubsub.${xmppService.jid.domain}`);
+  }
+
+  getServerTitle(): Promise<string> {
+    return Observable.of(this.xmppService.jid.domain).toPromise();
+  }
+
+  rootTopics(): Observable<Topics> {
+    return this.concenateAndSortTopics(this.getTopics());
+  }
+
+  allTopics(): Observable<Topics> {
+    return this.concenateAndSortTopics(
+            this.getAllTopicsFlat().filter((e: any) => e instanceof Leaf)
+           );
+  }
+
+  allCollections(): Observable<Topics> {
+    return this.concenateAndSortTopics(
+            this.getAllTopicsFlat().filter((e: any) => e instanceof Collection)
+           );
   }
 
   private getTopicByName(name: string, loadChildren = false): Observable<Topic> {
     return this.xmppService.query((client, observer) => {
       client.getDiscoInfo(this.jid, name, (err?: any, data?: any) => {
-        if(err != null) {
+        if (err != null) {
           observer.error(err);
           return;
         }
@@ -34,9 +54,7 @@ export class TopicService {
         if (topic_type === 'leaf') {
           observer.next(new Leaf(title));
           observer.complete();
-        }
-
-        else if (topic_type === 'collection' && loadChildren ) {
+        } else if (topic_type === 'collection' && loadChildren ) {
           this.getTopics(title)
             .reduce((topics: Topics, topic: Topic) => topics.concat([topic]), [])
             .subscribe((topics) => {
@@ -44,14 +62,10 @@ export class TopicService {
               observer.complete();
             }
             );
-        }
-
-        else if (topic_type === 'collection') {
+        } else if (topic_type === 'collection') {
           observer.next(new Collection(title));
           observer.complete();
-        }
-
-        else {
+        } else {
           observer.error(`XMPP: Unsupported PubSub type "${topic_type}"`);
         }
       });
@@ -66,9 +80,8 @@ export class TopicService {
         }
 
         Observable.from(data.discoItems.items)
-          .map((e:any) => this.getTopicByName(e.node, recursive)).mergeAll()
+          .map((e: any) => this.getTopicByName(e.node, recursive)).mergeAll()
           .subscribe(observer);
-        observer.complete();
       });
     });
   }
@@ -88,25 +101,5 @@ export class TopicService {
     return topicObservable
             .reduce((topics: Topics, topic: Topic) => topics.concat([topic]), [])
             .map((topics: Topics) => topics.sort((a: Topic, b: Topic) => a.title.localeCompare(b.title)));
-  }
-
-  getServerTitle(): Promise<string> {
-    return Observable.of(this.xmppService.jid.domain).toPromise();
-  }
-
-  rootTopics(): Observable<Topics> {
-    return this.concenateAndSortTopics(this.getTopics());
-  }
-
-  allTopics(): Observable<Topics> {
-    return this.concenateAndSortTopics(
-            this.getAllTopicsFlat().filter((e:any) => e instanceof Leaf)
-           );
-  }
-
-  allCollections(): Observable<Topics> {
-    return this.concenateAndSortTopics(
-            this.getAllTopicsFlat().filter((e:any) => e instanceof Collection)
-           );
   }
 }
