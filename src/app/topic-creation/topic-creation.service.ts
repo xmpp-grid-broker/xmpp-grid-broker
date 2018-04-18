@@ -16,6 +16,16 @@ export class TopicCreationService {
         'http://jabber.org/protocol/pubsub#node_config'
       ),
       new XmppDataFormField(
+        XmppDataFormFieldType.listSingle,
+        'pubsub#node_type',
+        null,
+        null,
+        [
+          new ListOption('node'),
+          new ListOption('leaf'),
+        ]
+      ),
+      new XmppDataFormField(
         XmppDataFormFieldType.textMulti,
         'pubsub#children',
         'child1\nchild2',

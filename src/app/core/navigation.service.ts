@@ -10,7 +10,11 @@ export class NavigationService {
   }
 
   public goToNewTopic(): void {
-    this.goToUrl('/topics/new');
+    this.goToUrl('/topics/new/topic');
+  }
+
+  public goToNewCollection(): void {
+    this.goToUrl('/topics/new/collection');
   }
 
   public goToHome(): void {
