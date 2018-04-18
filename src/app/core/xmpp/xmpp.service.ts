@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {JID, Client, createClient} from 'stanza.io';
+import {Client, createClient, JID} from 'stanza.io';
 import 'rxjs/add/observable/fromPromise';
-import {Observer} from 'rxjs/Observer';
 
 enum ConnectionState {
   Down = 0,
@@ -29,7 +27,7 @@ export class XmppClientFactory {
  */
 @Injectable()
 export class XmppService {
-  public readonly config: any = {
+  public config: any = {
     jid: 'admin@openfire',
     jid_domain: 'openfire',
     transport: 'bosh', // or websocket
@@ -95,12 +93,12 @@ export class XmppService {
     this._client.on('session:started', () => this._state = ConnectionState.Up);
     this._client.on('session:end', () => this._state = ConnectionState.Down);
 
-    this._client.on('auth:failed', (err) => {
+    this._client.on('auth:failed', () => {
       this._state = ConnectionState.Down;
       throw Error('XMPP authentication failed');
     });
 
-    this._client.on('session:error', (err) => {
+    this._client.on('session:error', () => {
       this._state = ConnectionState.Down;
       throw Error('XMPP session error');
     });

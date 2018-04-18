@@ -6,7 +6,6 @@ import {TopicOverviewComponent} from './topic-overview.component';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
 import {NavigationService} from '../../core/navigation.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 
@@ -25,15 +24,15 @@ class MockTopicOverviewService {
   }
 
   rootTopics() {
-    return Observable.of(this._rootTopics);
+    return Promise.resolve(this._rootTopics);
   }
 
   allTopics() {
-    return Observable.of(this._allTopics);
+    return Promise.resolve(this._allTopics);
   }
 
   allCollections() {
-    return Observable.of(this._allCollections);
+    return Promise.resolve(this._allCollections);
   }
 }
 
@@ -75,14 +74,17 @@ describe('TopicOverviewComponent', () => {
       setup('root');
     });
 
-    it('should subscribe to rootTopics', async(() => {
+    it('should call to rootTopics', async(() => {
       const routeSpy = spyOn(mockTopicOverviewService, 'rootTopics').and.callThrough();
       fixture.detectChanges();
       expect(routeSpy.calls.count()).toBe(1);
     }));
 
-    it('should render subscribed topics', async(() => {
+    it('should render topics when resolved', fakeAsync(() => {
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
 
       expect(de.querySelectorAll('xgb-list-item').length).toBe(2);
     }));
@@ -94,7 +96,7 @@ describe('TopicOverviewComponent', () => {
       setup('all');
     });
 
-    it('should subscribe to allTopics', async(() => {
+    it('should call allTopics', async(() => {
       const routeSpy = spyOn(mockTopicOverviewService, 'allTopics').and.callThrough();
       fixture.detectChanges();
       expect(routeSpy.calls.count()).toBe(1);
@@ -106,7 +108,7 @@ describe('TopicOverviewComponent', () => {
       setup('collections');
     });
 
-    it('should subscribe to allCollections ', async(() => {
+    it('should call allCollections ', async(() => {
       const routeSpy = spyOn(mockTopicOverviewService, 'allCollections').and.callThrough();
 
       fixture.detectChanges();

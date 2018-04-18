@@ -1,17 +1,18 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TopicList} from '../../topic-widgets/topic-list/topic-list.component';
 import {ActivatedRoute} from '@angular/router';
 import 'rxjs/add/operator/filter';
 import {NavigationService} from '../../core/navigation.service';
 import {TopicOverviewService} from '../topic-overview-service/topic-overview.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
+import {Topics} from '../../core/models/topic';
 
 
 @Component({
   selector: 'xgb-topic-overview',
   templateUrl: './topic-overview.component.html'
 })
-export class TopicOverviewComponent implements OnInit, OnDestroy {
+export class TopicOverviewComponent implements OnInit {
 
   topicList: TopicList = new TopicList();
 
@@ -27,24 +28,20 @@ export class TopicOverviewComponent implements OnInit, OnDestroy {
     this.xmppService.getServerTitle().then((serverTitle) => {
       this.serverTitle = serverTitle;
     });
-    let subscription;
+    let promise: Promise<Topics>;
 
     switch (this.route.snapshot.data.filter) {
       case 'root':
-        subscription = this.topicOverviewService.rootTopics();
+        promise = this.topicOverviewService.rootTopics();
         break;
       case 'all':
-        subscription = this.topicOverviewService.allTopics();
+        promise = this.topicOverviewService.allTopics();
         break;
       case 'collections':
-        subscription = this.topicOverviewService.allCollections();
+        promise = this.topicOverviewService.allCollections();
         break;
     }
-    this.topicList.subscribe(subscription);
-  }
-
-  ngOnDestroy() {
-    this.topicList.unsubscribe();
+    this.topicList.usePromise(promise);
   }
 
   createNewTopic() {

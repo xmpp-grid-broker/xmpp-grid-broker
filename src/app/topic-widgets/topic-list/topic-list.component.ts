@@ -16,6 +16,8 @@ export class TopicList {
   topics: Topics;
 
   usePromise(promise: Promise<Topics>) {
+    this.isLoaded = false;
+    this.hasError = false;
     promise.then(
       (topics: Topics) => {
         this.topics = topics;

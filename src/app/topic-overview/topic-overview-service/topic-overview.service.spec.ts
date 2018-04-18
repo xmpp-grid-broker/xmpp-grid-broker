@@ -1,22 +1,18 @@
-import {Observable} from 'rxjs/Observable';
-import {Observer} from 'rxjs/Observer';
 import {TopicOverviewService} from './topic-overview.service';
 import {Topics} from '../../core/models/topic';
 import {JID} from 'stanza.io';
 
 class FakeClient {
-  readonly user = new JID('admin@xmppserver');
-
-  public getDiscoInfo(jid: any, node: string, cb: (err?: any, data?: any) => void) {
+  public getDiscoInfo() {
   }
 
-  public getDiscoItems(jid: any, node: string, cb: (err?: any, data?: any) => void) {
+  public getDiscoItems() {
   }
 }
 
 class FakeXmppService {
   public client = new FakeClient;
-  readonly config = {
+  config = {
     jid_domain: 'xmppserver'
   };
 
@@ -134,7 +130,8 @@ describe('TopicOverviewService', () => {
     'type': 'result'
   };
 
-  let xmppService, service;
+  let xmppService;
+  let service: TopicOverviewService;
 
   beforeEach(() => {
     xmppService = new FakeXmppService();
@@ -169,13 +166,11 @@ describe('TopicOverviewService', () => {
   });
 
   it('should return a fake set of all topics', (done) => {
-    service.allTopics().subscribe(
-      (topics: Topics) => {
-        console.log(topics);
-        // expect(topics.length).toBe(2);
-        // expect(topics[0].title).toBe('leaf1');
-        // expect(topics[1].title).toBe('leaf2');
-        // done();
+    service.allTopics().then((topics: Topics) => {
+        expect(topics.length).toBe(2);
+        expect(topics[0].title).toBe('leaf1');
+        expect(topics[1].title).toBe('leaf2');
+        done();
       },
       (error) => {
         throw error;
@@ -184,8 +179,7 @@ describe('TopicOverviewService', () => {
   });
 
   it('should return a fake set of root topics', (done) => {
-    service.rootTopics().subscribe(
-      (topics: Topics) => {
+    service.rootTopics().then((topics: Topics) => {
         expect(topics.length).toBe(2);
         expect(topics[0].title).toBe('collection1');
         expect(topics[1].title).toBe('leaf1');
@@ -198,8 +192,7 @@ describe('TopicOverviewService', () => {
   });
 
   it('should return a fake set of collections', (done) => {
-    service.allCollections().subscribe(
-      (topics: Topics) => {
+    service.allCollections().then((topics: Topics) => {
         expect(topics.length).toBe(1);
         expect(topics[0].title).toBe('collection1');
         done();

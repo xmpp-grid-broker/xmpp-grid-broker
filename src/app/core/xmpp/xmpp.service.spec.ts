@@ -28,13 +28,13 @@ class FakeClient {
 class FakeXmppClientFactory {
   public client = new FakeClient();
 
-  public createClient(config: any): any {
+  public createClient(): any {
     return this.client;
   }
 }
 
 describe('XmppService', () => {
-  let xmppClientFactory, service;
+  let xmppClientFactory, service: XmppService;
 
   beforeEach(() => {
     xmppClientFactory = new FakeXmppClientFactory();
@@ -60,8 +60,7 @@ describe('XmppService', () => {
   it('should call the client connection method on first query', (done) => {
     service.getClient().then(() => {
       expect(xmppClientFactory.client.connect).toHaveBeenCalled();
-      service.getClient(() => {
-      }).then(() => {
+      service.getClient().then(() => {
         expect(xmppClientFactory.client.connect.calls.count()).toEqual(1);
         done();
       });

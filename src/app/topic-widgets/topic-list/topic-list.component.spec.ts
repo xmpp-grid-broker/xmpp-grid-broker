@@ -1,9 +1,8 @@
-import {async, TestBed} from '@angular/core/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {TopicList, TopicListComponent} from './topic-list.component';
 import {SharedModule} from '../../shared/shared.module';
 import {Leaf} from '../../core/models/topic';
-import 'rxjs/add/observable/throw';
 
 
 describe('TopicListComponent', () => {
@@ -12,7 +11,7 @@ describe('TopicListComponent', () => {
   let fixture: ComponentFixture<TopicListComponent>;
   let de: HTMLElement;
 
-  beforeEach(() => {
+  beforeEach(fakeAsync(() => {
     TestBed.configureTestingModule({
       imports: [SharedModule],
       declarations: [TopicListComponent],
@@ -21,63 +20,69 @@ describe('TopicListComponent', () => {
     fixture = TestBed.createComponent(TopicListComponent);
     component = fixture.componentInstance;
     de = fixture.debugElement.nativeElement;
-  });
+  }));
 
-  it('should show loading spinner when uninitialized', async(() => {
+  const waitUntilLoaded = () => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
+  };
+
+  it('should show loading spinner when uninitialized', fakeAsync(() => {
     component.topicList = new TopicList();
 
-    fixture.detectChanges();
+    waitUntilLoaded();
 
     expect(de.querySelector('.loading')).toBeTruthy();
     expect(de.querySelector('.loading').innerHTML).toBe('Loading...');
   }));
 
-  it('should hide loading spinner when initialized', async(() => {
+  it('should hide loading spinner when initialized', fakeAsync(() => {
     component.topicList = new TopicList();
     component.topicList.usePromise(Promise.resolve([]));
 
-    fixture.detectChanges();
-
+    waitUntilLoaded();
     expect(de.querySelector('.loading')).toBeFalsy();
   }));
 
 
-  it('should show empty screen when no topics are present', async(() => {
+  it('should show empty screen when no topics are present', fakeAsync(() => {
     component.topicList = new TopicList();
     component.topicList.usePromise(Promise.resolve([]));
 
-    fixture.detectChanges();
+    waitUntilLoaded();
 
     expect(de.querySelector('.empty')).toBeTruthy();
     expect(de.querySelector('.empty-title').innerHTML).toBe('No Topics found');
   }));
 
-  it('should show error screen when failed to load topics', async(() => {
+  it('should show error screen when failed to load topics', fakeAsync(() => {
     component.topicList = new TopicList();
     component.topicList.usePromise(Promise.reject(new Error('a problem')));
 
-    fixture.detectChanges();
+    waitUntilLoaded();
 
     expect(de.querySelector('.empty')).toBeTruthy();
     expect(de.querySelector('.empty-title').innerHTML).toBe('Oops, an error occurred!');
     expect(de.querySelector('.empty-subtitle').innerHTML).toBe('Error: a problem');
   }));
 
-  it('should list topics when topics are provided', async(() => {
+  it('should list topics when topics are provided', fakeAsync(() => {
     component.topicList = new TopicList();
     component.topicList.usePromise(Promise.resolve([new Leaf('Topic #1'), new Leaf('Topic #2')]));
 
-    fixture.detectChanges();
+    waitUntilLoaded();
 
     expect(de.querySelector('xgb-list')).toBeTruthy();
     expect(de.querySelector('xgb-list').childElementCount).toBe(2);
   }));
 
-  it('should show topic name when topics are provided', async(() => {
+  it('should show topic name when topics are provided', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.resolve(([new Leaf('Topic #1'), new Leaf('Topic #2')]));
+    component.topicList.usePromise(Promise.resolve(([new Leaf('Topic #1'), new Leaf('Topic #2')])));
 
-    fixture.detectChanges();
+    waitUntilLoaded();
 
     const topics = de.querySelectorAll('xgb-list > xgb-list-item');
     expect(topics[0].textContent).toBe('Topic #1');
