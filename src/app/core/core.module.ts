@@ -12,7 +12,6 @@ import {XmppService, XmppClientFactory} from './xmpp/xmpp.service';
   declarations: [HeaderComponent, ErrorPageComponent],
   exports: [HeaderComponent],
   providers: [NavigationService, XmppService, XmppClientFactory],
-  providers: [XmppService, XmppClientFactory],
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
