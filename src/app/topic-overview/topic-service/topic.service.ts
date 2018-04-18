@@ -79,7 +79,8 @@ export class TopicService {
           return observer.error(err);
         }
 
-        Observable.from(data.discoItems.items)
+        const items: Array<any> = data.discoItems.items === undefined ? [] : data.discoItems.items;
+        Observable.from(items)
           .map((e: any) => this.getTopicByName(e.node, recursive)).mergeAll()
           .subscribe(observer);
       });
