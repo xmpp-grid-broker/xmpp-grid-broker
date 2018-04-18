@@ -20,6 +20,13 @@
   </xgb-form-field>
 
   <xgb-collapsible
+    [isVisible]="true"
+    [title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">
+    TODO
+  </xgb-collapsible>
+
+
+  <xgb-collapsible
     title="Advanced">
     <xgb-topic-config
       [xmppDataForm]="advancedConfigForm"

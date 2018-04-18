@@ -119,6 +119,12 @@ describe('TopicCreationComponent', () => {
       expect(titleInput.getAttribute('placeholder')).toBe('Enter Collection title');
     });
 
+    it('should render Contained Topics collapsible', function () {
+      const collapsible = de.queryAll(By.css('xgb-collapsible'))[0].componentInstance;
+      expect(collapsible.title).toBe('Contained Topics');
+    });
+
+
     it('should send the changed fields and values', fakeAsync(() => {
       const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
       const submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
@@ -153,6 +159,7 @@ describe('TopicCreationComponent', () => {
       waitUntilLoaded();
     }));
 
+
     it('should render "Create New Topic" as title', function () {
       const heading = de.nativeElement.querySelector('h2');
       expect(heading.innerText).toBe('Create New Topic');
@@ -165,6 +172,11 @@ describe('TopicCreationComponent', () => {
       expect(titleFormField.fieldLabel).toBe('Topic title *');
       expect(titleFormField.fieldHelp).toBe('A short name for the Topic');
       expect(titleInput.getAttribute('placeholder')).toBe('Enter Topic title');
+    });
+
+    it('should render Parent Collections collapsible', function () {
+      const collapsible = de.queryAll(By.css('xgb-collapsible'))[0].componentInstance;
+      expect(collapsible.title).toBe('Parent Collections');
     });
 
     describe('given some advanced fields', () => {
@@ -182,7 +194,7 @@ describe('TopicCreationComponent', () => {
         tick();
 
         // show advanced collapsible
-        de.query(By.css('xgb-collapsible')).componentInstance.isVisible = true;
+        de.query(By.css('xgb-collapsible[title=Advanced]')).componentInstance.isVisible = true;
 
         fixture.detectChanges();
       }));
