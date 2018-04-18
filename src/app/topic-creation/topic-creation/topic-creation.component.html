@@ -22,7 +22,9 @@
   <xgb-collapsible
     [isVisible]="true"
     [title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">
-    TODO
+      <xgb-topic-chooser
+        [formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">
+      </xgb-topic-chooser>
   </xgb-collapsible>
 
 

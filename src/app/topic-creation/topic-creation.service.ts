@@ -28,8 +28,14 @@ export class TopicCreationService {
       new XmppDataFormField(
         XmppDataFormFieldType.textMulti,
         'pubsub#children',
-        'child1\nchild2',
+        null,
         'The child nodes (leaf or collection) associated with a collection'
+      ),
+      new XmppDataFormField(
+        XmppDataFormFieldType.textMulti,
+        'pubsub#collection',
+        null,
+        'The collection(s) with which a node is affiliated'
       ),
       new XmppDataFormField(
         XmppDataFormFieldType.textSingle,

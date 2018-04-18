@@ -18,7 +18,7 @@ const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(
   null
 );
 
-const NODE_TYPE = new XmppDataFormField(
+const REQUIRED_FILEDS = [new XmppDataFormField(
   XmppDataFormFieldType.listSingle,
   'pubsub#node_type',
   null, null,
@@ -26,7 +26,15 @@ const NODE_TYPE = new XmppDataFormField(
     new ListOption('node'),
     new ListOption('leaf'),
   ]
-);
+), new XmppDataFormField(
+  XmppDataFormFieldType.textMulti,
+  'pubsub#children',
+  null),
+  , new XmppDataFormField(
+    XmppDataFormFieldType.textMulti,
+    'pubsub#collection',
+    null),
+];
 
 const TEST_FIELD_BOOLEAN = new XmppDataFormField(
   XmppDataFormFieldType.boolean,
@@ -39,7 +47,7 @@ class MockTopicCreationService {
   // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
   loadForm(): Promise<XmppDataForm> {
     return Promise.resolve(new XmppDataForm([
-      NODE_TYPE,
+      ...REQUIRED_FILEDS,
       TEST_FIELD_TEXT_SINGLE,
       TEST_FIELD_BOOLEAN
     ]));
