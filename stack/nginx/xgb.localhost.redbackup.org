@@ -28,7 +28,7 @@ server {
     # security headers
     # See docs/SECURITY.md
     # Note that the CSP includes "unsafe-eval" to allow auto-reload during development.
-    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';" always;
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';" always;
     add_header 'Access-Control-Allow-Origin' 'xgb.localhost.redbackup.org' always;
     add_header 'Access-Control-Allow-Methods' 'GET, PUT, POST, DELETE, HEAD, OPTIONS' always;
 
