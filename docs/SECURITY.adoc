@@ -10,7 +10,7 @@ The following configuration is the most restrictive policy that is required by t
 |===
 |Header |Value |Notes
 
-|`Content-Security-Policy` |`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self'; style-src 'self' 'unsafe-inline';` | `unsafe-inline` is required by the angular framework.
+|`Content-Security-Policy` |`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';` | `unsafe-inline` is required by the angular framework.
 |`Access-Control-Allow-Origin` |`xgb.example.com bosh.example.com`|``
 |===
 
