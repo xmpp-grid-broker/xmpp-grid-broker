@@ -7,7 +7,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {TopicCreationComponent} from './topic-creation.component';
 import {TopicCreationService} from '../topic-creation.service';
-import {Topic} from '../../core/models/topic';
+import {LeafTopic} from '../../core/models/topic';
 import {NavigationService} from '../../core/navigation.service';
 
 const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(
@@ -36,8 +36,8 @@ class MockTopicCreationService {
 
   // noinspection JSMethodCanBeStatic
   // noinspection JSUnusedGlobalSymbols
-  createTopic(form: XmppDataForm): Promise<Topic> {
-    return Promise.resolve(new Topic(null));
+  createTopic(form: XmppDataForm): Promise<LeafTopic> {
+    return Promise.resolve(new LeafTopic(null));
   }
 }
 
