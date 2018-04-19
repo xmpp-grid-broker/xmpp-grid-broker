@@ -15,28 +15,23 @@ export class TopicOverviewService {
   }
 
   rootTopics(): Promise<Topics> {
-    return this.xmppService.getClient().then((client) => {
-      return TopicOverviewService.sorted(this.loadChildTopics(client));
-    });
+    return this.xmppService.getClient()
+      .then(client => this.loadChildTopics(client))
+      .then(topics => TopicOverviewService.sortTopics(topics));
   }
 
   allTopics(): Promise<Topics> {
-
-    return this.xmppService.getClient().then((client) => {
-      return TopicOverviewService.sorted(
-        this.getAllTopicsFlat(client).then((items) =>
-          items.filter((e: any) => e instanceof LeafTopic)
-        ));
-    });
+    return this.xmppService.getClient()
+      .then(client => this.getAllTopicsFlat(client))
+      .then(items => items.filter((e: any) => e instanceof LeafTopic))
+      .then(topics => TopicOverviewService.sortTopics(topics));
   }
 
   allCollections(): Promise<Topics> {
-    return this.xmppService.getClient().then((client) => {
-      return TopicOverviewService.sorted(
-        this.getAllTopicsFlat(client).then((items) =>
-          items.filter((e: any) => e instanceof CollectionTopic)
-        ));
-    });
+    return this.xmppService.getClient()
+      .then(client => this.getAllTopicsFlat(client))
+      .then(items => items.filter((e: any) => e instanceof CollectionTopic))
+      .then(topics => TopicOverviewService.sortTopics(topics));
   }
 
   /**
@@ -118,10 +113,9 @@ export class TopicOverviewService {
     }
   }
 
-
-  private static sorted(topicPromise: Promise<Topics>): Promise<Topics> {
-    return topicPromise.then((topics) => {
-      return topics.sort((a, b) => a.title.localeCompare(b.title));
+  private static sortTopics(topics: Topics): Promise<Topics> {
+    return new Promise((resolve) => {
+      resolve(topics.sort((a, b) => a.title.localeCompare(b.title)));
     });
   }
 }
