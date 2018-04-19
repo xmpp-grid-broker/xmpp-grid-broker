@@ -1,6 +1,4 @@
 import {Component, Input} from '@angular/core';
-import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
 import {Topics} from '../../core/models/topic';
 
 /**
@@ -16,16 +14,11 @@ export class TopicList {
   hasError = false;
   errorMessage: string;
   topics: Topics;
-  subscription: Subscription;
 
-  /**
-   * subscribe to the given topic so that it
-   * is updated when receiving new items / errors.
-   * @param {Observable<Topics>} observable
-   */
-  subscribe(observable: Observable<Topics>) {
-    this.unsubscribe();
-    this.subscription = observable.subscribe(
+  usePromise(promise: Promise<Topics>) {
+    this.isLoaded = false;
+    this.hasError = false;
+    promise.then(
       (topics: Topics) => {
         this.topics = topics;
         this.isLoaded = true;
@@ -34,12 +27,6 @@ export class TopicList {
         this.hasError = true;
         this.errorMessage = error;
       });
-  }
-
-  unsubscribe() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
   }
 
 }

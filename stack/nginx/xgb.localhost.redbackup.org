@@ -28,7 +28,7 @@ server {
     # security headers
     # See docs/SECURITY.md
     # Note that the CSP includes "unsafe-eval" to allow auto-reload during development.
-    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';";
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';" always;
     add_header 'Access-Control-Allow-Origin' 'xgb.localhost.redbackup.org' always;
     add_header 'Access-Control-Allow-Methods' 'GET, PUT, POST, DELETE, HEAD, OPTIONS' always;
 
@@ -44,6 +44,11 @@ server {
         proxy_set_header X-Forwarded-Server localhost.redbackup.org;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_hide_header 'Content-Security-Policy';
+        proxy_hide_header 'Access-Control-Allow-Origin';
+        proxy_hide_header 'Access-Control-Allow-Methods';
+
 
         proxy_ssl_certificate /etc/dehydrated/certs/client/admin@openfire/fullchain.pem;
         proxy_ssl_certificate_key /etc/dehydrated/certs/client/admin@openfire/privkey.pem;
@@ -67,6 +72,10 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
+        proxy_hide_header 'Content-Security-Policy';
+        proxy_hide_header 'Access-Control-Allow-Origin';
+        proxy_hide_header 'Access-Control-Allow-Methods';
+
         proxy_pass https://openfire/ws;
         break;
     }
@@ -82,6 +91,11 @@ server {
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_hide_header 'Content-Security-Policy';
+        proxy_hide_header 'Access-Control-Allow-Origin';
+        proxy_hide_header 'Access-Control-Allow-Methods';
+
         proxy_redirect off;
 
         proxy_pass http://xgb_development_server;
@@ -95,6 +109,11 @@ server {
         proxy_set_header X-Forwarded-Server $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_hide_header 'Content-Security-Policy';
+        proxy_hide_header 'Access-Control-Allow-Origin';
+        proxy_hide_header 'Access-Control-Allow-Methods';
+
         proxy_redirect off;
 
         proxy_pass http://xgb_development_server;

@@ -1,40 +1,38 @@
 import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TopicService} from '../topic-service/topic.service';
+import {TopicOverviewService} from '../topic-overview-service/topic-overview.service';
 import {TopicOverviewComponent} from './topic-overview.component';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
 import {NavigationService} from '../../core/navigation.service';
+import {XmppService} from '../../core/xmpp/xmpp.service';
 
-class MockTopicService {
+class MockXmppService {
+  // Disabled because it is used via Mock
+  // noinspection JSUnusedGlobalSymbols
+  getServerTitle() {
+    return Promise.resolve('xmpp.hsr.ch');
+  }
+}
+
+class MockTopicOverviewService {
   constructor(private _rootTopics = [{title: 'a'}, {title: 'b'}],
               private _allTopics = [],
               private _allCollections = []) {
   }
 
-  // Disabled because it is used via Mock
-  // noinspection JSUnusedGlobalSymbols
-  getServerTitle() {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve('xmpp.hsr.ch');
-      }, 500);
-    });
-  }
-
   rootTopics() {
-    return Observable.of(this._rootTopics);
+    return Promise.resolve(this._rootTopics);
   }
 
   allTopics() {
-    return Observable.of(this._allTopics);
+    return Promise.resolve(this._allTopics);
   }
 
   allCollections() {
-    return Observable.of(this._allCollections);
+    return Promise.resolve(this._allCollections);
   }
 }
 
@@ -43,10 +41,12 @@ describe('TopicOverviewComponent', () => {
   let component: TopicOverviewComponent;
   let fixture: ComponentFixture<TopicOverviewComponent>;
   let de: HTMLElement;
-  let mock: MockTopicService;
+  let mockTopicOverviewService: MockTopicOverviewService;
+  let mockXmppService: MockXmppService;
 
   function setup(route: string) {
-    mock = new MockTopicService();
+    mockTopicOverviewService = new MockTopicOverviewService();
+    mockXmppService = new MockXmppService();
 
     const activatedRouteMock = {
       snapshot: {url: [{path: route}], data: {filter: route}}
@@ -57,7 +57,8 @@ describe('TopicOverviewComponent', () => {
       declarations: [TopicOverviewComponent],
       providers: [
         {provide: NavigationService},
-        {provide: TopicService, useValue: mock},
+        {provide: TopicOverviewService, useValue: mockTopicOverviewService},
+        {provide: XmppService, useValue: mockXmppService},
         {provide: ActivatedRoute, useValue: activatedRouteMock}
       ]
     });
@@ -73,14 +74,17 @@ describe('TopicOverviewComponent', () => {
       setup('root');
     });
 
-    it('should subscribe to rootTopics', async(() => {
-      const routeSpy = spyOn(mock, 'rootTopics').and.callThrough();
+    it('should call to rootTopics', async(() => {
+      const routeSpy = spyOn(mockTopicOverviewService, 'rootTopics').and.callThrough();
       fixture.detectChanges();
       expect(routeSpy.calls.count()).toBe(1);
     }));
 
-    it('should render subscribed topics', async(() => {
+    it('should render topics when resolved', fakeAsync(() => {
       fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
 
       expect(de.querySelectorAll('xgb-list-item').length).toBe(2);
     }));
@@ -92,8 +96,8 @@ describe('TopicOverviewComponent', () => {
       setup('all');
     });
 
-    it('should subscribe to allTopics', async(() => {
-      const routeSpy = spyOn(mock, 'allTopics').and.callThrough();
+    it('should call allTopics', async(() => {
+      const routeSpy = spyOn(mockTopicOverviewService, 'allTopics').and.callThrough();
       fixture.detectChanges();
       expect(routeSpy.calls.count()).toBe(1);
     }));
@@ -104,8 +108,8 @@ describe('TopicOverviewComponent', () => {
       setup('collections');
     });
 
-    it('should subscribe to allCollections ', async(() => {
-      const routeSpy = spyOn(mock, 'allCollections').and.callThrough();
+    it('should call allCollections ', async(() => {
+      const routeSpy = spyOn(mockTopicOverviewService, 'allCollections').and.callThrough();
 
       fixture.detectChanges();
 

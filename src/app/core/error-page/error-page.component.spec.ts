@@ -4,6 +4,7 @@ import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 
 class MockActivatedRoute {
   data: Observable<{ errorCode: string }>;
