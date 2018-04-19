@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../core/models/FormModels';
-import {Leaf, Topic} from '../core/models/topic';
+import {LeafTopic, Topic} from '../core/models/topic';
 
 @Injectable()
 export class TopicCreationService {
@@ -74,7 +74,7 @@ export class TopicCreationService {
   }
 
   createTopic(form: XmppDataForm): Promise<Topic> {
-    return Promise.resolve(new Leaf(null));
+    return Promise.resolve(new LeafTopic(null));
   }
 
 }

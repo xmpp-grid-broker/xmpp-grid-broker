@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Collection, Leaf, Topic, Topics} from '../../core/models/topic';
+import {CollectionTopic, LeafTopic, Topic, Topics} from '../../core/models/topic';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 import {JID} from 'stanza.io';
 
@@ -25,7 +25,7 @@ export class TopicOverviewService {
     return this.xmppService.getClient().then((client) => {
       return TopicOverviewService.sorted(
         this.getAllTopicsFlat(client).then((items) =>
-          items.filter((e: any) => e instanceof Leaf)
+          items.filter((e: any) => e instanceof LeafTopic)
         ));
     });
   }
@@ -34,7 +34,7 @@ export class TopicOverviewService {
     return this.xmppService.getClient().then((client) => {
       return TopicOverviewService.sorted(
         this.getAllTopicsFlat(client).then((items) =>
-          items.filter((e: any) => e instanceof Collection)
+          items.filter((e: any) => e instanceof CollectionTopic)
         ));
     });
   }
@@ -60,13 +60,13 @@ export class TopicOverviewService {
         const topicType = data.discoInfo.identities[0]['type'];
 
         if (topicType === 'leaf') {
-          resolve(new Leaf(topicTitle));
+          resolve(new LeafTopic(topicTitle));
         } else if (topicType === 'collection' && loadChildren) {
           this.loadChildTopics(client, topicTitle).then((childTopics) => {
-            resolve(new Collection(topicTitle, childTopics));
+            resolve(new CollectionTopic(topicTitle, childTopics));
           });
         } else if (topicType === 'collection') {
-          resolve(new Collection(topicTitle));
+          resolve(new CollectionTopic(topicTitle));
         } else {
           reject(`XMPP: Unsupported PubSub type "${topicType}"`);
         }
@@ -111,7 +111,7 @@ export class TopicOverviewService {
 
       result.push(...topics);
       topics.forEach((it) => {
-        if (it instanceof Collection) {
+        if (it instanceof CollectionTopic) {
           this.flatten(it.children, result);
         }
       });

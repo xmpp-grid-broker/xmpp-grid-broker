@@ -2,7 +2,7 @@ import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {TopicList, TopicListComponent} from './topic-list.component';
 import {SharedModule} from '../../shared/shared.module';
-import {Leaf} from '../../core/models/topic';
+import {LeafTopic} from '../../core/models/topic';
 
 
 describe('TopicListComponent', () => {
@@ -70,7 +70,7 @@ describe('TopicListComponent', () => {
 
   it('should list topics when topics are provided', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.resolve([new Leaf('Topic #1'), new Leaf('Topic #2')]));
+    component.topicList.usePromise(Promise.resolve([new LeafTopic('Topic #1'), new LeafTopic('Topic #2')]));
 
     waitUntilLoaded();
 
@@ -80,7 +80,7 @@ describe('TopicListComponent', () => {
 
   it('should show topic name when topics are provided', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.resolve(([new Leaf('Topic #1'), new Leaf('Topic #2')])));
+    component.topicList.usePromise(Promise.resolve(([new LeafTopic('Topic #1'), new LeafTopic('Topic #2')])));
 
     waitUntilLoaded();
 
