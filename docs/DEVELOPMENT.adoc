@@ -56,7 +56,9 @@ The `admin` certificate is used by nginx to authenticate itself on the xmpp serv
 === Generate new Certificates
 
 If you want to generate a new CA and certificates, execute the following steps:
-```bash
+
+[source, bash]
+----
 # Requires openssl binary and bash.
 pushd stack/certs/
   rm -r keys/
@@ -66,7 +68,7 @@ popd
 pushd stack/
   ./add_certs_to_openfire.bash
 popd
-```
+----
 
 You might also want to add the CA from `stack/certs/keys/ca-fullchain.pem` and client certificates from `stack/certs/keys/client/` to your webbrowser.
 
@@ -74,13 +76,14 @@ You might also want to add the CA from `stack/certs/keys/ca-fullchain.pem` and c
 
 To edit the Openfire Configuration (e.g. for adding new users or TLS certificates), you have to execute following steps:
 
-```bash
+[source, bash]
+----
 export UID
 docker-compose -f docker-compose.openfire-admin.yml -f docker-compose.yml up
 
 # clean up access permissions after finishing
 sudo chown -R $UID stack/openfire
-```
+----
 
 == Builds and Tests
 

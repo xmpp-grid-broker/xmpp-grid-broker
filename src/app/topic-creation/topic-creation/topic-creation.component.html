@@ -2,8 +2,18 @@
 
 <xgb-spinner *ngIf="loading"></xgb-spinner>
 
-<xgb-topic-config *ngIf="!loading"
-                  [form]="form"
-                  submitLabel="Create new Topic"
-                  (formSubmitted)="onSubmit()">
-</xgb-topic-config>
+<form *ngIf="!loading"
+      xgbForm
+      [formGroup]="formGroup"
+      (ngSubmit)="submit()">
+
+  <xgb-collapsible
+    title="Advanced">
+    <xgb-topic-config
+      [xmppDataForm]="xmppDataForm"
+      [formGroup]="formGroup">
+    </xgb-topic-config>
+  </xgb-collapsible>
+
+  <button type="submit" xgbActionButton primary>Create new Topic</button>
+</form>
