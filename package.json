@@ -11,9 +11,7 @@
     "test-nc": "ng test -sm=false",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "compodoc": "compodoc --disableCoverage -p src/tsconfig.app.json",
-    "validate": "npm ls",
-    "postinstall": "npm explore stanza.io -- npm install && npm explore stanza.io -- npm run build"
+    "compodoc": "compodoc --disableCoverage -p src/tsconfig.app.json"
   },
   "private": true,
   "dependencies": {
@@ -30,7 +28,7 @@
     "ng": "0.0.0-rc6",
     "rxjs": "^5.5.6",
     "spectre.css": "^0.5.1",
-    "stanza.io": "^9.0.2",
+    "stanza.io": "git://github.com/xmpp-grid-broker/stanza.io#v9.0.2-build",
     "stylelint": "^9.2.0",
     "zone.js": "^0.8.19"
   },
