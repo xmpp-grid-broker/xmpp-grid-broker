@@ -4,4 +4,4 @@ interface NodeModule {
   id: string;
 }
 
-declare module 'stanza.io'
+declare module 'stanza.io';
