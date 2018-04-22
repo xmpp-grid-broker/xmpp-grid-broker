@@ -14,7 +14,7 @@ export class NotificationService {
     this.notification = this._notification.asObservable().publish().refCount();
   }
 
-  notify(message: string) {
+  public notify(message: string) {
     this._notification.next(message);
   }
 

@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {XmppDataForm, XmppDataFormField} from '../../core/models/FormModels';
 import {TopicCreationService} from '../topic-creation.service';
 import {NavigationService} from '../../core/navigation.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
@@ -11,15 +10,9 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class TopicCreationComponent implements OnInit {
 
-  loading = true;
   formGroup: FormGroup;
-  advancedConfigForm: XmppDataForm;
+  error: string;
   isNewCollection: boolean;
-
-  private xmppDataForm: XmppDataForm;
-  private readonly specificFormFields = {
-    'pubsub#title': new FormControl(null, Validators.required)
-  };
 
   constructor(private creationService: TopicCreationService,
               private navigationService: NavigationService,
@@ -28,62 +21,31 @@ export class TopicCreationComponent implements OnInit {
 
   ngOnInit(): void {
     this.isNewCollection = this.route.snapshot.data.type === 'collection';
-    this.creationService.loadForm().then((form: XmppDataForm) => {
-
-      this.specificFormFields['pubsub#node_type'] = new FormControl(this.route.snapshot.data.type);
-      this.specificFormFields['pubsub#children'] = new FormControl(null);
-      this.specificFormFields['pubsub#collection'] = new FormControl(null);
-
-      this.formGroup = new FormGroup(this.specificFormFields);
-      this.advancedConfigForm = this.filterForm(form);
-
-      this.xmppDataForm = form;
-      this.loading = false;
+    this.formGroup = new FormGroup({
+      'nodeID': new FormControl(null, Validators.required)
     });
   }
 
-  submit(): void {
+  submit() {
     if (!this.formGroup.valid) {
-      return;
+      return false;
     }
-    const fields = [];
-    this.xmppDataForm.fields.forEach((field: XmppDataFormField) => {
-        const newValue = this.formGroup.get(field.variable).value;
-        if (newValue === field.value) {
-          return;
-        }
-        fields.push(new XmppDataFormField(
-          field.type,
-          field.variable,
-          newValue,
-          field.label,
-          field.options
-        ));
+
+    this.formGroup.disable();
+    this.creationService.createTopic(this.formGroup.get('nodeID').value)
+      .then(() => {
+        this.navigationService.goToHome();
+      }).catch((err) => {
+      this.formGroup.enable();
+      switch (err.error.code) {
+        case '409':
+          this.error = 'A topic with the given identifier does already exist';
+          break;
+        default:
+          this.error = `Failed to create new topic: ${err.error.code}: ${err.error.condition} ${err.error.type}`;
       }
-    );
-    this.creationService.createTopic(new XmppDataForm(fields)).then(() => {
-      this.navigationService.goToHome();
     });
+    return false;
   }
 
-  private filterForm(form: XmppDataForm): XmppDataForm {
-    const specificFieldNames = Object.keys(this.specificFormFields);
-    const allFormFieldNames = form.fields.map((field: XmppDataFormField) => {
-      return field.variable;
-    });
-    // ensure all specificFieldNames are present
-    const allSpecificFieldsPresent = specificFieldNames.every((fieldName: string) => {
-      return allFormFieldNames.indexOf(fieldName) >= 0;
-    });
-
-    if (!allSpecificFieldsPresent) {
-      throw new Error('Missing specific form elements!');
-    }
-
-    return new XmppDataForm(
-      form.fields.filter((field: XmppDataFormField) => {
-        return specificFieldNames.indexOf(field.variable) < 0;
-      })
-    );
-  }
 }

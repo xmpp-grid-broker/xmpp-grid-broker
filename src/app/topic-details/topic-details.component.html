@@ -1,1 +1,9 @@
 <h2>Topic: {{this.topicIdentifier}}</h2>
+<xgb-collapsible
+  [isVisible]="true"
+  [title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">
+  <xgb-topic-chooser
+    [formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">
+  </xgb-topic-chooser>
+</xgb-collapsible>
+

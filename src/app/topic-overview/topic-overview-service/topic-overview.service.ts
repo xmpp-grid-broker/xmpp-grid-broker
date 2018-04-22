@@ -5,13 +5,8 @@ import {JID} from 'stanza.io';
 
 @Injectable()
 export class TopicOverviewService {
-  /**
-   * The JID used to address the pubsub service, see XEP-0060 for details
-   */
-  readonly pubSubJid: any;
 
   constructor(private xmppService: XmppService) {
-    this.pubSubJid = new JID(`pubsub.${xmppService.config.jid_domain}`);
   }
 
   rootTopics(): Promise<Topics> {
@@ -44,9 +39,9 @@ export class TopicOverviewService {
   private loadTopicDetails(client: any, name: string, loadChildren = false): Promise<Topic> {
 
     return new Promise((resolve, reject) => {
-      client.getDiscoInfo(this.pubSubJid, name, (err?: any, data?: any) => {
+      client.getDiscoInfo(this.xmppService.pubSubJid, name, (err?: any, data?: any) => {
 
-        if (err != null) {
+        if (err !== null) {
           reject(`${err.error.code}: ${err.error.condition}`);
           return;
         }
@@ -72,8 +67,8 @@ export class TopicOverviewService {
 
   private loadChildTopics(client, parent_collection?: string, recursive = false): Promise<Topics> {
     return new Promise((resolve, reject) => {
-      client.getDiscoItems(this.pubSubJid, parent_collection, (err?: any, data?: any) => {
-        if (err != null) {
+      client.getDiscoItems(this.xmppService.pubSubJid, parent_collection, (err?: any, data?: any) => {
+        if (err !== null) {
           return reject(err);
         }
         const items: Array<any> = data.discoItems.items === undefined ? [] : data.discoItems.items;
