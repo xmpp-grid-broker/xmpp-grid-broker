@@ -1,8 +1,6 @@
 <h2>Create New {{isNewCollection ? "Collection": "Topic"}}</h2>
 
-<div *ngIf="error" class="toast toast-error">
-  {{error}}
-</div>
+<div *ngIf="error" class="toast toast-error">{{error}}</div>
 
 <form xgbForm
       [formGroup]="formGroup"

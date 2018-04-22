@@ -12,9 +12,6 @@ class FakeClient {
 
 class FakeXmppService {
   public client = new FakeClient;
-  config = {
-    jid_domain: 'xmppserver'
-  };
 
   getClient(): Promise<any> {
     return Promise.resolve(this.client);

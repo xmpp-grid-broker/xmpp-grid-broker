@@ -7,18 +7,18 @@ export class TopicCreationService {
   constructor(private xmppService: XmppService) {
   }
 
-  createTopic(title: string): Promise<string> {
+  createTopic(topicIdentifier: string): Promise<string> {
     return this.xmppService.getClient()
-      .then((client) => this._createService(title, client));
+      .then((client) => this._createService(topicIdentifier, client));
   }
 
-  private _createService(title: string, client: any): Promise<string> {
+  private _createService(topicIdentifier: string, client: any): Promise<string> {
     return new Promise((resolve, reject) => {
-      client.createNode(this.xmppService.pubSubJid, title, {}, (err) => {
+      client.createNode(this.xmppService.pubSubJid, topicIdentifier, {}, (err) => {
         if (err) {
           reject(err);
         }
-        resolve(title);
+        resolve(topicIdentifier);
       });
     });
   }
