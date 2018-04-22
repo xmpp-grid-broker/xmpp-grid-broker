@@ -3,6 +3,7 @@ import {XmppDataForm, XmppDataFormField} from '../../core/models/FormModels';
 import {TopicCreationService} from '../topic-creation.service';
 import {NavigationService} from '../../core/navigation.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'xgb-topic-creation',
@@ -13,18 +14,25 @@ export class TopicCreationComponent implements OnInit {
   loading = true;
   formGroup: FormGroup;
   advancedConfigForm: XmppDataForm;
+  isNewCollection: boolean;
 
   private xmppDataForm: XmppDataForm;
-  private readonly specificFormFields = {'pubsub#title': new FormControl(null, Validators.required)};
+  private readonly specificFormFields = {
+    'pubsub#title': new FormControl(null, Validators.required)
+  };
 
   constructor(private creationService: TopicCreationService,
-              private navigationService: NavigationService) {
+              private navigationService: NavigationService,
+              private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.isNewCollection = this.route.snapshot.data.type === 'collection';
     this.creationService.loadForm().then((form: XmppDataForm) => {
+      this.specificFormFields['pubsub#node_type'] = new FormControl(this.route.snapshot.data.type);
       this.formGroup = new FormGroup(this.specificFormFields);
       this.advancedConfigForm = this.filterForm(form);
+
       this.xmppDataForm = form;
       this.loading = false;
     });

@@ -1,6 +1,6 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
+import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 import {SharedModule} from '../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -10,11 +10,22 @@ import {TopicCreationService} from '../topic-creation.service';
 import {LeafTopic} from '../../core/models/topic';
 import {NavigationService} from '../../core/navigation.service';
 import {DebugElement} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 
 const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(
   XmppDataFormFieldType.textSingle,
   'pubsub#title',
   null
+);
+
+const NODE_TYPE = new XmppDataFormField(
+  XmppDataFormFieldType.listSingle,
+  'pubsub#node_type',
+  null, null,
+  [
+    new ListOption('node'),
+    new ListOption('leaf'),
+  ]
 );
 
 const TEST_FIELD_BOOLEAN = new XmppDataFormField(
@@ -28,6 +39,7 @@ class MockTopicCreationService {
   // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
   loadForm(): Promise<XmppDataForm> {
     return Promise.resolve(new XmppDataForm([
+      NODE_TYPE,
       TEST_FIELD_TEXT_SINGLE,
       TEST_FIELD_BOOLEAN
     ]));
@@ -39,39 +51,127 @@ class MockTopicCreationService {
   }
 }
 
+class FakeActivatedRoute {
+
+  type = undefined;
+
+  // noinspection JSUnusedGlobalSymbols
+  get snapshot() {
+    return {data: {type: this.type}};
+  }
+}
+
 describe('TopicCreationComponent', () => {
 
   let component: TopicCreationComponent;
   let fixture: ComponentFixture<TopicCreationComponent>;
   let de: DebugElement;
   let mockService: MockTopicCreationService;
+  let fakeRoute;
+
+  const waitUntilLoaded = () => {
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
+    fixture.whenStable().then(() => {
+      fixture.whenRenderingDone().then(() => {
+        tick();
+      });
+    });
+  };
 
   beforeEach(fakeAsync(() => {
       mockService = new MockTopicCreationService();
-
+      fakeRoute = new FakeActivatedRoute();
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicCreationComponent],
         providers: [{provide: TopicCreationService, useValue: mockService},
-          {provide: NavigationService, useValue: jasmine.createSpyObj('NavigationService', ['goToHome'])}]
+          {provide: NavigationService, useValue: jasmine.createSpyObj('NavigationService', ['goToHome'])},
+          {provide: ActivatedRoute, useValue: fakeRoute}]
       });
 
       fixture = TestBed.createComponent(TopicCreationComponent);
       component = fixture.componentInstance;
       de = fixture.debugElement;
 
-      fixture.detectChanges();
     }
   ));
-
-  describe('given some advanced fields', () => {
-
-    let submitButton: HTMLElement;
+  describe('when creating a new collection', () => {
 
     beforeEach(fakeAsync(() => {
+      fakeRoute.type = 'collection';
+      waitUntilLoaded();
+    }));
+
+    it('should render "Create New Collection" as title', function () {
+      const heading = de.nativeElement.querySelector('h2');
+      expect(heading.innerText).toBe('Create New Collection');
+    });
+
+    it('should render proper fieldLabel, placeholder and helpText', function () {
+      const titleFormField = de.query(By.css('xgb-form-field[fieldId=title]')).componentInstance;
+      const titleInput = de.query(By.css('input[id=title]')).nativeElement;
+
+      expect(titleFormField.fieldLabel).toBe('Collection title *');
+      expect(titleFormField.fieldHelp).toBe('A short name for the Collection');
+      expect(titleInput.getAttribute('placeholder')).toBe('Enter Collection title');
+    });
+
+    it('should send the changed fields and values', fakeAsync(() => {
+      const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
+      const submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
+
+      // fill in dummy title
+      const inputField = de.query(By.css('#title')).nativeElement;
+      inputField.value = 'a-node-title';
+      inputField.dispatchEvent(new Event('input'));
       fixture.detectChanges();
       tick();
-      const fn = () => {
+
+      submitButton.click();
+      fixture.detectChanges();
+
+      expect(createTopicSpy.calls.count()).toBe(1);
+      const form = createTopicSpy.calls.argsFor(0)[0];
+
+      expect(form.fields.length).toBe(2);
+      expect(form.fields[0].variable).toBe('pubsub#node_type');
+      expect(form.fields[0].value).toBe('collection');
+      expect(form.fields[1].variable).toBe('pubsub#title');
+      expect(form.fields[1].value).toBe('a-node-title');
+
+
+    }));
+
+  });
+
+  describe('when creating a new topic', () => {
+    beforeEach(fakeAsync(() => {
+      fakeRoute.type = 'leaf';
+      waitUntilLoaded();
+    }));
+
+    it('should render "Create New Topic" as title', function () {
+      const heading = de.nativeElement.querySelector('h2');
+      expect(heading.innerText).toBe('Create New Topic');
+    });
+
+    it('should render proper fieldLabel, placeholder and helpText', function () {
+      const titleFormField = de.query(By.css('xgb-form-field[fieldId=title]')).componentInstance;
+      const titleInput = de.query(By.css('input[id=title]')).nativeElement;
+
+      expect(titleFormField.fieldLabel).toBe('Topic title *');
+      expect(titleFormField.fieldHelp).toBe('A short name for the Topic');
+      expect(titleInput.getAttribute('placeholder')).toBe('Enter Topic title');
+    });
+
+    describe('given some advanced fields', () => {
+
+      let submitButton: HTMLElement;
+
+      beforeEach(fakeAsync(() => {
         submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
 
         // fill in dummy title
@@ -85,46 +185,42 @@ describe('TopicCreationComponent', () => {
         de.query(By.css('xgb-collapsible')).componentInstance.isVisible = true;
 
         fixture.detectChanges();
-      };
+      }));
 
-      fixture.whenStable().then(() => {
-        fixture.whenRenderingDone().then(fn);
+      it('advanced form entries are not included if nothing has changed', () => {
+        const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
+
+        submitButton.click();
+        fixture.detectChanges();
+
+        expect(createTopicSpy.calls.count()).toBe(1);
+        const form = createTopicSpy.calls.argsFor(0)[0];
+        expect(form.fields.length).toBe(2);
       });
 
-    }));
+      it('should send the changed fields and values', (() => {
+        const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
 
-    it('advanced form entries are not included if nothing has changed', () => {
-      const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
+        const notificationCheckbox = de.nativeElement.querySelector('#deliver_notifications');
+        notificationCheckbox['checked'] = false;
+        notificationCheckbox.dispatchEvent(new Event('change'));
 
-      submitButton.click();
-      fixture.detectChanges();
+        submitButton.click();
+        fixture.detectChanges();
 
-      expect(createTopicSpy.calls.count()).toBe(1);
-      const form = createTopicSpy.calls.argsFor(0)[0];
-      expect(form.fields.length).toBe(1);
+        expect(createTopicSpy.calls.count()).toBe(1);
+        const form = createTopicSpy.calls.argsFor(0)[0];
+
+        expect(form.fields.length).toBe(3);
+        expect(form.fields[0].variable).toBe('pubsub#node_type');
+        expect(form.fields[0].value).toBe('leaf');
+        expect(form.fields[1].variable).toBe('pubsub#title');
+        expect(form.fields[1].value).toBe('a-node-title');
+        expect(form.fields[2].variable).toBe('pubsub#deliver_notifications');
+        expect(form.fields[2].value).toBe(false);
+
+
+      }));
     });
-
-    it('should emmit the changed fields and values', (() => {
-      const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
-
-      const notificationCheckbox = de.nativeElement.querySelector('#deliver_notifications');
-      notificationCheckbox['checked'] = false;
-      notificationCheckbox.dispatchEvent(new Event('change'));
-
-      submitButton.click();
-      fixture.detectChanges();
-
-      expect(createTopicSpy.calls.count()).toBe(1);
-      const form = createTopicSpy.calls.argsFor(0)[0];
-
-      expect(form.fields.length).toBe(2);
-      expect(form.fields[0].variable).toBe('pubsub#title');
-      expect(form.fields[0].value).toBe('a-node-title');
-      expect(form.fields[1].variable).toBe('pubsub#deliver_notifications');
-      expect(form.fields[1].value).toBe(false);
-
-
-    }));
   });
-
 });

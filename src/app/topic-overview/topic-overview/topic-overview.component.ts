@@ -44,7 +44,13 @@ export class TopicOverviewComponent implements OnInit {
     this.topicList.usePromise(promise);
   }
 
-  createNewTopic() {
-    this.navigationService.goToNewTopic();
+  createNew(what: string) {
+    switch (what) {
+      case 'collection':
+        this.navigationService.goToNewCollection();
+        break;
+      default:
+        this.navigationService.goToNewTopic();
+    }
   }
 }

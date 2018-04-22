@@ -12,8 +12,12 @@ describe('NavigationService', () => {
     service = new NavigationService(mockRouter);
   });
 
-  it('verify mappings', () => {
+  it('verify goToNewTopic', () => {
     service.goToNewTopic();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/new');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/new/topic');
+  });
+  it('verify goToNewCollection', () => {
+    service.goToNewCollection();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/new/collection');
   });
 });
