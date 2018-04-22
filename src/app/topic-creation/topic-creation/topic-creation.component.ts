@@ -29,7 +29,11 @@ export class TopicCreationComponent implements OnInit {
   ngOnInit(): void {
     this.isNewCollection = this.route.snapshot.data.type === 'collection';
     this.creationService.loadForm().then((form: XmppDataForm) => {
+
       this.specificFormFields['pubsub#node_type'] = new FormControl(this.route.snapshot.data.type);
+      this.specificFormFields['pubsub#children'] = new FormControl(null);
+      this.specificFormFields['pubsub#collection'] = new FormControl(null);
+
       this.formGroup = new FormGroup(this.specificFormFields);
       this.advancedConfigForm = this.filterForm(form);
 
