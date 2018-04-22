@@ -20,13 +20,14 @@
     >
   </xgb-form-field>
 
-  <xgb-collapsible
-    [isVisible]="true"
-    [title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">
-    <xgb-topic-chooser
-      [formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">
-    </xgb-topic-chooser>
-  </xgb-collapsible>
+  <!--TODO: FIX THIS! (not supported by openfire (?!)-->
+  <!--<xgb-collapsible-->
+    <!--[isVisible]="true"-->
+    <!--[title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">-->
+    <!--<xgb-topic-chooser-->
+    <!--[formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">-->
+    <!--</xgb-topic-chooser>-->
+  <!--</xgb-collapsible>-->
 
   <xgb-collapsible
     title="Advanced">
