@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Client, createClient, JID} from 'stanza.io';
+import {JID} from 'xmpp-jid';
+import {Client, createClient} from 'stanza.io';
 import 'rxjs/add/observable/fromPromise';
 
 enum ConnectionState {

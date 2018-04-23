@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {CollectionTopic, LeafTopic, Topic, Topics} from '../../core/models/topic';
 import {XmppService} from '../../core/xmpp/xmpp.service';
-import {JID} from 'stanza.io';
+import {JID} from 'xmpp-jid';
 
 @Injectable()
 export class TopicOverviewService {
