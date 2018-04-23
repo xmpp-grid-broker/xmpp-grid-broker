@@ -8,6 +8,7 @@ import {XmppService, XmppClientFactory} from './xmpp/xmpp.service';
 import {GlobalErrorHandlerService} from './global-error-handler.service';
 import {NotificationService} from './notification.service';
 import {NotificationsComponent} from './notifications/notifications.component';
+import {ConfigService} from './config.service';
 
 
 @NgModule({
@@ -17,7 +18,7 @@ import {NotificationsComponent} from './notifications/notifications.component';
   providers: [{
     provide: ErrorHandler,
     useClass: GlobalErrorHandlerService
-  }, NotificationService, NavigationService, XmppService, XmppClientFactory]
+  }, NotificationService, NavigationService, XmppService, XmppClientFactory, ConfigService]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

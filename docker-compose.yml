@@ -14,6 +14,7 @@ services:
     image: node:8-alpine
     volumes:
       - ./:/mnt
+      - ./stack/configuration.json:/mnt/configuration.json
     user: ${UID}
     working_dir: /mnt
     entrypoint: npm run --
