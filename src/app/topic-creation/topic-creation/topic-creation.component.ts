@@ -4,7 +4,7 @@ import {NavigationService} from '../../core/navigation.service';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
-import {XmppDataForm} from '../../core/models/FormModels';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 import {TopicConfigComponent} from '../../topic-widgets/topic-config/topic-config.component';
 
 @Component({
@@ -37,7 +37,7 @@ export class TopicCreationComponent implements OnInit {
     this.formProcessing.begin();
     this.creationService.loadDefaultConfig()
       .then((form) => {
-        this.defaultConfigForm = form;
+        this.defaultConfigForm = this.removeNodeTypeFromForm(form);
         this.formProcessing.done();
       })
       .catch(() => {
@@ -53,6 +53,7 @@ export class TopicCreationComponent implements OnInit {
     if (configElement && !configData) {
       configData = configElement.createFormToSubmit();
     }
+    configData = this.addNodeTypeToForm(configData);
     this.formProcessing.begin();
     this.creationService.createTopic(this.formGroup.get('nodeID').value, configData)
       .then((topicIdentifier) =>
@@ -83,4 +84,25 @@ export class TopicCreationComponent implements OnInit {
     return false;
   }
 
+  private removeNodeTypeFromForm(form: XmppDataForm) {
+    const fields = form.fields;
+    return new XmppDataForm(fields.filter((field: XmppDataFormField) =>
+      field.name !== 'pubsub#node_type'
+    ));
+  }
+
+  private addNodeTypeToForm(configData: XmppDataForm | undefined) {
+    const nodeTypeField = new XmppDataFormField(
+      XmppDataFormFieldType.listSingle,
+      'pubsub#node_type',
+      this.isNewCollection ? 'collection' : 'leaf');
+    if (!configData) {
+      return new XmppDataForm([nodeTypeField]);
+    } else {
+      const fields = configData.fields;
+      fields.push(nodeTypeField);
+      return new XmppDataForm(fields);
+    }
+
+  }
 }

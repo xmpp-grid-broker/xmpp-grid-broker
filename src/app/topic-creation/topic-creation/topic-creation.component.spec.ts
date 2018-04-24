@@ -105,7 +105,7 @@ describe('TopicCreationComponent', () => {
       const args = topicCreationService.createTopic.calls.first().args;
       expect(args.length).toBe(2);
       expect(args[0]).toBe('myNewTopic');
-      expect(args[1]).toBe(null);
+      expect(args[1]).toBeTruthy();
     }));
 
     it('should redirect when creation was successful', fakeAsync(() => {
