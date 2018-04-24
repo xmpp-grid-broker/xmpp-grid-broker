@@ -27,7 +27,12 @@ export class XmppClientFactory {
  */
 @Injectable()
 export class XmppService {
-  public config: any = {
+  /**
+   * The JID used to address the pubsub service, see XEP-0060 for details
+   */
+  public readonly pubSubJid;
+
+  private config: any = {
     jid: 'admin@openfire',
     jid_domain: 'openfire',
     transport: 'bosh', // or websocket
@@ -48,6 +53,7 @@ export class XmppService {
       wsURL: '',
       boshURL: ''
     };
+    this.pubSubJid = new JID(`pubsub.${this.config.jid_domain}`);
 
     switch (this.config.transport) {
       case 'websocket':

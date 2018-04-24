@@ -1,44 +1,25 @@
 <h2>Create New {{isNewCollection ? "Collection": "Topic"}}</h2>
 
-<xgb-spinner *ngIf="loading"></xgb-spinner>
+<div *ngIf="error" xgbToast toast-error>{{error}}</div>
 
-<form *ngIf="!loading"
-      xgbForm
+<form xgbForm
       [formGroup]="formGroup"
       (ngSubmit)="submit()">
 
-  <xgb-form-field fieldId="title"
-                  [fieldLabel]="(isNewCollection ? 'Collection': 'Topic') + ' title *'"
-                  [fieldHelp]="'A short name for the '+ (isNewCollection ? 'Collection': 'Topic')">
+  <xgb-form-field fieldId="nodeID"
+                  fieldLabel="NodeID"
+                  fieldHelp="The unique identifier for a node within the context of a pubsub service. If left empty and the server supports instant nodes, the identifier is automatically generated.">
     <input type="text"
            xgbFormInput
-           formControlName="pubsub#title"
-           id="title"
-           [placeholder]="'Enter ' + (isNewCollection ? 'Collection': 'Topic') + ' title'"
-           [hasError]="!formGroup.get('pubsub#title').untouched && !formGroup.get('pubsub#title').valid"
-    >
+           formControlName="nodeID"
+           id="nodeID"
+           placeholder="Enter Topic / Collection identifier"
+           [hasError]="!formGroup.get('nodeID').untouched && !formGroup.get('nodeID').valid">
   </xgb-form-field>
-
-  <xgb-collapsible
-    [isVisible]="true"
-    [title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">
-      <xgb-topic-chooser
-        [formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">
-      </xgb-topic-chooser>
-  </xgb-collapsible>
-
-
-  <xgb-collapsible
-    title="Advanced">
-    <xgb-topic-config
-      [xmppDataForm]="advancedConfigForm"
-      [formGroup]="formGroup">
-    </xgb-topic-config>
-  </xgb-collapsible>
 
   <button type="submit"
           [disabled]="!formGroup.valid"
           xgbActionButton
-          primary>Create new Topic
+          primary>Create new {{isNewCollection ? "Collection" : "Topic"}}
   </button>
 </form>

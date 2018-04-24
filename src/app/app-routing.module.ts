@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {ErrorPageComponent} from './core/error-page/error-page.component';
 import {TopicOverviewModule} from './topic-overview/topic-overview.module';
 import {TopicCreationModule} from './topic-creation/topic-creation.module';
+import {TopicDetailsModule} from './topic-details/topic-details.module';
 
 
 export const routes: Routes = [
@@ -22,6 +23,7 @@ export const routes: Routes = [
   imports: [
     TopicOverviewModule,
     TopicCreationModule,
+    TopicDetailsModule,
     RouterModule.forRoot(routes),
   ],
   exports: [RouterModule]

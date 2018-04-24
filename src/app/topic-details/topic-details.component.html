@@ -1,0 +1,48 @@
+<h2>Topic: {{this.nodeId}}</h2>
+
+<xgb-spinner *ngIf="formStatus.processing"></xgb-spinner>
+
+<div *ngIf="formStatus.error" xgbToast toast-error>{{formStatus.error}}</div>
+<div *ngIf="formStatus.success" xgbToast toast-success>{{formStatus.success}}</div>
+
+<form *ngIf="!formStatus.processing && formGroup"
+      xgbForm
+      [formGroup]="formGroup"
+      (ngSubmit)="submit()">
+
+  <xgb-form-field fieldId="title"
+                  fieldLabel="Topic / Collection title"
+                  fieldHelp="A short name for the node / collection">
+    <input type="text"
+           xgbFormInput
+           formControlName="pubsub#title"
+           id="title"
+           placeholder="Enter Topic / Collection"
+           [hasError]="!formGroup.get('pubsub#title').untouched && !formGroup.get('pubsub#title').valid"
+    >
+  </xgb-form-field>
+
+  <!--TODO: FIX THIS! (not supported by openfire (?!)-->
+  <!--<xgb-collapsible-->
+    <!--[isVisible]="true"-->
+    <!--[title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">-->
+    <!--<xgb-topic-chooser-->
+    <!--[formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">-->
+    <!--</xgb-topic-chooser>-->
+  <!--</xgb-collapsible>-->
+
+  <xgb-collapsible
+    title="Advanced">
+    <xgb-topic-config
+      [xmppDataForm]="advancedConfigForm"
+      [formGroup]="formGroup">
+    </xgb-topic-config>
+  </xgb-collapsible>
+
+  <button type="submit"
+          [disabled]="!formGroup.valid"
+          xgbActionButton
+          primary>
+    Update Configuration
+  </button>
+</form>

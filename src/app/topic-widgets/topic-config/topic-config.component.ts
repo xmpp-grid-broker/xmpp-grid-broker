@@ -27,7 +27,7 @@ export class TopicConfigComponent implements OnInit {
   ngOnInit(): void {
     this.xmppDataForm.fields.forEach((field: XmppDataFormField) => {
       const validators = [];
-      this.formGroup.addControl(field.variable, new FormControl(field.value, validators));
+      this.formGroup.addControl(field.name, new FormControl(field.value, validators));
     });
   }
 }

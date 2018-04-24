@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {Topics} from '../../core/models/topic';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Topic, Topics} from '../../core/models/topic';
 
 /**
  * This class abstracts the loading and error handling
@@ -37,4 +37,9 @@ export class TopicList {
 })
 export class TopicListComponent {
   @Input() topicList: TopicList;
+  @Output() topicClicked = new EventEmitter<Topic>();
+
+  topicClick(node: Topic) {
+    this.topicClicked.next(node);
+  }
 }

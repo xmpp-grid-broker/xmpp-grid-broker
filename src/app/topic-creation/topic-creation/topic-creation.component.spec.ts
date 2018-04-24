@@ -1,61 +1,19 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-
-import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 import {SharedModule} from '../../shared/shared.module';
-import {By} from '@angular/platform-browser';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {TopicCreationComponent} from './topic-creation.component';
-import {TopicCreationService} from '../topic-creation.service';
-import {LeafTopic} from '../../core/models/topic';
+import {TopicCreationErrors, TopicCreationService} from '../topic-creation.service';
 import {NavigationService} from '../../core/navigation.service';
 import {DebugElement} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {By} from '@angular/platform-browser';
+import {ToastDirective} from '../../shared/toast.directive';
 
-const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(
-  XmppDataFormFieldType.textSingle,
-  'pubsub#title',
-  null
-);
-
-const REQUIRED_FILEDS = [new XmppDataFormField(
-  XmppDataFormFieldType.listSingle,
-  'pubsub#node_type',
-  null, null,
-  [
-    new ListOption('node'),
-    new ListOption('leaf'),
-  ]
-), new XmppDataFormField(
-  XmppDataFormFieldType.textMulti,
-  'pubsub#children',
-  null),
-  , new XmppDataFormField(
-    XmppDataFormFieldType.textMulti,
-    'pubsub#collection',
-    null),
-];
-
-const TEST_FIELD_BOOLEAN = new XmppDataFormField(
-  XmppDataFormFieldType.boolean,
-  'pubsub#deliver_notifications',
-  true,
-  'Whether to deliver event notifications'
-);
 
 class MockTopicCreationService {
-  // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-  loadForm(): Promise<XmppDataForm> {
-    return Promise.resolve(new XmppDataForm([
-      ...REQUIRED_FILEDS,
-      TEST_FIELD_TEXT_SINGLE,
-      TEST_FIELD_BOOLEAN
-    ]));
-  }
-
-  // noinspection JSMethodCanBeStatic, JSMethodCanBeStatic
-  createTopic(): Promise<LeafTopic> {
-    return Promise.resolve(new LeafTopic(null));
+  createTopic(topicIdentifier: string): Promise<string> {
+    return Promise.resolve(topicIdentifier);
   }
 }
 
@@ -69,34 +27,35 @@ class FakeActivatedRoute {
   }
 }
 
+class FakeNavigationService {
+  goToTopic() {}
+}
+
 describe('TopicCreationComponent', () => {
 
   let component: TopicCreationComponent;
   let fixture: ComponentFixture<TopicCreationComponent>;
   let de: DebugElement;
-  let mockService: MockTopicCreationService;
+  let topicCreationService;
   let fakeRoute;
+  let navigationService;
 
   const waitUntilLoaded = () => {
     fixture.detectChanges();
     tick();
-    fixture.detectChanges();
-    tick();
-    fixture.whenStable().then(() => {
-      fixture.whenRenderingDone().then(() => {
-        tick();
-      });
-    });
   };
 
+
   beforeEach(fakeAsync(() => {
-      mockService = new MockTopicCreationService();
+      topicCreationService = new MockTopicCreationService();
       fakeRoute = new FakeActivatedRoute();
+      navigationService = new FakeNavigationService();
+
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicCreationComponent],
-        providers: [{provide: TopicCreationService, useValue: mockService},
-          {provide: NavigationService, useValue: jasmine.createSpyObj('NavigationService', ['goToHome'])},
+        providers: [{provide: TopicCreationService, useValue: topicCreationService},
+          {provide: NavigationService, useValue: navigationService},
           {provide: ActivatedRoute, useValue: fakeRoute}]
       });
 
@@ -113,134 +72,106 @@ describe('TopicCreationComponent', () => {
       waitUntilLoaded();
     }));
 
-    it('should render "Create New Collection" as title', function () {
+    it('should render "Create New Collection" as title', () => {
       const heading = de.nativeElement.querySelector('h2');
       expect(heading.innerText).toBe('Create New Collection');
     });
 
-    it('should render proper fieldLabel, placeholder and helpText', function () {
-      const titleFormField = de.query(By.css('xgb-form-field[fieldId=title]')).componentInstance;
-      const titleInput = de.query(By.css('input[id=title]')).nativeElement;
+    it('should call the service if the form is filled out', fakeAsync(() => {
+      spyOn(topicCreationService, 'createTopic').and.callThrough();
 
-      expect(titleFormField.fieldLabel).toBe('Collection title *');
-      expect(titleFormField.fieldHelp).toBe('A short name for the Collection');
-      expect(titleInput.getAttribute('placeholder')).toBe('Enter Collection title');
-    });
-
-    it('should render Contained Topics collapsible', function () {
-      const collapsible = de.queryAll(By.css('xgb-collapsible'))[0].componentInstance;
-      expect(collapsible.title).toBe('Contained Topics');
-    });
-
-
-    it('should send the changed fields and values', fakeAsync(() => {
-      const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
-      const submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
-
-      // fill in dummy title
-      const inputField = de.query(By.css('#title')).nativeElement;
-      inputField.value = 'a-node-title';
+      // Fill in node id
+      const inputField = de.nativeElement.querySelector('#nodeID');
+      inputField.value = 'myNewTopic';
       inputField.dispatchEvent(new Event('input'));
       fixture.detectChanges();
       tick();
 
-      submitButton.click();
+      // Click submit
+      const submit = de.nativeElement.querySelector('button[type=submit]');
+      submit.click();
       fixture.detectChanges();
+      tick();
 
-      expect(createTopicSpy.calls.count()).toBe(1);
-      const form = createTopicSpy.calls.argsFor(0)[0];
-
-      expect(form.fields.length).toBe(2);
-      expect(form.fields[0].variable).toBe('pubsub#node_type');
-      expect(form.fields[0].value).toBe('collection');
-      expect(form.fields[1].variable).toBe('pubsub#title');
-      expect(form.fields[1].value).toBe('a-node-title');
-
-
+      expect(topicCreationService.createTopic).toHaveBeenCalledTimes(1);
+      const args = topicCreationService.createTopic.calls.first().args;
+      expect(args.length).toBe(1);
+      expect(args[0]).toBe('myNewTopic');
     }));
 
-  });
+    it('should redirect when creation was successful', fakeAsync(() => {
+      spyOn(navigationService, 'goToTopic').and.callThrough();
 
-  describe('when creating a new topic', () => {
+      // Fill in node id
+      const inputField = de.nativeElement.querySelector('#nodeID');
+      inputField.value = 'myNewTopic';
+      inputField.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      tick();
+
+      component.submit();
+
+      tick();
+      tick();
+      tick();
+
+      expect(component.error).toBeFalsy();
+      expect(navigationService.goToTopic).toHaveBeenCalledTimes(1);
+      const args = navigationService.goToTopic.calls.first().args;
+      expect(args.length).toBe(1);
+      expect(args[0]).toBe('myNewTopic');
+    }));
+
+    [
+      {condition: TopicCreationErrors.FeatureNotImplemented, message: 'Service does not support node creation'},
+      {condition: TopicCreationErrors.RegistrationRequired, message: 'Service requires registration'},
+      {condition: TopicCreationErrors.Forbidden, message: 'Requesting entity is prohibited from creating nodes'},
+      {condition: TopicCreationErrors.Conflict, message: 'A topic with the given identifier does already exist'},
+      {condition: TopicCreationErrors.NodeIdRequired, message: 'Service does not support instant nodes'},
+      {condition: '?!?!', message: 'Failed to create new topic: (unknown: ?!?!)'}
+    ].forEach((testParams) => {
+      it(`should show an error if it fails (${testParams.condition})`, fakeAsync(() => {
+        spyOn(topicCreationService, 'createTopic').and.callFake(() => {
+          return Promise.reject({condition: testParams.condition, type: 'unknown'});
+        });
+        // Fill in node id
+        const inputField = de.nativeElement.querySelector('#nodeID');
+        inputField.value = 'myNewTopic';
+        inputField.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        tick();
+
+        // Click submit
+        const submit = de.nativeElement.querySelector('button[type=submit]');
+        submit.click();
+        fixture.detectChanges();
+        tick();
+
+        // Ensure the service has been called
+        expect(topicCreationService.createTopic).toHaveBeenCalledTimes(1);
+
+        fixture.detectChanges();
+        tick();
+        const errorDiv = de.query(By.directive(ToastDirective)).nativeElement;
+        expect(component.error).toBe(testParams.message);
+        expect(errorDiv.innerText).toBe(testParams.message);
+
+      }));
+    });
+
+  });
+  describe('when creating a new collection', () => {
+
     beforeEach(fakeAsync(() => {
       fakeRoute.type = 'leaf';
       waitUntilLoaded();
     }));
 
-
-    it('should render "Create New Topic" as title', function () {
+    it('should render "Create New Topic" as title', () => {
       const heading = de.nativeElement.querySelector('h2');
       expect(heading.innerText).toBe('Create New Topic');
     });
 
-    it('should render proper fieldLabel, placeholder and helpText', function () {
-      const titleFormField = de.query(By.css('xgb-form-field[fieldId=title]')).componentInstance;
-      const titleInput = de.query(By.css('input[id=title]')).nativeElement;
-
-      expect(titleFormField.fieldLabel).toBe('Topic title *');
-      expect(titleFormField.fieldHelp).toBe('A short name for the Topic');
-      expect(titleInput.getAttribute('placeholder')).toBe('Enter Topic title');
-    });
-
-    it('should render Parent Collections collapsible', function () {
-      const collapsible = de.queryAll(By.css('xgb-collapsible'))[0].componentInstance;
-      expect(collapsible.title).toBe('Parent Collections');
-    });
-
-    describe('given some advanced fields', () => {
-
-      let submitButton: HTMLElement;
-
-      beforeEach(fakeAsync(() => {
-        submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
-
-        // fill in dummy title
-        const inputField = de.query(By.css('#title')).nativeElement;
-        inputField.value = 'a-node-title';
-        inputField.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
-        tick();
-
-        // show advanced collapsible
-        de.query(By.css('xgb-collapsible[title=Advanced]')).componentInstance.isVisible = true;
-
-        fixture.detectChanges();
-      }));
-
-      it('advanced form entries are not included if nothing has changed', () => {
-        const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
-
-        submitButton.click();
-        fixture.detectChanges();
-
-        expect(createTopicSpy.calls.count()).toBe(1);
-        const form = createTopicSpy.calls.argsFor(0)[0];
-        expect(form.fields.length).toBe(2);
-      });
-
-      it('should send the changed fields and values', (() => {
-        const createTopicSpy = spyOn(mockService, 'createTopic').and.callThrough();
-
-        const notificationCheckbox = de.nativeElement.querySelector('#deliver_notifications');
-        notificationCheckbox['checked'] = false;
-        notificationCheckbox.dispatchEvent(new Event('change'));
-
-        submitButton.click();
-        fixture.detectChanges();
-
-        expect(createTopicSpy.calls.count()).toBe(1);
-        const form = createTopicSpy.calls.argsFor(0)[0];
-
-        expect(form.fields.length).toBe(3);
-        expect(form.fields[0].variable).toBe('pubsub#node_type');
-        expect(form.fields[0].value).toBe('leaf');
-        expect(form.fields[1].variable).toBe('pubsub#title');
-        expect(form.fields[1].value).toBe('a-node-title');
-        expect(form.fields[2].variable).toBe('pubsub#deliver_notifications');
-        expect(form.fields[2].value).toBe(false);
-
-
-      }));
-    });
   });
+
 });

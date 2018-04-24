@@ -10,4 +10,6 @@
   <xgb-tab [routerLink]="['/topics/collections']" tabTitle="All Collections"></xgb-tab>
 </xgb-tabs>
 
-<xgb-topics [topicList]="topicList"></xgb-topics>
+<xgb-topics [topicList]="topicList"
+            (topicClicked)="onTopicClicked($event)">
+</xgb-topics>

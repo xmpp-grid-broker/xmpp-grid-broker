@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {XmppDataForm, XmppDataFormField} from '../../core/models/FormModels';
-import {TopicCreationService} from '../topic-creation.service';
+import {TopicCreationErrors, TopicCreationService} from '../topic-creation.service';
 import {NavigationService} from '../../core/navigation.service';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
@@ -11,15 +10,9 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class TopicCreationComponent implements OnInit {
 
-  loading = true;
   formGroup: FormGroup;
-  advancedConfigForm: XmppDataForm;
+  error: string;
   isNewCollection: boolean;
-
-  private xmppDataForm: XmppDataForm;
-  private readonly specificFormFields = {
-    'pubsub#title': new FormControl(null, Validators.required)
-  };
 
   constructor(private creationService: TopicCreationService,
               private navigationService: NavigationService,
@@ -28,62 +21,40 @@ export class TopicCreationComponent implements OnInit {
 
   ngOnInit(): void {
     this.isNewCollection = this.route.snapshot.data.type === 'collection';
-    this.creationService.loadForm().then((form: XmppDataForm) => {
-
-      this.specificFormFields['pubsub#node_type'] = new FormControl(this.route.snapshot.data.type);
-      this.specificFormFields['pubsub#children'] = new FormControl(null);
-      this.specificFormFields['pubsub#collection'] = new FormControl(null);
-
-      this.formGroup = new FormGroup(this.specificFormFields);
-      this.advancedConfigForm = this.filterForm(form);
-
-      this.xmppDataForm = form;
-      this.loading = false;
+    this.formGroup = new FormGroup({
+      'nodeID': new FormControl(null)
     });
   }
 
-  submit(): void {
-    if (!this.formGroup.valid) {
-      return;
-    }
-    const fields = [];
-    this.xmppDataForm.fields.forEach((field: XmppDataFormField) => {
-        const newValue = this.formGroup.get(field.variable).value;
-        if (newValue === field.value) {
-          return;
-        }
-        fields.push(new XmppDataFormField(
-          field.type,
-          field.variable,
-          newValue,
-          field.label,
-          field.options
-        ));
+  submit() {
+    this.formGroup.disable();
+    this.creationService.createTopic(this.formGroup.get('nodeID').value)
+      .then((topicIdentifier) =>
+        this.navigationService.goToTopic(topicIdentifier)
+      ).catch((error) => {
+      this.formGroup.enable();
+      switch (error.condition) {
+        case TopicCreationErrors.FeatureNotImplemented:
+          this.error = 'Service does not support node creation';
+          break;
+        case TopicCreationErrors.RegistrationRequired:
+          this.error = 'Service requires registration';
+          break;
+        case TopicCreationErrors.Forbidden:
+          this.error = 'Requesting entity is prohibited from creating nodes';
+          break;
+        case TopicCreationErrors.Conflict:
+          this.error = 'A topic with the given identifier does already exist';
+          break;
+        case TopicCreationErrors.NodeIdRequired:
+          this.error = 'Service does not support instant nodes';
+          break;
+        default:
+          console.log(error);
+          this.error = `Failed to create new topic: (${error.type}: ${error.condition})`;
       }
-    );
-    this.creationService.createTopic(new XmppDataForm(fields)).then(() => {
-      this.navigationService.goToHome();
     });
+    return false;
   }
 
-  private filterForm(form: XmppDataForm): XmppDataForm {
-    const specificFieldNames = Object.keys(this.specificFormFields);
-    const allFormFieldNames = form.fields.map((field: XmppDataFormField) => {
-      return field.variable;
-    });
-    // ensure all specificFieldNames are present
-    const allSpecificFieldsPresent = specificFieldNames.every((fieldName: string) => {
-      return allFormFieldNames.indexOf(fieldName) >= 0;
-    });
-
-    if (!allSpecificFieldsPresent) {
-      throw new Error('Missing specific form elements!');
-    }
-
-    return new XmppDataForm(
-      form.fields.filter((field: XmppDataFormField) => {
-        return specificFieldNames.indexOf(field.variable) < 0;
-      })
-    );
-  }
 }

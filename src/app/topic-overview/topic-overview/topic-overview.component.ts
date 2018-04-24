@@ -5,7 +5,7 @@ import 'rxjs/add/operator/filter';
 import {NavigationService} from '../../core/navigation.service';
 import {TopicOverviewService} from '../topic-overview-service/topic-overview.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
-import {Topics} from '../../core/models/topic';
+import {Topic, Topics} from '../../core/models/topic';
 
 
 @Component({
@@ -52,5 +52,9 @@ export class TopicOverviewComponent implements OnInit {
       default:
         this.navigationService.goToNewTopic();
     }
+  }
+
+  onTopicClicked(topic: Topic) {
+    this.navigationService.goToTopic(topic);
   }
 }
