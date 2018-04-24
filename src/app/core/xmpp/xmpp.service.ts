@@ -42,11 +42,11 @@ export class XmppService {
   constructor(private xmppClientFactory: XmppClientFactory, private configService: ConfigService) {
     this._config = this.configService.getConfig().then(config => config.xmpp);
     this._client = this._config.then(config => this._getClientInstance(config));
-    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid.domain}`));
+    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid_domain}`));
   }
 
   public getServerTitle(): Promise<string> {
-    return this._config.then(config => config.jid.domain);
+    return this._config.then(config => config.jid_domain);
   }
 
   /**

@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {XmppDataForm} from '../core/models/FormModels';
 import {XmppService} from '../core/xmpp/xmpp.service';
+import {JID} from 'xmpp-jid';
 
 export enum LoadFormErrorCodes {
   ItemNotFound = 'item-not-found',
@@ -16,20 +17,20 @@ export class TopicDetailsService {
   }
 
   public loadForm(topicIdentifier: string): Promise<XmppDataForm> {
-    return this.xmppService.getClient()
-      .then((client) => this._loadFormFromClient(client, topicIdentifier));
+    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
+      .then(([client, pubSubJid]) => this._loadFormFromClient(client, pubSubJid, topicIdentifier));
   }
 
   public updateTopic(topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<XmppDataForm> {
-    return this.xmppService.getClient()
-      .then((client) => this._submitForm(client, topicIdentifier, xmppDataForm))
+    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
+      .then(([client, pubSubJid) => this._submitForm(client, pubSubJid, topicIdentifier, xmppDataForm))
       .then(() => this.loadForm(topicIdentifier));
   }
 
-  private _loadFormFromClient(client: any, topicIdentifier: string): Promise<XmppDataForm> {
+  private _loadFormFromClient(client: any, pubSubJid: JID, topicIdentifier: string): Promise<XmppDataForm> {
     const cmd = {
       type: 'get',
-      to: this.xmppService.pubSubJid,
+      to: pubSubJid,
       pubsubOwner: {
         config: {
           node: topicIdentifier,
@@ -50,13 +51,13 @@ export class TopicDetailsService {
     });
   }
 
-  private _submitForm(client: any, topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<void> {
+  private _submitForm(client: any, pubSubJid: JID, topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<void> {
     const form = xmppDataForm.toJSON();
     form['type'] = 'submit';
 
     const cmd = {
       type: 'set',
-      to: this.xmppService.pubSubJid,
+      to: pubSubJid,
       pubsubOwner: {
         config: {
           node: topicIdentifier,
