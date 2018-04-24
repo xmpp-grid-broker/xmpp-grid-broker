@@ -3,11 +3,11 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 
 @Component({
-  selector: 'xgb-topic-config',
-  templateUrl: './topic-config.component.html',
-  styleUrls: ['./topic-config.component.css']
+  selector: 'xgb-generic-form-config',
+  templateUrl: './generic-form-config.component.html',
+  styleUrls: ['./generic-form-config.component.css']
 })
-export class TopicConfigComponent implements OnInit {
+export class GenericFormConfigComponent implements OnInit {
   /**
    * The xmpp data form to render. Must be available at `onInit`.
    */
