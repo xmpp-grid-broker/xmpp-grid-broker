@@ -50,7 +50,7 @@ export class TopicOverviewService {
         if (topicType === 'leaf') {
           resolve(new LeafTopic(topicTitle));
         } else if (topicType === 'collection' && loadChildren) {
-          this.loadChildTopics(client, topicTitle).then((childTopics) => {
+          this.loadChildTopics(client, pubSubJid, topicTitle).then((childTopics) => {
             resolve(new CollectionTopic(topicTitle, childTopics));
           });
         } else if (topicType === 'collection') {
