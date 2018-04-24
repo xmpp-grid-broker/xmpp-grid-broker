@@ -23,7 +23,7 @@ export class TopicDetailsService {
 
   public updateTopic(topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<XmppDataForm> {
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
-      .then(([client, pubSubJid) => this._submitForm(client, pubSubJid, topicIdentifier, xmppDataForm))
+      .then(([client, pubSubJid]) => this._submitForm(client, pubSubJid, topicIdentifier, xmppDataForm))
       .then(() => this.loadForm(topicIdentifier));
   }
 
