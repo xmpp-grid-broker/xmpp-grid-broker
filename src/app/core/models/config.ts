@@ -4,9 +4,9 @@ export class Config {
   constructor(readonly xmpp: XmppConfig) {}
 }
 
-enum XmppTransport { Bosh = 'bosh', WebSocket = 'websocket' }
+export enum XmppTransport { Bosh = 'bosh', WebSocket = 'websocket' }
 
-export abstract class XmppConfig {
+export class XmppConfig {
   constructor(
     readonly jid: JID,
     readonly jid_domain: string,
