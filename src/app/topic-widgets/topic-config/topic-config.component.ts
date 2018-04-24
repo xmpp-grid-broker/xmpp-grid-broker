@@ -16,6 +16,10 @@ export class TopicConfigComponent {
   @Input() public nodeId: string;
 
   /**
+   * The label of the submit button.
+   */
+  @Input() public submitLabel: string;
+  /**
    * The xmpp data for as loaded from the server.
    */
   @Input()
@@ -75,7 +79,10 @@ export class TopicConfigComponent {
 
   }
 
-  private createFormToSubmit(): XmppDataForm {
+  public createFormToSubmit(): XmppDataForm {
+    if (!this._xmppDataForm) {
+      return null;
+    }
     const fields = [];
 
     this._xmppDataForm.fields.forEach((field: XmppDataFormField) => {

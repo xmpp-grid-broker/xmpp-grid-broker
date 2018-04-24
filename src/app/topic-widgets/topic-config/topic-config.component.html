@@ -1,11 +1,13 @@
 <form *ngIf="formGroup"
       xgbForm
       [formGroup]="formGroup"
+      (keyup.enter)="onFormSubmit()"
       (ngSubmit)="onFormSubmit()">
 
   <!--TODO: RENDER NODE ID (IF GIVEN) - DISABLED AND NOT PART OF THE FORM-->
 
-  <xgb-form-field fieldId="title"
+  <xgb-form-field *ngIf="formGroup.get('pubsub#title')"
+                  fieldId="title"
                   fieldLabel="Topic / Collection title"
                   fieldHelp="A short name for the node / collection">
     <input type="text"
@@ -19,11 +21,11 @@
 
   <!--TODO: FIX THIS! (not supported by openfire (?!)-->
   <!--<xgb-collapsible-->
-    <!--[isVisible]="true"-->
-    <!--[title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">-->
-    <!--<xgb-topic-chooser-->
-    <!--[formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">-->
-    <!--</xgb-topic-chooser>-->
+  <!--[isVisible]="true"-->
+  <!--[title]="(isNewCollection ? 'Contained Topics': 'Parent Collections')">-->
+  <!--<xgb-topic-chooser-->
+  <!--[formControlName]="isNewCollection ? 'pubsub#children' : 'pubsub#collection'">-->
+  <!--</xgb-topic-chooser>-->
   <!--</xgb-collapsible>-->
 
   <xgb-collapsible
@@ -33,11 +35,10 @@
       [formGroup]="formGroup">
     </xgb-generic-form-config>
   </xgb-collapsible>
-
-  <button type="submit"
-          [disabled]="!formGroup.valid"
-          xgbActionButton
-          primary>
-    <!--TODO: FIX LABEL--> DO IT
-  </button>
 </form>
+<button type="submit"
+        (click)="onFormSubmit()"
+        xgbActionButton
+        primary>
+  {{submitLabel}}
+</button>
