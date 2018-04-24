@@ -1,21 +1,42 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/publish';
-import {Subject} from 'rxjs/Subject';
+import {ComponentFactoryResolver, Injectable, ViewContainerRef} from '@angular/core';
+import {NotificationsComponent} from './notifications/notifications.component';
 
-
+/**
+ * The Notification can be used to send notification
+ * messages to the user.
+ */
 @Injectable()
 export class NotificationService {
-  public readonly notification: Observable<string>;
-  private _notification: Subject<string>;
+  private factoryResolver: ComponentFactoryResolver;
+  private rootViewContainer: ViewContainerRef;
 
-  constructor() {
-    this._notification = new Subject();
-    this.notification = this._notification.asObservable().publish().refCount();
+  constructor(factoryResolver: ComponentFactoryResolver) {
+    this.factoryResolver = factoryResolver;
   }
 
+  /**
+   * Show the given message to the user.
+   */
   public notify(message: string) {
-    this._notification.next(message);
+    // Dynamically generate a new component
+    const factory = this.factoryResolver.resolveComponentFactory(NotificationsComponent);
+    const componentRef = factory.create(this.rootViewContainer.parentInjector);
+
+    // Populate the fields on the component
+    const component = componentRef.instance;
+    component.errorMessage = message;
+    component.setViewRef(componentRef);
+
+    // Insert the component into the DOM
+    this.rootViewContainer.insert(componentRef.hostView);
   }
 
+  /**
+   * sets view into which the component is inserted.
+   * This should only be done once in the app module.
+   */
+  public setRootViewContainerRef(viewContainerRef: ViewContainerRef) {
+    this.rootViewContainer = viewContainerRef;
+  }
 }

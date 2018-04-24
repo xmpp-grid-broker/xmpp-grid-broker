@@ -1,4 +1,4 @@
-<div [ngClass]="{'modal': true, 'active': isActive }" id="modal-id">
+<div class="modal active" id="modal-id">
   <a (click)="hide()" class="modal-overlay" aria-label="Close"></a>
   <div class="modal-container">
     <div class="modal-header">
@@ -10,8 +10,10 @@
         <p>We're sorry, but an unexpected problem occurred</p>
         <p>Please <a href="https://github.com/xmpp-grid-broker/xmpp-grid-broker/" target="_blank"> report this issue</a>,
           so that we can fix it.</p>
-        <b>Details:</b>
-        <pre class="code">{{errorMessage}}</pre>
+        <ng-container *ngIf="errorMessage">
+          <b>Details:</b>
+          <pre class="code">{{errorMessage}}</pre>
+        </ng-container>
       </div>
     </div>
   </div>

@@ -14,6 +14,7 @@ import {NotificationsComponent} from './notifications/notifications.component';
   imports: [CommonModule, RouterModule],
   declarations: [HeaderComponent, ErrorPageComponent, NotificationsComponent],
   exports: [HeaderComponent, NotificationsComponent],
+  entryComponents: [NotificationsComponent],
   providers: [{
     provide: ErrorHandler,
     useClass: GlobalErrorHandlerService
