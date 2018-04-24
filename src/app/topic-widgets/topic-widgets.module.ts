@@ -7,8 +7,15 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FormFieldNamePipe} from './generic-form-config/form-field-name.pipe';
 import {JidMultiComponent} from './jid-multi/jid-multi.component';
 import {TopicChooserComponent} from './topic-chooser/topic-chooser.component';
+import {TopicConfigComponent} from './topic-config/topic-config.component';
 
-const EXPORTED_DECLARATIONS = [TopicListComponent, GenericFormConfigComponent, FormFieldNamePipe, TopicChooserComponent];
+const EXPORTED_DECLARATIONS = [
+  TopicListComponent,
+  GenericFormConfigComponent,
+  TopicConfigComponent,
+  FormFieldNamePipe,
+  TopicChooserComponent
+];
 
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
