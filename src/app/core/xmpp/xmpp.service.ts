@@ -33,7 +33,7 @@ export class XmppService {
   /**
    * The JID used to address the pubsub service, see XEP-0060 for details
    */
-  public readonly pubSubJid;
+  public readonly pubSubJid: Promise<JID>;
 
   private readonly _client: Promise<any>;
   private readonly _config: Promise<XmppConfig>;
@@ -42,7 +42,7 @@ export class XmppService {
   constructor(private xmppClientFactory: XmppClientFactory, private configService: ConfigService) {
     this._config = this.configService.getConfig().then(config => config.xmpp);
     this._client = this._config.then(config => this._getClientInstance(config));
-    this.pubSubJid = new JID(`pubsub.${this.config.jid_domain}`); // TODO: Make promise
+    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid.domain}`));
   }
 
   public getServerTitle(): Promise<string> {
