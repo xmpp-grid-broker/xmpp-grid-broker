@@ -78,7 +78,7 @@ export class XmppDataForm {
     }));
   }
 
-  toJSON(): object {
-    return {fields: this.fields.map((field: XmppDataFormField) => field.toJSON())};
+  toJSON(type = 'submit'): object {
+    return {fields: this.fields.map((field: XmppDataFormField) => field.toJSON()), type};
   }
 }
