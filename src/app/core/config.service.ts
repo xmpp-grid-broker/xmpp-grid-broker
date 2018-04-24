@@ -4,6 +4,10 @@ import {Config} from './models/config';
 
 @Injectable()
 export class ConfigService {
+  /**
+   * The URL of the configuration file.
+   * @type {string}
+   */
   static readonly CONFIG_FILE = './configuration.json';
   private readonly _config: Promise<Config>;
 
@@ -12,11 +16,16 @@ export class ConfigService {
   }
 
   loadConfig(): Promise<Config> {
-    return this.http.get(ConfigService.CONFIG_FILE) // TODO: Does this work if in "subdir"?
+    return this.http.get(ConfigService.CONFIG_FILE)
       .toPromise()
-      .then(json => json as Config);
+      .then(json => Config.fromJson(json));
   }
 
+  /**
+   * Returns a Promise of the application configuration,
+   * that is loaded on this services initialisation.
+   * @returns {Promise<Config>}
+   */
   getConfig(): Promise<Config> {
     return this._config;
   }
