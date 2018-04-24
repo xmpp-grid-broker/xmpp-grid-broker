@@ -9,6 +9,7 @@ import {DebugElement} from '@angular/core';
 import {NavigationService} from '../core/navigation.service';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
+import {ToastDirective} from '../shared/toast.directive';
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,
@@ -41,7 +42,7 @@ class MockTopicDetailsService {
 
   // noinspection JSMethodCanBeStatic, JSMethodCanBeStatic
   updateTopic(identifier, form): Promise<XmppDataForm> {
-    return Promise.resolve(form);
+    return this.loadForm();
   }
 }
 
@@ -51,6 +52,7 @@ describe('TopicDetailsComponent', () => {
   let fixture: ComponentFixture<TopicDetailsComponent>;
   let de: DebugElement;
   let mockService: MockTopicDetailsService;
+  let submitButton: HTMLElement;
 
   beforeEach(fakeAsync(() => {
       mockService = new MockTopicDetailsService();
@@ -67,30 +69,30 @@ describe('TopicDetailsComponent', () => {
       component = fixture.componentInstance;
       de = fixture.debugElement;
 
+      // Render for the first time, the spinner will be shown
       fixture.detectChanges();
+      tick();
+
+      expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+
+      // The loading is done, get rid of the spinner...
+      fixture.detectChanges();
+      tick();
+
+      submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
     }
   ));
 
   describe('given some advanced fields', () => {
 
-    let submitButton: HTMLElement;
 
     beforeEach(fakeAsync(() => {
+      // show advanced collapsible
+      de.query(By.css('xgb-collapsible')).componentInstance.isVisible = true;
+
+      // Re-Render
       fixture.detectChanges();
       tick();
-      const fn = () => {
-        submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
-
-        // show advanced collapsible
-        de.query(By.css('xgb-collapsible')).componentInstance.isVisible = true;
-
-        fixture.detectChanges();
-      };
-
-      fixture.whenStable().then(() => {
-        fixture.whenRenderingDone().then(fn);
-      });
-
     }));
 
     it('advanced form entries are not included if nothing has changed', () => {
@@ -100,6 +102,7 @@ describe('TopicDetailsComponent', () => {
       fixture.detectChanges();
 
       expect(serviceSpy.calls.count()).toBe(1);
+
       const args = serviceSpy.calls.argsFor(0);
       const form = args[1];
 
@@ -120,6 +123,7 @@ describe('TopicDetailsComponent', () => {
       fixture.detectChanges();
 
       expect(serviceSpy.calls.count()).toBe(1);
+
       const args = serviceSpy.calls.argsFor(0);
       const form = args[1];
 
@@ -132,6 +136,68 @@ describe('TopicDetailsComponent', () => {
 
 
     }));
+
+  });
+
+  describe('given a changed title', () => {
+
+    beforeEach(() => {
+      const inputField = de.query(By.css('#title')).nativeElement;
+      inputField.value = 'ChangedTitle';
+      inputField.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    });
+
+
+    it('should show a message after success update', fakeAsync(() => {
+      const serviceSpy = spyOn(mockService, 'updateTopic').and.callThrough();
+
+      submitButton.click();
+
+      // Hello Spinner
+      fixture.detectChanges();
+      tick();
+
+      // Is spinner rendered?
+      expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+
+      // Good bye spinner...
+      fixture.detectChanges();
+      tick();
+
+      const notificationDivs = de.queryAll(By.directive(ToastDirective));
+      expect(notificationDivs.length).toBe(1);
+      expect(notificationDivs[0].nativeElement.innerText).toBe('Form successfully updated!');
+      expect(notificationDivs[0].attributes['success']).toBeDefined();
+
+    }));
+
+    it('should show a message on error', fakeAsync(() => {
+      const serviceSpy = spyOn(mockService, 'updateTopic').and.callFake(() => Promise.reject({
+        condition: 'not-acceptable'
+      }));
+
+      submitButton.click();
+
+      // Hello Spinner
+      fixture.detectChanges();
+      tick();
+
+      // Is spinner rendered?
+      expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+
+      // Good bye spinner...
+      fixture.detectChanges();
+      tick();
+
+      const notificationDivs = de.queryAll(By.directive(ToastDirective));
+      expect(notificationDivs.length).toBe(1);
+      expect(notificationDivs[0].nativeElement.innerText).toBe(
+        'Failed to update the configuration (Server responded with: not-acceptable)'
+      );
+      expect(notificationDivs[0].attributes['error']).toBeDefined();
+    }));
+
   });
 
 });

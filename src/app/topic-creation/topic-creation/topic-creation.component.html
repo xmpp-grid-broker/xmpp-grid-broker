@@ -1,14 +1,14 @@
 <h2>Create New {{isNewCollection ? "Collection": "Topic"}}</h2>
 
-<div *ngIf="error" class="toast toast-error">{{error}}</div>
+<div *ngIf="error" xgbToast toast-error>{{error}}</div>
 
 <form xgbForm
       [formGroup]="formGroup"
       (ngSubmit)="submit()">
 
   <xgb-form-field fieldId="nodeID"
-                  fieldLabel="NodeID *"
-                  fieldHelp="The unique identifier for a node within the context of a pubsub service.">
+                  fieldLabel="NodeID"
+                  fieldHelp="The unique identifier for a node within the context of a pubsub service. If left empty and the server supports instant nodes, the identifier is automatically generated.">
     <input type="text"
            xgbFormInput
            formControlName="nodeID"

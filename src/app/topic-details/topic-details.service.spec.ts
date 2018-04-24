@@ -35,7 +35,7 @@ describe('TopicDetailsService', () => {
     });
   });
 
-  it('should execute an 2 iqs to sumit the form', (done) => {
+  it('should execute an 2 iqs to submit the form', (done) => {
     spyOn(client, 'sendIq').and.callThrough();
     const form = new XmppDataForm([
       new XmppDataFormField(

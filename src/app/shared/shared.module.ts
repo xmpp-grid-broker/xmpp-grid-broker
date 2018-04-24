@@ -13,6 +13,7 @@ import {FormSwitchComponent} from './form/form-switch.component';
 import {FormFieldComponent} from './form/form-field.component';
 import {SpinnerComponent} from './spinner/spinner.component';
 import {CollapsibleComponent} from './collapsible/collapsible.component';
+import {ToastDirective} from './toast.directive';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,
@@ -20,6 +21,7 @@ const EXPORTED_DECLARATIONS = [
   TabsComponent,
   TabComponent,
   ActionButtonDirective,
+  ToastDirective,
   ActionBarComponent,
   FormDirective,
   FormInputDirective,

@@ -1,15 +1,17 @@
-<h2>Topic: {{this.topicIdentifier}}</h2>
+<h2>Topic: {{this.nodeId}}</h2>
 
-<xgb-spinner *ngIf="loading"></xgb-spinner>
+<xgb-spinner *ngIf="formStatus.processing"></xgb-spinner>
 
-<!--TODO: Show errors (if any)-->
-<form *ngIf="!loading"
+<div *ngIf="formStatus.error" xgbToast toast-error>{{formStatus.error}}</div>
+<div *ngIf="formStatus.success" xgbToast toast-success>{{formStatus.success}}</div>
+
+<form *ngIf="!formStatus.processing && formGroup"
       xgbForm
       [formGroup]="formGroup"
       (ngSubmit)="submit()">
 
   <xgb-form-field fieldId="title"
-                  fieldLabel="Topic / Collection title *"
+                  fieldLabel="Topic / Collection title"
                   fieldHelp="A short name for the node / collection">
     <input type="text"
            xgbFormInput

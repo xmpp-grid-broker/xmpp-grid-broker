@@ -56,6 +56,16 @@ export class XmppDataFormField {
       value: this.value
     };
   }
+
+  cloneWithNewValue(newValue: any): XmppDataFormField {
+    return new XmppDataFormField(
+      this.type,
+      this.name,
+      newValue,
+      this.label,
+      this.options
+    );
+  }
 }
 
 export class XmppDataForm {
