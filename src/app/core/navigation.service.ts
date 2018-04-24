@@ -7,7 +7,7 @@ export class NavigationService {
 
   public goToUrl(url: string): void {
     // noinspection JSIgnoredPromiseFromCall
-    this.router.navigateByUrl(url);
+    this.router.navigateByUrl(encodeURI(url));
   }
 
   public goToNewTopic(): void {
