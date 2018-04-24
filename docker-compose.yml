@@ -14,7 +14,6 @@ services:
     image: node:8-alpine
     volumes:
       - ./:/mnt
-      - ./stack/configuration.json:/mnt/configuration.json
     user: ${UID}
     working_dir: /mnt
     entrypoint: npm run --
@@ -26,6 +25,7 @@ services:
     volumes:
       - ./stack/nginx:/etc/nginx/sites:ro
       - ./stack/certs/keys:/etc/dehydrated/certs:ro
+      - ./stack/configuration.json:/mnt/configuration.json:ro
     ports:
       - 443:443
       - 80:80

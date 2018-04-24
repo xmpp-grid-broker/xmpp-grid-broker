@@ -4,7 +4,7 @@ import {Config} from './models/config';
 
 @Injectable()
 export class ConfigService {
-  static readonly CONFIG_FILE = './_configuration.json';
+  static readonly CONFIG_FILE = './configuration.json';
   private readonly _config: Promise<Config>;
 
   constructor(private http: HttpClient) {
