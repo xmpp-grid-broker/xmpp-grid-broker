@@ -5,7 +5,7 @@ import {Config} from './models/config';
 @Injectable()
 export class ConfigService {
   static readonly CONFIG_FILE = './_configuration.json';
-  readonly _config: Promise<Config>;
+  private readonly _config: Promise<Config>;
 
   constructor(private http: HttpClient) {
     this._config = this.loadConfig();
