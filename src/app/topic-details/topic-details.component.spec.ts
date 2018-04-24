@@ -168,7 +168,7 @@ describe('TopicDetailsComponent', () => {
       const notificationDivs = de.queryAll(By.directive(ToastDirective));
       expect(notificationDivs.length).toBe(1);
       expect(notificationDivs[0].nativeElement.innerText).toBe('Form successfully updated!');
-      expect(notificationDivs[0].attributes['success']).toBeDefined();
+      expect(notificationDivs[0].attributes['toast-success']).toBeDefined();
 
     }));
 
@@ -195,7 +195,7 @@ describe('TopicDetailsComponent', () => {
       expect(notificationDivs[0].nativeElement.innerText).toBe(
         'Failed to update the configuration (Server responded with: not-acceptable)'
       );
-      expect(notificationDivs[0].attributes['error']).toBeDefined();
+      expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
     }));
 
   });
