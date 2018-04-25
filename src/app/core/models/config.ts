@@ -31,7 +31,7 @@ export class XmppConfig {
   static fromJson(json: any): XmppConfig {
     const requiredFieldNames = ['jid', 'jid_domain', 'transport'];
     for (const fieldName of requiredFieldNames) {
-      if (json[fieldName] === undefined) {
+      if (!json[fieldName]) {
         throw Error(`XMPP configuration field "${fieldName}" must be configured`);
       }
     }
@@ -65,7 +65,7 @@ export class Config {
   static fromJson(json: any): Config {
     const requiredFieldNames = ['xmpp'];
     for (const fieldName of requiredFieldNames) {
-      if (json[fieldName] === undefined) {
+      if (!json[fieldName]) {
         throw Error(`Configuration field "${fieldName}" is undefined!`);
       }
     }

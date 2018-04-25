@@ -76,6 +76,7 @@ describe('ConfigService', () => {
   it('should throw error if configuration file does not exist',  (done) => {
     httpClient = new FakeHttpClient('./bla.json');
 
+    // Catch asynchronously thrown error from ConfigService.constructor
     const initialisation = async() => {
       service = new ConfigService(httpClient);
       await service.getConfig();
@@ -88,6 +89,7 @@ describe('ConfigService', () => {
     httpClient = new FakeHttpClient('./configuration.json');
     spyOn(httpClient, 'get').and.callFake(() => Observable.of({}));
 
+    // Catch asynchronously thrown error from ConfigService.constructor
     const initialisation = async() => {
         service = new ConfigService(httpClient);
         return await service.getConfig();
@@ -103,6 +105,7 @@ describe('ConfigService', () => {
 
     spyOn(httpClient, 'get').and.callFake(() => Observable.of(incomplete_json_config));
 
+    // Catch asynchronously thrown error from ConfigService.constructor
     const initialisation = async() => {
       service = new ConfigService(httpClient);
       return await service.getConfig();
