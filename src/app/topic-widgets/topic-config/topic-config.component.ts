@@ -1,12 +1,12 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {XmppDataForm, XmppDataFormField} from '../../core/models/FormModels';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 
 @Component({
   selector: 'xgb-topic-config',
   templateUrl: './topic-config.component.html'
 })
-export class TopicConfigComponent {
+export class TopicConfigComponent implements DoCheck {
   /**
    * The NodeID as given via URL used to identify
    * the node (See XEP-0060 for details).
@@ -17,6 +17,7 @@ export class TopicConfigComponent {
    * The label of the submit button.
    */
   @Input() public submitLabel: string;
+
   /**
    * The xmpp data for as loaded from the server.
    */
@@ -42,7 +43,11 @@ export class TopicConfigComponent {
   /**
    * Fields, for which a specialized widget / validation takes place.
    */
-  specificFormFields: string[] = ['pubsub#title'];
+  specificFormFields: { [key: string]: XmppDataFormField } = {
+    'pubsub#title': undefined,
+    'pubsub#children': undefined,
+    'pubsub#collection': undefined
+  };
 
   /**
    * The Angular Form group used for form
@@ -52,16 +57,21 @@ export class TopicConfigComponent {
    * managed by this
    */
   formGroup: FormGroup;
+  XmppDataFormFieldType = XmppDataFormFieldType;
 
   private _xmppDataForm: XmppDataForm;
 
-  constructor() {
+  constructor(private cd: ChangeDetectorRef) {
   }
 
   onFormSubmit(): void {
     this.configSubmitted.emit(this.createFormToSubmit());
   }
 
+
+  public ngDoCheck(): void {
+    this.cd.detectChanges();
+  }
 
   public installForm(form: XmppDataForm) {
     if (!form) {
@@ -100,11 +110,9 @@ export class TopicConfigComponent {
   private installSpecificForm() {
     this._xmppDataForm.fields.forEach((field) => {
       if (this.isSpecificFormField(field.name)) {
-        this.formGroup.addControl(field.name, new FormControl(field.value));
-        // TODO:
-        // this.specificFormFields['pubsub#node_type'] = new FormControl(this.route.snapshot.data.type);
-        // this.specificFormFields['pubsub#children'] = new FormControl(null);
-        // this.specificFormFields['pubsub#collection'] = new FormControl(null);
+        const control = new FormControl(field.value);
+        this.formGroup.addControl(field.name, control);
+        this.specificFormFields[field.name] = field;
       }
     });
   }
@@ -117,6 +125,6 @@ export class TopicConfigComponent {
   }
 
   private isSpecificFormField(fieldName: string): boolean {
-    return this.specificFormFields.indexOf(fieldName) >= 0;
+    return Object.keys(this.specificFormFields).indexOf(fieldName) >= 0;
   }
 }
