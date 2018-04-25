@@ -4,7 +4,16 @@
       (keyup.enter)="onFormSubmit()"
       (ngSubmit)="onFormSubmit()">
 
-  <!--TODO: RENDER NODE ID (IF GIVEN) - DISABLED AND NOT PART OF THE FORM-->
+  <xgb-form-field *ngIf="nodeId"
+                  fieldId="nodeID"
+                  fieldLabel="NodeID"
+                  fieldHelp="The unique identifier for a node within the context of a pubsub service.">
+    <input type="text"
+           xgbFormInput
+           [value]="nodeId"
+           disabled>
+  </xgb-form-field>
+
 
   <xgb-form-field *ngIf="formGroup.get('pubsub#title')"
                   fieldId="title"
