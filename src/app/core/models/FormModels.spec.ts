@@ -1,4 +1,4 @@
-import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './FormModels';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './FormModels';
 
 describe('XmppDataFormField', () => {
   describe('when calling toJSON', () => {
@@ -74,6 +74,19 @@ describe('XmppDataForm', () => {
 
       expect(jsonObject['fields']).toBeDefined();
     });
+
+    it('should has submit as default type', () => {
+      const jsonObject = form.toJSON();
+
+      expect(jsonObject['type']).toBe('submit');
+    });
+
+    it('should contain the defined type as property', () => {
+      const jsonObject = form.toJSON('result');
+
+      expect(jsonObject['type']).toBe('result');
+    });
+
 
     it('should contain an entry in the fields array for every field', () => {
       const jsonObject = form.toJSON();

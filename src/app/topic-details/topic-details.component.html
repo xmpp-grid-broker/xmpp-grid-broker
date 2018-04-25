@@ -5,7 +5,7 @@
 <div *ngIf="formProcessing.error" xgbToast toast-error>{{formProcessing.error}}</div>
 <div *ngIf="formProcessing.success" xgbToast toast-success>{{formProcessing.success}}</div>
 
-<xgb-topic-config *ngIf="!formProcessing.processing"
+<xgb-topic-config *ngIf="initialFormLoaded && !formProcessing.processing"
                   [nodeId]="nodeId"
                   [xmppDataForm]="loadedForm"
                   submitLabel="Update"

@@ -26,6 +26,13 @@ export class TopicDetailsComponent implements OnInit {
    */
   loadedForm: XmppDataForm;
 
+  /**
+   * A utility property that helps hide the update
+   * button if the loading fails.
+   * @type {boolean}
+   */
+  initialFormLoaded = false;
+
   constructor(private route: ActivatedRoute,
               private topicDetailsService: TopicDetailsService) {
   }
@@ -36,6 +43,7 @@ export class TopicDetailsComponent implements OnInit {
 
     this.topicDetailsService.loadForm(this.nodeId)
       .then((form: XmppDataForm) => {
+        this.initialFormLoaded = true;
         this.loadedForm = form;
         this.formProcessing.done();
       })

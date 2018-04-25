@@ -4,9 +4,8 @@ import {TopicDetailsComponent} from './topic-details.component';
 import {SharedModule} from '../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
-import {TopicDetailsService} from './topic-details.service';
+import {LoadFormErrorCodes, TopicDetailsService} from './topic-details.service';
 import {DebugElement} from '@angular/core';
-import {NavigationService} from '../core/navigation.service';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import {ToastDirective} from '../shared/toast.directive';
@@ -61,7 +60,6 @@ describe('TopicDetailsComponent', () => {
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicDetailsComponent],
         providers: [{provide: TopicDetailsService, useValue: mockService},
-          {provide: NavigationService, useValue: jasmine.createSpyObj('NavigationService', ['goToHome'])},
           {provide: ActivatedRoute, useValue: {snapshot: {params: {id: 'testing'}}}}]
       });
 
@@ -69,24 +67,52 @@ describe('TopicDetailsComponent', () => {
       component = fixture.componentInstance;
       de = fixture.debugElement;
 
-      // Render for the first time, the spinner will be shown
-      fixture.detectChanges();
-      tick();
-
-      expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
-
-      // The loading is done, get rid of the spinner...
-      fixture.detectChanges();
-      tick();
-
-      submitButton = de.query(By.css('button[type="submit"][primary]')).nativeElement;
     }
   ));
+
+  const waitUntilLoaded = () => {
+    // Render for the first time, the spinner will be shown
+    fixture.detectChanges();
+    tick();
+
+    expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+
+    // The loading is done, get rid of the spinner...
+    fixture.detectChanges();
+    tick();
+
+    const deBtn = de.query(By.css('button[type="submit"][primary]'));
+    submitButton = (deBtn) ? deBtn.nativeElement : undefined;
+  };
+
+  [
+    {condition: LoadFormErrorCodes.ItemNotFound, message: 'Node with NodeID testing does not exist!'},
+    {condition: LoadFormErrorCodes.Unsupported, message: 'Node configuration is not supported by the XMPP server'},
+    {condition: LoadFormErrorCodes.Forbidden, message: 'Insufficient Privileges to configure node testing'},
+    {condition: LoadFormErrorCodes.NotAllowed, message: 'There are no configuration options available'},
+    {condition: 'other', message: 'An unknown error occurred: other!'},
+  ].forEach(({condition, message}) => {
+    it('should show an error message when loading the for fails', fakeAsync(() => {
+      spyOn(mockService, 'loadForm').and.callFake(() => {
+        return Promise.reject({condition});
+      });
+      waitUntilLoaded();
+      const notificationDivs = de.queryAll(By.directive(ToastDirective));
+      expect(notificationDivs.length).toBe(1);
+      expect(notificationDivs[0].nativeElement.innerText).toBe(
+        message
+      );
+      expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
+      expect(submitButton).toBeUndefined();
+    }));
+  });
 
   describe('given some advanced fields', () => {
 
 
     beforeEach(fakeAsync(() => {
+      waitUntilLoaded();
+
       // show advanced collapsible
       de.query(By.css('xgb-collapsible')).componentInstance.isVisible = true;
 
@@ -141,12 +167,14 @@ describe('TopicDetailsComponent', () => {
 
   describe('given a changed title', () => {
 
-    beforeEach(() => {
+    beforeEach(fakeAsync(() => {
+      waitUntilLoaded();
+
       const inputField = de.query(By.css('#title')).nativeElement;
       inputField.value = 'ChangedTitle';
       inputField.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-    });
+    }));
 
 
     it('should show a message after success update', fakeAsync(() => {
@@ -172,7 +200,7 @@ describe('TopicDetailsComponent', () => {
 
     }));
 
-    it('should show a message on error', fakeAsync(() => {
+    it('should show a message on error when submission fails', fakeAsync(() => {
       const serviceSpy = spyOn(mockService, 'updateTopic').and.callFake(() => Promise.reject({
         condition: 'not-acceptable'
       }));

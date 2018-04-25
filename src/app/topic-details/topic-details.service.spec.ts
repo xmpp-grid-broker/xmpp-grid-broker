@@ -1,4 +1,4 @@
-import {TopicDetailsService} from './topic-details.service';
+import {LoadFormErrorCodes, TopicDetailsService} from './topic-details.service';
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../core/models/FormModels';
 
 
@@ -34,6 +34,21 @@ describe('TopicDetailsService', () => {
       done();
     });
   });
+
+  it('should reject the promise if sendIq fails', (done) => {
+    spyOn(client, 'sendIq').and.callFake((cmd, cb) => {
+      cb({error: {condition: LoadFormErrorCodes.Forbidden}}, undefined);
+    });
+    service.loadForm('testing')
+      .then(() => {
+        fail('Expected an error instead of a successful result!');
+      })
+      .catch((error) => {
+        expect(error.condition).toBe(LoadFormErrorCodes.Forbidden);
+        done();
+      });
+  });
+
 
   it('should execute an 2 iqs to submit the form', (done) => {
     spyOn(client, 'sendIq').and.callThrough();
