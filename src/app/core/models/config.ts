@@ -28,16 +28,16 @@ export class XmppConfig {
    * @param json
    * @returns {XmppConfig}
    */
-  static fromJson(json: any) {
-    if (json.transport !== undefined && json.transport !== 'bosh' && json.transport !== 'websocket') {
-      throw new Error('XMPP configuration "transport" must either be bosh or websocket.');
+  static fromJson(json: any): XmppConfig {
+    const requiredFieldNames = ['jid', 'jid_domain', 'transport'];
+    for (const fieldName of requiredFieldNames) {
+      if (json[fieldName] === undefined) {
+        throw Error(`XMPP configuration field "${fieldName}" must be configured`);
+      }
     }
 
-    const required = ['jid', 'jid_domain', 'transport'];
-    for (const element of required) {
-      if (json[element] === undefined) {
-        throw Error(`XMPP configuration field "${element}" must be configured`);
-      }
+    if (json.transport && json.transport !== XmppTransport.Bosh && json.transport !== XmppTransport.WebSocket) {
+      throw new Error('XMPP configuration "transport" must either be bosh or websocket.');
     }
 
     return new XmppConfig(
@@ -63,10 +63,10 @@ export class Config {
    * @returns {Config}
    */
   static fromJson(json: any): Config {
-    const required = ['xmpp'];
-    for (const element of required) {
-      if (json[element] === undefined) {
-        throw Error(`Configuration field "${element}" is undefined!`);
+    const requiredFieldNames = ['xmpp'];
+    for (const fieldName of requiredFieldNames) {
+      if (json[fieldName] === undefined) {
+        throw Error(`Configuration field "${fieldName}" is undefined!`);
       }
     }
 
