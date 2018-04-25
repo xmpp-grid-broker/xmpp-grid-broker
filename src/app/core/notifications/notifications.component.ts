@@ -1,29 +1,26 @@
-import {Component, OnInit} from '@angular/core';
-import {NotificationService} from '../notification.service';
+import {Component, ComponentRef} from '@angular/core';
 
 @Component({
   selector: 'xgb-notifications',
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.css']
 })
-export class NotificationsComponent implements OnInit {
+export class NotificationsComponent {
 
-  errorMessage: string;
-  isActive: boolean;
+  public errorMessage: string;
+  private componentRef: ComponentRef<NotificationsComponent>;
 
-  constructor(private notificationService: NotificationService) {
-
+  /**
+   * Hide / destroy this notification.
+   */
+  public hide() {
+    this.componentRef.destroy();
   }
 
-  ngOnInit() {
-    this.isActive = false;
-    this.notificationService.notification.subscribe((message) => {
-      this.errorMessage = message;
-      this.isActive = true;
-    });
-  }
-
-  hide() {
-    this.isActive = false;
+  /**
+   * Sets the reference to this view to be able to destroy it.
+   */
+  public setViewRef(componentRef: ComponentRef<NotificationsComponent>) {
+    this.componentRef = componentRef;
   }
 }
