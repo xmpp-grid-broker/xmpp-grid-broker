@@ -11,7 +11,6 @@ export class GenericFormConfigComponent implements OnInit {
   /**
    * The xmpp data form to render. Must be available at `onInit`.
    */
-    // TODO: Use setter instead...
   @Input() public xmppDataForm: XmppDataForm;
 
   /**
