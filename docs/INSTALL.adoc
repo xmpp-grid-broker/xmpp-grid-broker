@@ -29,7 +29,7 @@ and following XMPP users:
   - A HTTP reverse proxy might be configured to handle the TLS traffic and authentication.
   - We provide hints for some XMPP servers below in section <<XMPP Servers>>
   - The link:SECURITY.adoc[Security Recommendations] should be followed.
-. Add the application build to you webserver root, so that is reachable from `xgb.example.com/`.
+. Add the application build to you webserver root, so that it is reachable from `xgb.example.com/`.
   - Latest releases are available on the https://github.com/xmpp-grid-broker/xmpp-grid-broker/releases[XGB GitHub release page].
   - See section <<Production Build>> to find more information on how to create custom builds.
 . Create and add your configuration as plaintext file `configuration.json` to the webserver root.
@@ -41,7 +41,7 @@ and following XMPP users:
 The configuration is a JSON file with the name `configuration.json` hosted in the same directory as the XMPP-Grid Broker.
 The file must adhere the https://json.org/[JSON format].
 
-A minimal configuration example can be found in this repository under `stack/configuration.json`.
+A minimal configuration example can be found in this repository under link:../stack/configuration.json[`stack/configuration.json`].
 
 === Configuration Options
 
@@ -56,10 +56,11 @@ A minimal configuration example can be found in this repository under `stack/con
 
 == Production Build
 
-A production build with documentation requires following dependencies:
+A production build with documentation has following dependencies:
 
 - https://nodejs.org/[nodejs] with npm
 - https://www.google.com/chrome/[Google Chrome]
+- bash
 
 To create the build:
 
@@ -76,7 +77,7 @@ Supported features:
 * No support for TLS / SASL EXTERNAL authentication with WebSockets as of 2018-04-25.
 * Partial support for Web-security features (e.g. no CORS Preflight requests) as of 2018-04-25.
 ** We recommend the use of a reverse proxy to catch such requests.
-** An example of a configuration for the https://www.nginx.com/[nginx]-webserver can be found in this repository under `stack/nginx/xgb.localhost.redbackup.org`
+** An example of a configuration for the https://www.nginx.com/[nginx]-webserver can be found in this repository under link:../stack/nginx/xgb.localhost.redbackup.org[`stack/nginx/xgb.localhost.redbackup.org`]
 
 Configuration:
 
