@@ -49,7 +49,7 @@ export class JidMultiComponent implements ControlValueAccessor {
   }
 
   writeValue(value: any): void {
-    if (value !== undefined) {
+    if (value) {
       this.jids = value;
     } else {
       this.jids = [];
