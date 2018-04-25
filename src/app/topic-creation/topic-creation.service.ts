@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {XmppService} from '../core/xmpp/xmpp.service';
-import {JID} from 'stanza.io';
+import {JID} from 'xmpp-jid';
 
 export enum TopicCreationErrors {
   FeatureNotImplemented = 'feature-not-implemented',
@@ -16,17 +16,17 @@ export class TopicCreationService {
   }
 
   createTopic(topicIdentifier: string): Promise<string> {
-    return this.xmppService.getClient()
-      .then((client) => this._createService(topicIdentifier, client));
+    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
+      .then(([client, pubSubJid]) => this._createService(topicIdentifier, client, pubSubJid));
   }
 
-  private _createService(topicIdentifier: any, client: any): Promise<string> {
+  private _createService(topicIdentifier: any, client: any, pubSubJid: JID): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!topicIdentifier) {
         topicIdentifier = true;
       }
 
-      client.createNode(this.xmppService.pubSubJid, topicIdentifier, {}, (err, result) => {
+      client.createNode(pubSubJid, topicIdentifier, {}, (err, result) => {
         if (err) {
           reject(err.error);
         } else if (result.pubsub) {

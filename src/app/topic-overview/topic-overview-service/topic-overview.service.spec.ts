@@ -11,10 +11,12 @@ class FakeClient {
 }
 
 class FakeXmppService {
-  public client = new FakeClient;
+  public  _client = new FakeClient();
+  public pubSubJid = Promise.resolve(new JID('pubsub.xmppserver'));
+
 
   getClient(): Promise<any> {
-    return Promise.resolve(this.client);
+    return Promise.resolve(this._client);
   }
 }
 
@@ -134,7 +136,7 @@ describe('TopicOverviewService', () => {
     xmppService = new FakeXmppService();
     service = new TopicOverviewService(xmppService);
 
-    spyOn(xmppService.client, 'getDiscoItems')
+    spyOn(xmppService._client, 'getDiscoItems')
       .and.callFake((jid: any, node: string, cb: (err?: any, data?: any) => void) => {
       switch (node) {
         case 'collection1':
@@ -146,7 +148,7 @@ describe('TopicOverviewService', () => {
       }
     });
 
-    spyOn(xmppService.client, 'getDiscoInfo')
+    spyOn(xmppService._client, 'getDiscoInfo')
       .and.callFake((jid: any, node: string, cb: (err?: any, data?: any) => void) => {
       switch (node) {
         case 'leaf1':

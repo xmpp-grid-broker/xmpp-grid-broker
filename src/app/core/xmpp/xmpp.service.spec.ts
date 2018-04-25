@@ -1,4 +1,6 @@
+import {JID} from 'xmpp-jid';
 import {XmppService} from './xmpp.service';
+import {Config, XmppConfig, XmppTransport} from '../models/config';
 
 class FakeClient {
   private handlers: Map<string, Array<() => any>> = new Map();
@@ -25,6 +27,14 @@ class FakeClient {
   }
 }
 
+class FakeConfigService {
+  public getConfig(): Promise<Config> {
+    const xmppConfig = new XmppConfig(new JID('admin@openfire'), 'openfire', XmppTransport.Bosh, 'localhost');
+    const config = new Config(xmppConfig);
+    return Promise.resolve(config);
+  }
+}
+
 class FakeXmppClientFactory {
   public client = new FakeClient();
 
@@ -34,24 +44,29 @@ class FakeXmppClientFactory {
 }
 
 describe('XmppService', () => {
-  let xmppClientFactory, service: XmppService;
+  let xmppClientFactory, service: XmppService, configService;
 
   beforeEach(() => {
     xmppClientFactory = new FakeXmppClientFactory();
     spyOn(xmppClientFactory, 'createClient').and.callThrough();
     spyOn(xmppClientFactory.client, 'connect').and.callThrough();
 
-    service = new XmppService(xmppClientFactory);
+    configService = new FakeConfigService();
 
-  });
+    service = new XmppService(xmppClientFactory, configService);
 
-  it('should create a client instance', () => {
-    expect(xmppClientFactory.createClient).toHaveBeenCalled();
   });
 
   it('should return the jid domain when calling getServerTitle', (done) => {
     service.getServerTitle().then((title) => {
       expect(title).toBe('openfire');
+      done();
+    });
+  });
+
+  it('should return the pubSubJid', (done) => {
+    service.pubSubJid.then(pubSubJid => {
+      expect(pubSubJid.full).toBe('pubsub.openfire');
       done();
     });
   });
@@ -67,9 +82,12 @@ describe('XmppService', () => {
     });
   });
 
-  it('should throw an error if authentication fails or session errors', () => {
-    expect(() => xmppClientFactory.client.emit('auth:failed')).toThrow();
-    expect(() => xmppClientFactory.client.emit('session:error')).toThrow();
-    expect(() => xmppClientFactory.client.emit('session:end')).not.toThrow();
+  it('should throw an error if authentication fails or session errors', (done) => {
+    service.getClient().then(() => {
+      expect(() => xmppClientFactory.client.emit('auth:failed')).toThrow();
+      expect(() => xmppClientFactory.client.emit('session:error')).toThrow();
+      expect(() => xmppClientFactory.client.emit('session:end')).not.toThrow();
+      done();
+    });
   });
 });

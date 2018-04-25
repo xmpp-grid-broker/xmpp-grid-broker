@@ -102,6 +102,11 @@ server {
         break;
     }
 
+    location /configuration.json {
+      root /mnt/;
+      break;
+    }
+
     # Angular from ng serve
     location / {
         proxy_set_header Host $http_host;
