@@ -20,13 +20,13 @@ export class TopicCreationComponent implements OnInit {
    * The formStatus is used as a helper
    * to render the spinner, error and info boxes.
    */
-  protected formProcessing: FormProcessingStatus = new FormProcessingStatus();
+  formProcessing: FormProcessingStatus = new FormProcessingStatus();
 
   /**
    * The form containing the default config loaded from the server.
    * Can be undefined if not supported by the server.
    */
-  protected defaultConfigForm: XmppDataForm;
+  defaultConfigForm: XmppDataForm;
 
   constructor(private creationService: TopicCreationService,
               private navigationService: NavigationService,

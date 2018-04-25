@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {FormControl, FormGroup} from '@angular/forms';
-import {XmppDataForm, XmppDataFormField} from '../core/models/FormModels';
+import {XmppDataForm} from '../core/models/FormModels';
 import {LoadFormErrorCodes, TopicDetailsService} from './topic-details.service';
 import {FormProcessingStatus} from '../shared/FormProcessingStatus';
 
@@ -14,18 +13,18 @@ export class TopicDetailsComponent implements OnInit {
    * The NodeID as given via URL used to identify
    * the node (See XEP-0060 for details).
    */
-  protected nodeId: string;
+  nodeId: string;
 
   /**
    * The formStatus is used as a helper
    * to render the spinner, error and info boxes.
    */
-  protected formProcessing: FormProcessingStatus = new FormProcessingStatus();
+  formProcessing: FormProcessingStatus = new FormProcessingStatus();
 
   /**
    * The form that is currently loaded.
    */
-  protected loadedForm: XmppDataForm;
+  loadedForm: XmppDataForm;
 
   constructor(private route: ActivatedRoute,
               private topicDetailsService: TopicDetailsService) {

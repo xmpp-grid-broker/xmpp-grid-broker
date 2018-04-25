@@ -1,8 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {XmppDataForm, XmppDataFormField} from '../../core/models/FormModels';
-import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
 
 @Component({
   selector: 'xgb-topic-config',
@@ -34,18 +32,17 @@ export class TopicConfigComponent {
    */
   @Output() public configSubmitted = new EventEmitter<XmppDataForm>();
 
-  private _xmppDataForm: XmppDataForm;
   /**
    * A subset of the xmppDataForm that contains
    * all fields, for which no specific widgets
    * have been specified.
    */
-  protected advancedConfigForm: XmppDataForm;
+  advancedConfigForm: XmppDataForm;
 
   /**
    * Fields, for which a specialized widget / validation takes place.
    */
-  protected specificFormFields: string[] = ['pubsub#title'];
+  specificFormFields: string[] = ['pubsub#title'];
 
   /**
    * The Angular Form group used for form
@@ -54,12 +51,14 @@ export class TopicConfigComponent {
    * xmppDataForm. Form Binding is
    * managed by this
    */
-  protected formGroup: FormGroup;
+  formGroup: FormGroup;
+
+  private _xmppDataForm: XmppDataForm;
 
   constructor() {
   }
 
-  protected onFormSubmit(): void {
+  onFormSubmit(): void {
     this.configSubmitted.emit(this.createFormToSubmit());
   }
 
