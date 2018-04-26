@@ -17,7 +17,7 @@ deploy:
     tags: true
   skip_cleanup: true
   provider: releases
-  api_key: "${GITHUB_API_KEY}"
+  api_key: "$GITHUB_API_KEY"
   file:
     - "${RELEASE_NAME}.tar.gz"
     - "${RELEASE_NAME}.tar.gz.sha512"
