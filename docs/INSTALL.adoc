@@ -90,6 +90,6 @@ To create the build:
 
 * Configure BOSH under _Server → Server Settings → HTTP Binding_
 * Add your Client-TLS CA to _Server → TLS/SSL Certificates → Client Connections → Trust Store_
-* Following System Properties should be set:
+* Following property should be set under _Server -> Server Manager -> System Properties_:
 ** `httpbind.client.cert.policy` = `needed`; to enforce client certificate authentication for BOSH.
 
