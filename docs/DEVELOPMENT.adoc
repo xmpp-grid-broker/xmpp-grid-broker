@@ -8,7 +8,7 @@ This application requires at least Node.js 6.9.0 and NPM 3. Run `npm install` to
 
 Requirements to run the Stack:
 
-- https://docker.com/[docker]
+- https://docker.com/[docker] with docker-compose
 - Linux or macOS
 
 To start the test stack, run:
@@ -36,24 +36,23 @@ Following services are provided:
 
 All TLS server and client certificates as well as the according test-CA are provided in `stack/certs/`.
 
-
 To authenticate to the XMPP-Grid Broker, you can add the according client-certificate to your browser beforehand.
 
 In Firefox, you can add them in the Preferences under `Privacy & Security` -> `View-Certificates` -> `Your Certificates`.
 
-Importing the CA is not recommended because it's public key is publicly accessible!
+Importing the CA is **not recommended** because it's private key is publicly accessible!
 In Firefox, add a permanent exception when accessing `https://xgb.localhost.redbackup.org/` for the first time.
 
 |===
-|JID |Password |Certificate | P12-Password
+|JID |User Password |Certificate | P12-Password
 
 |eva@openfire |123456 |`stack/certs/keys/client/eva@openfire/eva@openfire.p12`| _no password_
 |admin |1q2w3e4r | `stack/certs/keys/client/eva@openfire/eva@openfire.p12`|_no password_
 |===
 
-The `admin` certificate is used by nginx to authenticate itself on the xmpp server (openfire).
+The `admin` certificate is used by nginx to authenticate itself to the xmpp server (openfire).
 
-=== Generate new Certificates
+=== Generate New Certificates
 
 If you want to generate a new CA and certificates, execute the following steps:
 
@@ -65,12 +64,13 @@ pushd stack/certs/
   ./generate.bash
 popd
 
+# Add CA to openfire (requires docker)
 pushd stack/
   ./add_certs_to_openfire.bash
 popd
 ----
 
-You might also want to add the CA from `stack/certs/keys/ca-fullchain.pem` and client certificates from `stack/certs/keys/client/` to your webbrowser.
+You might also want to add the CA from `stack/certs/keys/ca-fullchain.pem` and client certificates from `stack/certs/keys/client/` to your webbrowser as described in section <<TLS Certificates and Test Users>>.
 
 === Edit Openfire Configuration
 
@@ -79,11 +79,16 @@ To edit the Openfire Configuration (e.g. for adding new users or TLS certificate
 [source, bash]
 ----
 export UID
-docker-compose -f docker-compose.openfire-admin.yml -f docker-compose.yml up
+docker-compose -f docker-compose.openfire-admin.yml -f docker-compose.yml up <1>
 
-# clean up access permissions after finishing
-sudo chown -R $UID stack/openfire
+sudo chown -R $UID stack/openfire <1>
+
+docker-compose build <2>
 ----
+<1> You can now configure Openfire over the https://openfire-admin.localhost.redbackup.org[Web Interface]. If done, press `Ctrl + C` to stop openfire.
+<2> Clean up access permissions after finishing
+<3> Recreate image (note that you reset/lose the current openfire content with this!)
+
 
 == Builds and Tests
 

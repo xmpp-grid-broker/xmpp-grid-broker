@@ -1,31 +1,95 @@
 = Installation Guide
+:toc:
 
-This guide assumes following example URLs:
+
+== Introduction
+
+This guide uses the following example URLs and users to illustrate the installation.
+
+=== URLs
+
 |===
 |XMPP-Grid Broker hosting server |`xgb.example.com`
 |XMPP BOSH/WebSocket server |`bosh.example.com`
 |XMPP server |`xmpp.example.com`
 |===
 
-== Production Build and Deployment
+=== Users
 
-1. TODO: Configuration (https://project.redbackup.org/browse/XGB-121[XGB-121])
-2. Execute `./build.bash`
-3. Copy the contents of `./dist/` to you XMPP-Grid Broker hosting server.
+* `admin@xmpp.example.com`
+** User, with which the XMPP-Grid Broker connects to the XMPP server.
+** The TLS client certificate of this user should be imported in the browser.
 
-== Security Considerations
+== Deployment
 
-=== XMPP-Grid Broker Hosting Server
+. Setup and configure a webserver for `xgb.example.com`.
+  - It should authenticate users, e.g. by TLS client certificates.
+  - All requests that do not point to an existing file should be served by `index.html`.
+  - Examples may be found in the https://angular.io/guide/deployment#production-servers[Angular Deployment Guide].
+  - The link:SECURITY.adoc[Security Recommendations] should be followed.
+. Setup you XMPP server to accept bosh requests under `bosh.example.com`.
+  - It should only accept sessions authenticated by a TLS client certificate.
+  - A HTTP reverse proxy might be configured to handle the TLS traffic and authentication.
+  - We provide hints for some XMPP servers below in section <<XMPP Servers>>
+  - The link:SECURITY.adoc[Security Recommendations] should be followed.
+. Add the application build to you webserver root, so that it is reachable from `xgb.example.com/`.
+  - Latest releases are available on the https://github.com/xmpp-grid-broker/xmpp-grid-broker/releases[XGB GitHub release page].
+  - See section <<Production Build>> to find more information on how to create custom builds.
+. Create and add your configuration as plaintext file `configuration.json` to the webserver root.
+  - All configuration options are outlined in section <<Configuration>>.
+  - The file should be reachable at `xgb.example.com/configuration.json`.
 
-HTTP Security Headers (excluding SSL/TLS security headers):
+== Configuration
 
-|===
-|Header |Value
+The XMPP-Grid Broker application can be configured using a JSON file with the name `configuration.json` hosted in the same directory as the application itself.
+The file must adhere the https://json.org/[JSON format].
 
-|`Content-Security-Policy` |`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self'; style-src 'self' 'unsafe-inline';`
-|`Access-Control-Allow-Origin` |`xgb.example.com bosh.example.com`
-|===
+A minimal configuration example can be found in this repository under link:../stack/configuration.json[`stack/configuration.json`].
 
-=== XMPP BOSH/WebSocket server
+=== Configuration Options
 
-It is recommended to proxy the XMPP server with a reverse web proxy that handles TLS authentication (e.g. nginx), to lower the attack surface.
+* `xmpp`: Object containing the XMPP server connection configuration.
+** `jid`: the JID of the xmpp user, with which the XMPP-Grid Broker connects to the XMPP server, e.g. `admin@xmpp.example.com`
+** `jid_domain`: The domain part of the JID, e.g. `xmpp.example.com`
+** `boshURL`: BOSH-Endpoint URL, e.g. `https://bosh.example.com/http-bind`
+** `wsURL`: WebSocket-Endpoint URL, e.g. `wss://bosh.example.com/ws`
+** `transport`: Should be the string `bosh` for a BOSH endpoint or `websocket` for a WebSocket endpoint.
+** The following additional options are available according to the  https://github.com/legastero/stanza.io/blob/master/docs/Reference.md#client-options[stanza.io documentation]:
+*** `useStreamManagement`
+*** `sasl`
+*** `password`
+*** `resource`
+*** `timeout`
+
+== Production Build
+
+A production build with documentation has following dependencies:
+
+- https://nodejs.org/[nodejs] with npm
+- https://www.google.com/chrome/[Google Chrome] (used for testing)
+- bash
+
+To create the build:
+
+. Execute `./build.bash`
+. The build artifacts are stored in the `./dist/` folder.
+
+
+== XMPP Servers
+
+=== Openfire
+
+==== Supported features
+
+* No support for TLS / SASL EXTERNAL authentication with WebSockets as of 2018-04-25.
+* Partial support for web-security features (e.g. no CORS Preflight requests) as of 2018-04-25.
+** We recommend the use of a reverse proxy to respond to such requests.
+** An example of a configuration for the https://www.nginx.com/[nginx]-webserver can be found in this repository under link:../stack/nginx/xgb.localhost.redbackup.org[`stack/nginx/xgb.localhost.redbackup.org`]
+
+==== Configuration
+
+* Configure BOSH under _Server → Server Settings → HTTP Binding_
+* Add your Client-TLS CA to _Server → TLS/SSL Certificates → Client Connections → Trust Store_
+* Following property should be set under _Server -> Server Manager -> System Properties_:
+** `httpbind.client.cert.policy` = `needed`; to enforce client certificate authentication for BOSH.
+
