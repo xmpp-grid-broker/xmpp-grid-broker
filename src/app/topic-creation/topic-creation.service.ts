@@ -27,8 +27,8 @@ export class TopicCreationService {
    * (See "Request Default Node Configuration Options" in XEP-0060)
    */
   public loadDefaultConfig(): Promise<XmppDataForm> {
-    return this.xmppService.getClient()
-      .then((client) => this._loadDefaultConfig(client));
+    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
+      .then(([client, pubSubJid]) => this._loadDefaultConfig(client, pubSubJid));
   }
 
   private _createService(topicIdentifier: any, config: XmppDataForm, client: any, pubSubJid: JID): Promise<string> {
@@ -52,19 +52,21 @@ export class TopicCreationService {
   }
 
 
-  private _loadDefaultConfig(client: any): Promise<XmppDataForm> {
+  private _loadDefaultConfig(client: any, pubSubJid: JID): Promise<XmppDataForm> {
     return new Promise((resolve, reject) => {
       const cmd = {
         type: 'get',
-        to: this.xmppService.pubSubJid,
+        to: pubSubJid,
         pubsubOwner: {
           'default': true,
         }
       };
       client.sendIq(cmd, (err, result) => {
         if (err) {
+          console.log(err);
           reject(err.error);
         } else {
+          console.log(result);
           resolve(XmppDataForm.fromJSON(result.pubsubOwner.default.form));
         }
       });
