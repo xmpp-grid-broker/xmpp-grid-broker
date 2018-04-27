@@ -63,10 +63,8 @@ export class TopicCreationService {
       };
       client.sendIq(cmd, (err, result) => {
         if (err) {
-          console.log(err);
           reject(err.error);
         } else {
-          console.log(result);
           resolve(XmppDataForm.fromJSON(result.pubsubOwner.default.form));
         }
       });
