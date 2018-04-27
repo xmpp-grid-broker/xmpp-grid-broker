@@ -18,7 +18,8 @@
                formControlName="topic"
                xgbFormInput
                placeholder="Enter topic name">
-        <p class="form-input-hint">(Duplicates not allowed)</p>
+        <p *ngIf="maxNoOfTopicsReached" class="form-input-hint">no more items allowed</p>
+        <p *ngIf="!maxNoOfTopicsReached" class="form-input-hint">(Duplicates not allowed)</p>
       </div>
       <div class="col-2 col-sm-12">
         <button type="submit" xgbActionButton [disabled]="!form.valid">add</button>

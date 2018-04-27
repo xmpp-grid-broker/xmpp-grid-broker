@@ -14,10 +14,6 @@ export class FormProcessingStatus {
    */
   error: string;
 
-  constructor(processing: boolean) {
-    this.processing = processing;
-  }
-
   public begin() {
     this.processing = true;
   }

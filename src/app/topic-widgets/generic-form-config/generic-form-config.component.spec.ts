@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {TopicConfigComponent} from './topic-config.component';
+import {GenericFormConfigComponent} from './generic-form-config.component';
 import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 import {SharedModule} from '../../shared/shared.module';
 import {By} from '@angular/platform-browser';
@@ -61,20 +61,20 @@ const TEST_FIELD_JID_SINGLE = new XmppDataFormField(
   'The address (JID) of the subscriber'
 );
 
-describe('TopicConfigComponent', () => {
+describe('GenericFormConfigComponent', () => {
 
-  let component: TopicConfigComponent;
-  let fixture: ComponentFixture<TopicConfigComponent>;
+  let component: GenericFormConfigComponent;
+  let fixture: ComponentFixture<GenericFormConfigComponent>;
   let de: HTMLElement;
   let formFieldComponent: FormFieldComponent;
 
   beforeEach(() => {
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule],
-        declarations: [FormFieldNamePipe, TopicConfigComponent, JidMultiComponent],
+        declarations: [FormFieldNamePipe, GenericFormConfigComponent, JidMultiComponent],
       });
 
-      fixture = TestBed.createComponent(TopicConfigComponent);
+      fixture = TestBed.createComponent(GenericFormConfigComponent);
       component = fixture.componentInstance;
       component.formGroup = new FormGroup({});
       de = fixture.debugElement.nativeElement;

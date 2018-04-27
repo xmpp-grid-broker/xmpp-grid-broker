@@ -9,11 +9,15 @@ import {DebugElement} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';
 import {ToastDirective} from '../../shared/toast.directive';
+import {XmppDataForm} from '../../core/models/FormModels';
 
 
 class MockTopicCreationService {
   createTopic(topicIdentifier: string): Promise<string> {
     return Promise.resolve(topicIdentifier);
+  }
+  loadDefaultConfig(): Promise<XmppDataForm> {
+    return Promise.reject({});
   }
 }
 
@@ -28,7 +32,9 @@ class FakeActivatedRoute {
 }
 
 class FakeNavigationService {
-  goToTopic() {}
+  goToTopic() {
+  }
+
 }
 
 describe('TopicCreationComponent', () => {
@@ -41,6 +47,8 @@ describe('TopicCreationComponent', () => {
   let navigationService;
 
   const waitUntilLoaded = () => {
+    fixture.detectChanges();
+    tick();
     fixture.detectChanges();
     tick();
   };
@@ -95,8 +103,9 @@ describe('TopicCreationComponent', () => {
 
       expect(topicCreationService.createTopic).toHaveBeenCalledTimes(1);
       const args = topicCreationService.createTopic.calls.first().args;
-      expect(args.length).toBe(1);
+      expect(args.length).toBe(2);
       expect(args[0]).toBe('myNewTopic');
+      expect(args[1]).toBeTruthy();
     }));
 
     it('should redirect when creation was successful', fakeAsync(() => {
@@ -115,7 +124,7 @@ describe('TopicCreationComponent', () => {
       tick();
       tick();
 
-      expect(component.error).toBeFalsy();
+      expect(de.query(By.directive(ToastDirective))).toBeFalsy();
       expect(navigationService.goToTopic).toHaveBeenCalledTimes(1);
       const args = navigationService.goToTopic.calls.first().args;
       expect(args.length).toBe(1);
@@ -153,7 +162,6 @@ describe('TopicCreationComponent', () => {
         fixture.detectChanges();
         tick();
         const errorDiv = de.query(By.directive(ToastDirective)).nativeElement;
-        expect(component.error).toBe(testParams.message);
         expect(errorDiv.innerText).toBe(testParams.message);
 
       }));

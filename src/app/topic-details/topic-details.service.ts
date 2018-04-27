@@ -53,7 +53,6 @@ export class TopicDetailsService {
 
   private _submitForm(client: any, pubSubJid: JID, topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<void> {
     const form = xmppDataForm.toJSON();
-    form['type'] = 'submit';
 
     const cmd = {
       type: 'set',

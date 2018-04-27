@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {XmppService} from '../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
+import {JXT} from 'stanza.io';
+import {XmppDataForm} from '../core/models/FormModels';
 
 export enum TopicCreationErrors {
   FeatureNotImplemented = 'feature-not-implemented',
@@ -15,18 +17,28 @@ export class TopicCreationService {
   constructor(private xmppService: XmppService) {
   }
 
-  createTopic(topicIdentifier: string): Promise<string> {
+  public createTopic(topicIdentifier: string, config: XmppDataForm): Promise<string> {
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
-      .then(([client, pubSubJid]) => this._createService(topicIdentifier, client, pubSubJid));
+      .then(([client, pubSubJid]) => this._createService(topicIdentifier, config, client, pubSubJid));
   }
 
-  private _createService(topicIdentifier: any, client: any, pubSubJid: JID): Promise<string> {
+  /**
+   * Support for this feature is OPTIONAL
+   * (See "Request Default Node Configuration Options" in XEP-0060)
+   */
+  public loadDefaultConfig(): Promise<XmppDataForm> {
+    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
+      .then(([client, pubSubJid]) => this._loadDefaultConfig(client, pubSubJid));
+  }
+
+  private _createService(topicIdentifier: any, config: XmppDataForm, client: any, pubSubJid: JID): Promise<string> {
     return new Promise((resolve, reject) => {
       if (!topicIdentifier) {
         topicIdentifier = true;
       }
+      const jsonConfig = config ? config.toJSON() : {};
 
-      client.createNode(pubSubJid, topicIdentifier, {}, (err, result) => {
+      client.createNode(pubSubJid, topicIdentifier, jsonConfig, (err, result) => {
         if (err) {
           reject(err.error);
         } else if (result.pubsub) {
@@ -40,4 +52,22 @@ export class TopicCreationService {
   }
 
 
+  private _loadDefaultConfig(client: any, pubSubJid: JID): Promise<XmppDataForm> {
+    return new Promise((resolve, reject) => {
+      const cmd = {
+        type: 'get',
+        to: pubSubJid,
+        pubsubOwner: {
+          'default': true,
+        }
+      };
+      client.sendIq(cmd, (err, result) => {
+        if (err) {
+          reject(err.error);
+        } else {
+          resolve(XmppDataForm.fromJSON(result.pubsubOwner.default.form));
+        }
+      });
+    });
+  }
 }
