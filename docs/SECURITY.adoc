@@ -11,8 +11,12 @@ The following configuration is the most restrictive policy that is required by t
 |===
 |Header |Value |Notes
 
-|`Content-Security-Policy` |`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';` | `unsafe-inline` is required by the angular framework.
-|`Access-Control-Allow-Origin` |`xgb.example.com bosh.example.com`|``
+|`Content-Security-Policy` |
+`default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self' bosh.example.com; img-src 'self' data:; style-src 'self' 'unsafe-inline';` |
+`unsafe-inline` is required by the angular framework.
+
+Note that as of 2018-04-28 https://bugs.chromium.org/p/chromium/issues/detail?id=815142[Chrome has an open issue] that requires explicit listing of websocket domains if needed.
+|`Access-Control-Allow-Origin` |`xgb.example.com bosh.example.com`|
 |===
 
 == XMPP Server
