@@ -68,10 +68,16 @@ export class TopicAffiliationsComponent implements OnInit {
   }
 
   addAffiliation() {
-
+    // 1. prompt for user
+    // 2. change affiliation to none
+    // 3. call modify on service
+    // (4. refresh)
   }
 
   removeAffiliation(affiliation: JidAffiliation) {
-
+    // 1. check if this is me? -> WARNING
+    // 2. change affiliation to none
+    // 3. call modify on service
+    // (4. refresh)
   }
 }

@@ -3,3 +3,16 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.jid {
+  flex-grow: 1;
+  margin-right: 2rem;
+}
+
+.actions {
+  flex-grow: 0;
+}
+
+.actions select {
+  width: auto;
+}
