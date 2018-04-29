@@ -5,7 +5,7 @@ import 'rxjs/add/operator/filter';
 import {NavigationService} from '../../core/navigation.service';
 import {TopicOverviewService} from '../topic-overview-service/topic-overview.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
-import {Topic, Topics} from '../../core/models/topic';
+import {Topic} from '../../core/models/topic';
 
 
 @Component({
@@ -28,20 +28,22 @@ export class TopicOverviewComponent implements OnInit {
     this.xmppService.getServerTitle().then((serverTitle) => {
       this.serverTitle = serverTitle;
     });
-    let promise: Promise<Topics>;
+    // TODO: support all categories
+    // let promise: Promise<Paged<Topic>>;
 
-    switch (this.route.snapshot.data.filter) {
-      case 'root':
-        promise = this.topicOverviewService.rootTopics();
-        break;
-      case 'all':
-        promise = this.topicOverviewService.allTopics();
-        break;
-      case 'collections':
-        promise = this.topicOverviewService.allCollections();
-        break;
-    }
-    this.topicList.usePromise(promise);
+    // switch (this.route.snapshot.data.filter) {
+    //   case 'root':
+    //     promise = this.topicOverviewService.rootTopics();
+    //     break;
+      // TODO: FIX TYPES
+      // case 'all':
+      //   promise = this.topicOverviewService.allTopics();
+      //   break;
+      // case 'collections':
+      //   promise = this.topicOverviewService.allCollections();
+      //   break;
+    // }
+    this.topicList.useLoader(this.topicOverviewService.rootTopics.bind(this.topicOverviewService));
   }
 
   createNew(what: string) {

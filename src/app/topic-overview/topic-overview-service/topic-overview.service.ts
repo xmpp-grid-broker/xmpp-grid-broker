@@ -2,26 +2,51 @@ import {Injectable} from '@angular/core';
 import {CollectionTopic, LeafTopic, Topic, Topics} from '../../core/models/topic';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
+import {XmppDataForm} from '../../core/models/FormModels';
 
 @Injectable()
 export class TopicOverviewService {
   constructor(private xmppService: XmppService) {
   }
 
-  rootTopics(): Promise<Topics> {
-    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
-      .then(([client, pubSubJid]) => this.loadChildTopics(client, pubSubJid))
-      .then(topics => TopicOverviewService.sortTopics(topics));
+  public rootTopics(nextKey: string): Promise<Paged<Topic>> {
+    const cmd = {
+      type: 'get',
+      discoItems: {
+        rsm: {
+          max: 10, // items at a time
+          after: nextKey
+        }
+      }
+    };
+
+    return this.xmppService.executeIqToPubsub(cmd)
+      .then(data => {
+        const items = data.discoItems.items === undefined ? [] : data.discoItems.items;
+        const rsm = data.discoItems.rsm;
+        return Promise.all(
+          items.map((item: any) => this.loadTopicDetailsNew(item.node))
+        ).then((values: any) => {
+          // TODO: INVESTIGATE TYPE INCOMPATIBILITY
+          const topics: Topics = values;
+          return new Paged(
+            topics,
+            parseInt(rsm.count, 10),
+            parseInt(rsm.firstIndex, 10) + 10 < parseInt(rsm.count, 10),
+            rsm.last,
+            rsm.first);
+        });
+      });
   }
 
-  allTopics(): Promise<Topics> {
+  public allTopics(): Promise<Topics> {
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
       .then(([client, pubSubJid]) => this.getAllTopicsFlat(client, pubSubJid))
       .then(items => items.filter((e: any) => e instanceof LeafTopic))
       .then(topics => TopicOverviewService.sortTopics(topics));
   }
 
-  allCollections(): Promise<Topics> {
+  public allCollections(): Promise<Topics> {
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
       .then(([client, pubSubJid]) => this.getAllTopicsFlat(client, pubSubJid))
       .then(items => items.filter((e: any) => e instanceof CollectionTopic))
@@ -60,6 +85,40 @@ export class TopicOverviewService {
         }
       });
     });
+  }
+
+  /**
+   * Load detailed topic information for by the given topic name.
+   *
+   * @param client the XMPP client to re-use
+   * @param {string} name the topic identifier to load
+   * @param {boolean} loadChildren true if all children of a collection shall be loaded as well (not fully recursive!)
+   */
+  private loadTopicDetailsNew(name: string, loadChildren = false): Promise<Topic> {
+    const cmd = {
+      type: 'get',
+      discoInfo: {
+        node: name
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd).then((data) => {
+      const topicTitle = data.discoInfo.node;
+      const topicType = data.discoInfo.identities[0]['type'];
+
+      if (topicType === 'leaf') {
+        return new LeafTopic(topicTitle);
+      } else if (topicType === 'collection' && loadChildren) {
+        // TODO: IMPLEMENT
+        // this.loadChildTopics(client, pubSubJid, topicTitle).then((childTopics) => {
+        //   return new CollectionTopic(topicTitle, childTopics);
+        // });
+      } else if (topicType === 'collection') {
+        return new CollectionTopic(topicTitle);
+      } else {
+        throw new Error(`XMPP: Unsupported PubSub type "${topicType}"`);
+      }
+    });
+
   }
 
   private loadChildTopics(client: any, pubSubJid: JID, parent_collection?: string, recursive = false): Promise<Topics> {
@@ -109,5 +168,14 @@ export class TopicOverviewService {
     return new Promise((resolve) => {
       resolve(topics.sort((a, b) => a.title.localeCompare(b.title)));
     });
+  }
+}
+
+export class Paged<T> {
+  constructor(public readonly items: T[],
+              public readonly count: number,
+              public readonly hasMore: boolean,
+              public readonly nextKey: string,
+              public readonly previousKey: string) {
   }
 }
