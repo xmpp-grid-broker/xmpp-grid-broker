@@ -35,6 +35,9 @@ export class TopicAffiliationsComponent implements OnInit {
    * angular templates.
    */
   readonly affiliations = Object.keys(Affiliation).reduce((acc, key) => {
+    if (key === Affiliation.None) { // because none means delete
+      return acc;
+    }
     acc.push({label: key, value: Affiliation[key]});
     return acc;
   }, []);

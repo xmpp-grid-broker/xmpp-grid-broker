@@ -93,8 +93,8 @@ describe('TopicAffiliationsComponent', () => {
 
       const select = de.nativeElement.querySelectorAll('.actions select');
       expect(select.length).toBe(2);
-      expect(select[0].children.length).toBe(6);
-      expect(select[0].children.length).toBe(6);
+      expect(select[0].children.length).toBe(5);
+      expect(select[0].children.length).toBe(5);
 
     }));
 

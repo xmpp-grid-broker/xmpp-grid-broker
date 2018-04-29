@@ -38,6 +38,10 @@ export class TopicDetailsService {
     ]);
   }
 
+  public modifyJidAffiliation(node: string, affiliation: JidAffiliation): Promise<void> {
+    return Promise.resolve();
+  }
+
   private _loadFormFromClient(client: any, pubSubJid: JID, topicIdentifier: string): Promise<XmppDataForm> {
     const cmd = {
       type: 'get',
