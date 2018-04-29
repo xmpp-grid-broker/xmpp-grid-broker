@@ -79,10 +79,34 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       // The list is now loaded
-      const listItems = de.nativeElement.querySelectorAll('xgb-list-item');
+      const listItems = de.nativeElement.querySelectorAll('.jid');
       expect(listItems.length).toBe(2);
       expect(listItems[0].innerText).toBe('bard@shakespeare.lit');
       expect(listItems[1].innerText).toBe('hamlet@denmark.lit');
+
+    }));
+
+    it('should render a select box for each jid', fakeAsync(() => {
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      const select = de.nativeElement.querySelectorAll('.actions select');
+      expect(select.length).toBe(2);
+      expect(select[0].children.length).toBe(6);
+      expect(select[0].children.length).toBe(6);
+
+    }));
+
+    it('should render a remove button for each jid', fakeAsync(() => {
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      const removeButton = de.nativeElement.querySelectorAll('.actions button');
+      expect(removeButton.length).toBe(2);
+      expect(removeButton[0].innerText).toBe('remove');
+      expect(removeButton[0].innerText).toBe('remove');
 
     }));
 

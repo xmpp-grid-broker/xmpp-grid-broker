@@ -4,7 +4,8 @@ import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 
 @Component({
   selector: 'xgb-topic-affiliations',
-  templateUrl: './topic-affiliations.component.html'
+  templateUrl: './topic-affiliations.component.html',
+  styleUrls: ['./topic-affiliations.component.css']
 })
 export class TopicAffiliationsComponent implements OnInit {
 
@@ -27,8 +28,16 @@ export class TopicAffiliationsComponent implements OnInit {
   /**
    * An array of the affiliations to manage.
    */
-  affiliations: JidAffiliation[];
+  jidAffiliations: JidAffiliation[];
 
+  /**
+   * Used within template because Object.keys cannot be used directly in
+   * angular templates.
+   */
+  readonly affiliations = Object.keys(Affiliation).reduce((acc, key) => {
+    acc.push({label: key, value: Affiliation[key]});
+    return acc;
+  }, []);
 
   constructor(private topicDetailsService: TopicDetailsService) {
   }
@@ -40,7 +49,7 @@ export class TopicAffiliationsComponent implements OnInit {
     this.topicDetailsService.loadJidAffiliations('todo')
       .then((loadedAffiliations: JidAffiliation[]) => {
         this.isLoaded = true;
-        this.affiliations = loadedAffiliations;
+        this.jidAffiliations = loadedAffiliations;
       })
       .catch((error) => {
         this.isLoaded = true;
@@ -56,6 +65,10 @@ export class TopicAffiliationsComponent implements OnInit {
   }
 
   addAffiliation() {
+
+  }
+
+  removeAffiliation(affiliation: JidAffiliation) {
 
   }
 }

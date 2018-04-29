@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {XmppDataForm} from '../core/models/FormModels';
 import {XmppService} from '../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
-import {JidAffiliation} from '../core/models/Affiliation';
+import {Affiliation, JidAffiliation} from '../core/models/Affiliation';
 
 export enum LoadConfigurationFormErrorCodes {
   ItemNotFound = 'item-not-found',
@@ -32,7 +32,10 @@ export class TopicDetailsService {
    * Loads all jid affiliations of the given node.
    */
   public loadJidAffiliations(node: string): Promise<JidAffiliation[]> {
-    return Promise.resolve([]);
+    return Promise.resolve([
+      new JidAffiliation('bard@shakespeare.lit', Affiliation.Publisher),
+      new JidAffiliation('hamlet@denmark.lit', Affiliation.None)
+    ]);
   }
 
   private _loadFormFromClient(client: any, pubSubJid: JID, topicIdentifier: string): Promise<XmppDataForm> {
