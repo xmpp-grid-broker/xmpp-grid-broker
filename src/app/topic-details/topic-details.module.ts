@@ -7,6 +7,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicDetailsService} from './topic-details.service';
 import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
 import { TopicDetailsComponent } from './topic-details/topic-details.component';
+import { TopicAffiliationsComponent } from './topic-affiliations/topic-affiliations.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,7 @@ import { TopicDetailsComponent } from './topic-details/topic-details.component';
     FormsModule,
     ReactiveFormsModule,
   ],
-  declarations: [TopicDetailsComponent, TopicDetailsConfigComponent],
+  declarations: [TopicDetailsComponent, TopicDetailsConfigComponent, TopicAffiliationsComponent],
   providers: [TopicDetailsService]
 })
 export class TopicDetailsModule {

@@ -7,7 +7,7 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class TopicDetailsComponent implements OnInit {
 
-  topic: undefined;
+  topic;
 
   constructor(private route: ActivatedRoute) {
   }
