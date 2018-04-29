@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {XmppDataForm} from '../core/models/FormModels';
-import {LoadFormErrorCodes, TopicDetailsService} from './topic-details.service';
-import {FormProcessingStatus} from '../shared/FormProcessingStatus';
+import {XmppDataForm} from '../../core/models/FormModels';
+import {LoadFormErrorCodes, TopicDetailsService} from '../topic-details.service';
+import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
 
 @Component({
-  selector: 'xgb-topic-details',
-  templateUrl: './topic-details.component.html'
+  selector: 'xgb-topic-details-config',
+  templateUrl: './topic-details-config.component.html'
 })
-export class TopicDetailsComponent implements OnInit {
+export class TopicDetailsConfigComponent implements OnInit {
   /**
    * The NodeID as given via URL used to identify
    * the node (See XEP-0060 for details).
@@ -38,7 +38,7 @@ export class TopicDetailsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.nodeId = this.route.snapshot.params.id;
+    this.nodeId = this.route.parent.snapshot.params.id;
     this.formProcessing.begin();
 
     this.topicDetailsService.loadForm(this.nodeId)

@@ -1,14 +1,14 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../core/models/FormModels';
-import {TopicDetailsComponent} from './topic-details.component';
-import {SharedModule} from '../shared/shared.module';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
+import {TopicDetailsConfigComponent} from './topic-details-config.component';
+import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
-import {LoadFormErrorCodes, TopicDetailsService} from './topic-details.service';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
+import {LoadFormErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
-import {ToastDirective} from '../shared/toast.directive';
+import {ToastDirective} from '../../shared/toast.directive';
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,
@@ -45,10 +45,10 @@ class MockTopicDetailsService {
   }
 }
 
-describe('TopicDetailsComponent', () => {
+describe('TopicDetailsConfigComponent', () => {
 
-  let component: TopicDetailsComponent;
-  let fixture: ComponentFixture<TopicDetailsComponent>;
+  let component: TopicDetailsConfigComponent;
+  let fixture: ComponentFixture<TopicDetailsConfigComponent>;
   let de: DebugElement;
   let mockService: MockTopicDetailsService;
   let submitButton: HTMLElement;
@@ -58,12 +58,12 @@ describe('TopicDetailsComponent', () => {
 
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
-        declarations: [TopicDetailsComponent],
+        declarations: [TopicDetailsConfigComponent],
         providers: [{provide: TopicDetailsService, useValue: mockService},
           {provide: ActivatedRoute, useValue: {snapshot: {params: {id: 'testing'}}}}]
       });
 
-      fixture = TestBed.createComponent(TopicDetailsComponent);
+      fixture = TestBed.createComponent(TopicDetailsConfigComponent);
       component = fixture.componentInstance;
       de = fixture.debugElement;
 
