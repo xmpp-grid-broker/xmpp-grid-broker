@@ -80,7 +80,7 @@ describe('TopicAffiliationsComponent', () => {
 
       // The list is now loaded
       const listItems = de.nativeElement.querySelectorAll('.jid');
-      expect(listItems.length).toBe(2);
+      expect(listItems.length).toBe(3); // 2 JIDs + the input form
       expect(listItems[0].innerText).toBe('bard@shakespeare.lit');
       expect(listItems[1].innerText).toBe('hamlet@denmark.lit');
 
@@ -92,7 +92,7 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       const select = de.nativeElement.querySelectorAll('.actions select');
-      expect(select.length).toBe(2);
+      expect(select.length).toBe(3);  // 2 JIDs + the input form
       expect(select[0].children.length).toBe(5);
       expect(select[0].children.length).toBe(5);
 
@@ -104,7 +104,7 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       const removeButton = de.nativeElement.querySelectorAll('.actions button');
-      expect(removeButton.length).toBe(2);
+      expect(removeButton.length).toBe(3);  // 2 JIDs + the input form
       expect(removeButton[0].innerText).toBe('remove');
       expect(removeButton[0].innerText).toBe('remove');
 
