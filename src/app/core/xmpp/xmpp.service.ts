@@ -74,7 +74,7 @@ export class XmppService {
   /**
    * Same as {@link executeIq} but automatically populates
    * the `to` field on the CMD. This reduces the number of
-   * promises and makes the code mor readable.
+   * promises and makes the code more readable.
    */
   public executeIqToPubsub(cmdWithoutTo: any): Promise<any> {
     return this.pubSubJid.then((jid) => {
