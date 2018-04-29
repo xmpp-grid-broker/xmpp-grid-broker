@@ -3,12 +3,12 @@
 </xgb-action-bar>
 
 <xgb-list *ngIf="!hasError && isLoaded">
-  <xgb-list-item *ngFor="let affiliation of affiliations">{{affiliation}}</xgb-list-item>
+  <xgb-list-item *ngFor="let affiliation of affiliations">{{affiliation.jid}}</xgb-list-item>
   <div class="empty" *ngIf="affiliations.length == 0">
     <p class="empty-title h5">No Affiliations found</p>
   </div>
 </xgb-list>
-<xgb-spinner *ngIf="!hasError && !isLoaded"></xgb-spinner>
+<xgb-spinner *ngIf="!isLoaded"></xgb-spinner>
 
 <div *ngIf="hasError" class="empty">
   <p class="empty-title h5">Oops, an error occurred!</p>

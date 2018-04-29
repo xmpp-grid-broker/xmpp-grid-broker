@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {TopicDetailsService} from '../topic-details.service';
+import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 
 @Component({
   selector: 'xgb-topic-affiliations',
@@ -6,17 +8,46 @@ import {Component, OnInit} from '@angular/core';
 })
 export class TopicAffiliationsComponent implements OnInit {
 
-  hasError = false;
-  errorMessage = 'NOT IMPLEMENTED';
+  /**
+   * If a service method call is pending, this field is set to false,
+   * otherwise true. Used for the spinner.
+   */
+  isLoaded: boolean;
 
-  isLoaded = true;
-  affiliations = ['aff1', 'aff2'];
+  /**
+   * will be set to true if the a service method call has failed.
+   */
+  hasError: boolean;
+  /**
+   * If `hasError` is true, this is the error message to display
+   * to the user.
+   */
+  errorMessage: string;
+
+  /**
+   * An array of the affiliations to manage.
+   */
+  affiliations: JidAffiliation[];
 
 
-  constructor() {
+  constructor(private topicDetailsService: TopicDetailsService) {
   }
 
   ngOnInit() {
+    // TODO: inject topic
+    this.isLoaded = false;
+    this.hasError = false;
+    this.topicDetailsService.loadJidAffiliations('todo')
+      .then((loadedAffiliations: JidAffiliation[]) => {
+        this.isLoaded = true;
+        this.affiliations = loadedAffiliations;
+      })
+      .catch(() => {
+        this.isLoaded = true;
+        this.hasError = true;
+        // TODO: handle according to the error codes...
+        // this.errorMessage = ...
+      });
   }
 
   addAffiliation() {
