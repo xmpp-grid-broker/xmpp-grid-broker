@@ -1,11 +1,10 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {TopicAffiliationsComponent} from './topic-affiliations.component';
 import {SharedModule} from '../../shared/shared.module';
 import {TopicDetailsService} from '../topic-details.service';
 import {DebugElement} from '@angular/core';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
-import {By} from '@angular/platform-browser';
 
 describe('TopicAffiliationsComponent', () => {
   let component: TopicAffiliationsComponent;
@@ -87,12 +86,28 @@ describe('TopicAffiliationsComponent', () => {
 
     }));
 
+  });
+  describe('given an empty list of affiliations', () => {
+
+    beforeEach(fakeAsync(() => {
+      loadedAffiliations = [];
+      setup();
+    }));
+
+    it('should render "No Affiliations found"', fakeAsync(() => {
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      const emptyTitle = de.nativeElement.querySelector('.empty-title');
+      expect(emptyTitle.innerText).toBe('No Affiliations found');
+    }));
 
   });
   describe('given an error when loading the affiliations', () => {
 
     beforeEach(fakeAsync(() => {
-      loadingProblem = {error: {}};
+      loadingProblem = {condition: 'bad-request'};
       setup();
     }));
 
@@ -106,5 +121,17 @@ describe('TopicAffiliationsComponent', () => {
       expect(component.isLoaded).toBeTruthy();
       expect(component.hasError).toBeTruthy();
     }));
+
+    it('should render an error box whe the error is received', fakeAsync(() => {
+      // Spinner is currently present...
+      fixture.detectChanges();
+      tick();
+
+      const errorBoxTitle = de.nativeElement.querySelector('.empty-title');
+      expect(errorBoxTitle.innerText).toBe('Oops, an error occurred!');
+      const errorBoxMessage = de.nativeElement.querySelector('.empty-subtitle');
+      expect(errorBoxMessage.innerText).toBe('TODO: Better Message');
+    }));
+
   });
 });

@@ -42,11 +42,16 @@ export class TopicAffiliationsComponent implements OnInit {
         this.isLoaded = true;
         this.affiliations = loadedAffiliations;
       })
-      .catch(() => {
+      .catch((error) => {
         this.isLoaded = true;
         this.hasError = true;
-        // TODO: handle according to the error codes...
-        // this.errorMessage = ...
+        if (error && error.condition) {
+          // TODO: handle according to the error codes...
+          this.errorMessage = 'TODO: Better Message';
+        } else {
+          // TODO: handle according to the error codes...
+        }
+
       });
   }
 
