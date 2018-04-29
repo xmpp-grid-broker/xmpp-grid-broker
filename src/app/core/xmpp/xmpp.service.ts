@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
-import 'rxjs/add/observable/fromPromise';
 import {ConfigService} from '../config.service';
 import {XmppConfig} from '../models/config';
 import {Namespace as NS} from 'xmpp-constants';
@@ -10,6 +9,11 @@ enum ConnectionState {
   Down = 0,
   Up = 1,
   Connecting = 2,
+}
+
+export enum IqType {
+  Set = 'set',
+  Get = 'get'
 }
 
 /**
@@ -65,6 +69,36 @@ export class XmppService {
           }
       }
     }));
+  }
+
+  /**
+   * Same as {@link executeIq} but automatically populates
+   * the `to` field on the CMD. This reduces the number of
+   * promises and makes the code mor readable.
+   */
+  public executeIqToPubsub(cmdWithoutTo: any): Promise<any> {
+    return this.pubSubJid.then((jid) => {
+      cmdWithoutTo.to = jid;
+      return this.executeIq(cmdWithoutTo);
+    });
+  }
+
+  /**
+   * Executes the given JXT info-query on the client.
+   * This call reduces the number of promises and makes the code
+   * more readable.
+   */
+  public executeIq(cmd: any): Promise<any> {
+    return this.getClient().then((client: any) =>
+      new Promise((resolve, reject) => {
+        client.sendIq(cmd, (err, result) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(result);
+        });
+      })
+    );
   }
 
   /**

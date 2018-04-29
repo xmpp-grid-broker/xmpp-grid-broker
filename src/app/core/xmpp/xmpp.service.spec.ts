@@ -1,5 +1,5 @@
 import {JID} from 'xmpp-jid';
-import {XmppService} from './xmpp.service';
+import {IqType, XmppService} from './xmpp.service';
 import {Config, XmppConfig, XmppTransport} from '../models/config';
 
 class FakeClient {
@@ -24,6 +24,10 @@ class FakeClient {
     if (this.handlers.has(event)) {
       this.handlers.get(event).forEach((command) => command());
     }
+  }
+
+  sendIq(cmd, cb) {
+    cb(undefined, {});
   }
 }
 
@@ -68,6 +72,61 @@ describe('XmppService', () => {
     service.pubSubJid.then(pubSubJid => {
       expect(pubSubJid.full).toBe('pubsub.openfire');
       done();
+    });
+  });
+
+  describe('when calling executeIqToPubsub', () => {
+    it('should load and add the pubSubJid', (done) => {
+      const spy = spyOn(service, 'executeIq').and.callFake(() => Promise.resolve());
+      service.executeIqToPubsub({}).then(() => {
+        expect(spy).toHaveBeenCalledTimes(1);
+
+        const args = spy.calls.mostRecent().args;
+        expect(args[0].to.full).toBe('pubsub.openfire');
+        done();
+      });
+    });
+  });
+  describe('when calling executeIq', () => {
+
+    it('should call sendIq on the client', (done) => {
+      const spy = spyOn(xmppClientFactory.client, 'sendIq').and.callThrough();
+      const cmd = {type: IqType.Get};
+      service.executeIq(cmd).then(() => {
+        expect(spy).toHaveBeenCalledTimes(1);
+
+        const args = spy.calls.mostRecent().args;
+        expect(args[0]).toBe(cmd);
+        done();
+      });
+    });
+
+    it('should resolve with result', (done) => {
+      const expectedResult = {result: 'any'};
+      spyOn(xmppClientFactory.client, 'sendIq').and.callFake((command, cb) =>
+        cb(undefined, expectedResult)
+      );
+
+      service.executeIq({type: IqType.Get}).then((actualResult) => {
+        expect(actualResult).toBe(expectedResult);
+        done();
+      });
+    });
+
+    it('should reject with the error', (done) => {
+      const expectedError = {error: 'any'};
+      spyOn(xmppClientFactory.client, 'sendIq').and.callFake((command, cb) =>
+        cb(expectedError, undefined)
+      );
+
+      service.executeIq({type: IqType.Get})
+        .then(() => {
+          fail('Expected Promise to reject');
+        })
+        .catch((actualError) => {
+          expect(actualError).toBe(expectedError);
+          done();
+        });
     });
   });
 
