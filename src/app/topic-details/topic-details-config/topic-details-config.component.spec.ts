@@ -4,11 +4,11 @@ import {TopicDetailsConfigComponent} from './topic-details-config.component';
 import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {LoadFormErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import {ToastDirective} from '../../shared/toast.directive';
+import {LoadConfigurationFormErrorCodes, TopicDetailsService} from '../topic-details.service';
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,
@@ -31,7 +31,7 @@ const TEST_FIELD_BOOLEAN = new XmppDataFormField(
 
 class MockTopicDetailsService {
   // noinspection JSUnusedGlobalSymbols, JSMethodCanBeStatic
-  loadForm(): Promise<XmppDataForm> {
+  loadConfigurationForm(): Promise<XmppDataForm> {
     return Promise.resolve(new XmppDataForm([
       FORM_TYPE,
       TEST_FIELD_TEXT_SINGLE,
@@ -40,8 +40,8 @@ class MockTopicDetailsService {
   }
 
   // noinspection JSMethodCanBeStatic, JSMethodCanBeStatic
-  updateTopic(identifier, form): Promise<XmppDataForm> {
-    return this.loadForm();
+  updateTopicConfiguration(identifier, form): Promise<XmppDataForm> {
+    return this.loadConfigurationForm();
   }
 }
 
@@ -60,7 +60,7 @@ describe('TopicDetailsConfigComponent', () => {
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicDetailsConfigComponent],
         providers: [{provide: TopicDetailsService, useValue: mockService},
-          {provide: ActivatedRoute, useValue: {snapshot: {params: {id: 'testing'}}}}]
+          {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}}]
       });
 
       fixture = TestBed.createComponent(TopicDetailsConfigComponent);
@@ -86,14 +86,14 @@ describe('TopicDetailsConfigComponent', () => {
   };
 
   [
-    {condition: LoadFormErrorCodes.ItemNotFound, message: 'Node with NodeID testing does not exist!'},
-    {condition: LoadFormErrorCodes.Unsupported, message: 'Node configuration is not supported by the XMPP server'},
-    {condition: LoadFormErrorCodes.Forbidden, message: 'Insufficient Privileges to configure node testing'},
-    {condition: LoadFormErrorCodes.NotAllowed, message: 'There are no configuration options available'},
+    {condition: LoadConfigurationFormErrorCodes.ItemNotFound, message: 'Node with NodeID testing does not exist!'},
+    {condition: LoadConfigurationFormErrorCodes.Unsupported, message: 'Node configuration is not supported by the XMPP server'},
+    {condition: LoadConfigurationFormErrorCodes.Forbidden, message: 'Insufficient Privileges to configure node testing'},
+    {condition: LoadConfigurationFormErrorCodes.NotAllowed, message: 'There are no configuration options available'},
     {condition: 'other', message: 'An unknown error occurred: other!'},
   ].forEach(({condition, message}) => {
     it('should show an error message when loading the for fails', fakeAsync(() => {
-      spyOn(mockService, 'loadForm').and.callFake(() => {
+      spyOn(mockService, 'loadConfigurationForm').and.callFake(() => {
         return Promise.reject({condition});
       });
       waitUntilLoaded();
@@ -122,7 +122,7 @@ describe('TopicDetailsConfigComponent', () => {
     }));
 
     it('advanced form entries are not included if nothing has changed', () => {
-      const serviceSpy = spyOn(mockService, 'updateTopic').and.callThrough();
+      const serviceSpy = spyOn(mockService, 'updateTopicConfiguration').and.callThrough();
 
       submitButton.click();
       fixture.detectChanges();
@@ -139,7 +139,7 @@ describe('TopicDetailsConfigComponent', () => {
     });
 
     it('should emmit the changed fields and values', (() => {
-      const serviceSpy = spyOn(mockService, 'updateTopic').and.callThrough();
+      const serviceSpy = spyOn(mockService, 'updateTopicConfiguration').and.callThrough();
 
       const notificationCheckbox = de.nativeElement.querySelector('#deliver_notifications');
       notificationCheckbox['checked'] = false;
@@ -178,7 +178,7 @@ describe('TopicDetailsConfigComponent', () => {
 
 
     it('should show a message after success update', fakeAsync(() => {
-      const serviceSpy = spyOn(mockService, 'updateTopic').and.callThrough();
+      const serviceSpy = spyOn(mockService, 'updateTopicConfiguration').and.callThrough();
 
       submitButton.click();
 
@@ -201,7 +201,7 @@ describe('TopicDetailsConfigComponent', () => {
     }));
 
     it('should show a message on error when submission fails', fakeAsync(() => {
-      const serviceSpy = spyOn(mockService, 'updateTopic').and.callFake(() => Promise.reject({
+      const serviceSpy = spyOn(mockService, 'updateTopicConfiguration').and.callFake(() => Promise.reject({
         condition: 'not-acceptable'
       }));
 

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {XmppDataForm} from '../../core/models/FormModels';
-import {LoadFormErrorCodes, TopicDetailsService} from '../topic-details.service';
+import {LoadConfigurationFormErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
 
 @Component({
@@ -41,7 +41,7 @@ export class TopicDetailsConfigComponent implements OnInit {
     this.nodeId = this.route.parent.snapshot.params.id;
     this.formProcessing.begin();
 
-    this.topicDetailsService.loadForm(this.nodeId)
+    this.topicDetailsService.loadConfigurationForm(this.nodeId)
       .then((form: XmppDataForm) => {
         this.initialFormLoaded = true;
         this.loadedForm = form;
@@ -49,16 +49,16 @@ export class TopicDetailsConfigComponent implements OnInit {
       })
       .catch((error) => {
         switch (error.condition) {
-          case  LoadFormErrorCodes.ItemNotFound:
+          case  LoadConfigurationFormErrorCodes.ItemNotFound:
             this.formProcessing.done({errorMessage: `Node with NodeID ${this.nodeId} does not exist!`});
             break;
-          case  LoadFormErrorCodes.Unsupported:
+          case  LoadConfigurationFormErrorCodes.Unsupported:
             this.formProcessing.done({errorMessage: `Node configuration is not supported by the XMPP server`});
             break;
-          case  LoadFormErrorCodes.Forbidden:
+          case  LoadConfigurationFormErrorCodes.Forbidden:
             this.formProcessing.done({errorMessage: `Insufficient Privileges to configure node ${this.nodeId}`});
             break;
-          case  LoadFormErrorCodes.NotAllowed:
+          case  LoadConfigurationFormErrorCodes.NotAllowed:
             this.formProcessing.done({errorMessage: `There are no configuration options available`});
             break;
           default:
@@ -69,7 +69,7 @@ export class TopicDetailsConfigComponent implements OnInit {
 
   submit(submittedForm: XmppDataForm): void {
     this.formProcessing.begin();
-    this.topicDetailsService.updateTopic(this.nodeId, submittedForm)
+    this.topicDetailsService.updateTopicConfiguration(this.nodeId, submittedForm)
       .then((dataForm) => {
         this.loadedForm = dataForm;
         this.formProcessing.done({

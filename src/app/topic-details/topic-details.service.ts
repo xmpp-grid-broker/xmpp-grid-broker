@@ -3,7 +3,7 @@ import {XmppDataForm} from '../core/models/FormModels';
 import {XmppService} from '../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
 
-export enum LoadFormErrorCodes {
+export enum LoadConfigurationFormErrorCodes {
   ItemNotFound = 'item-not-found',
   Unsupported = 'unsupported',
   Forbidden = 'forbidden',
@@ -16,15 +16,15 @@ export class TopicDetailsService {
   constructor(private xmppService: XmppService) {
   }
 
-  public loadForm(topicIdentifier: string): Promise<XmppDataForm> {
+  public loadConfigurationForm(topicIdentifier: string): Promise<XmppDataForm> {
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
       .then(([client, pubSubJid]) => this._loadFormFromClient(client, pubSubJid, topicIdentifier));
   }
 
-  public updateTopic(topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<XmppDataForm> {
+  public updateTopicConfiguration(topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<XmppDataForm> {
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
       .then(([client, pubSubJid]) => this._submitForm(client, pubSubJid, topicIdentifier, xmppDataForm))
-      .then(() => this.loadForm(topicIdentifier));
+      .then(() => this.loadConfigurationForm(topicIdentifier));
   }
 
   private _loadFormFromClient(client: any, pubSubJid: JID, topicIdentifier: string): Promise<XmppDataForm> {
