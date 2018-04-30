@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {TopicDetailsService} from '../topic-details.service';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
+import {ActivatedRoute} from '@angular/router';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'xgb-topic-affiliations',
@@ -42,14 +44,58 @@ export class TopicAffiliationsComponent implements OnInit {
     return acc;
   }, []);
 
-  constructor(private topicDetailsService: TopicDetailsService) {
+  /**
+   * The node on which the affiliations are managed.
+   */
+  private nodeId: string;
+
+  constructor(private route: ActivatedRoute,
+              private topicDetailsService: TopicDetailsService) {
   }
 
   ngOnInit() {
-    // TODO: inject topic
+    this.nodeId = this.route.parent.snapshot.params.id;
+    this.refresh();
+  }
+
+  addAffiliation(formRef: NgForm) {
+    const form = formRef.form;
+
+    const newAffiliation = new JidAffiliation(
+      form.get('jid').value,
+      form.get('affiliation').value);
+
+    this.isLoaded = false;
+    this.topicDetailsService.modifyJidAffiliation(this.nodeId, newAffiliation)
+      .then(() => {
+        form.reset();
+        this.refresh();
+      })
+      .catch(() => {
+        // TODO
+        this.refresh();
+      });
+  }
+
+  removeAffiliation(affiliation: JidAffiliation) {
+    // TODO: SHOW PROMT IF my own rights are degraded!
+    affiliation.affiliation = Affiliation.None;
+
+    this.isLoaded = false;
+    this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+      .then(() => {
+        this.refresh();
+      })
+      .catch(() => {
+        // TODO:
+        this.refresh();
+      });
+  }
+
+  private refresh() {
     this.isLoaded = false;
     this.hasError = false;
-    this.topicDetailsService.loadJidAffiliations('todo')
+    this.topicDetailsService.loadJidAffiliations(this.nodeId)
       .then((loadedAffiliations: JidAffiliation[]) => {
         this.isLoaded = true;
         this.jidAffiliations = loadedAffiliations;
@@ -65,19 +111,5 @@ export class TopicAffiliationsComponent implements OnInit {
         }
 
       });
-  }
-
-  addAffiliation() {
-    // 1. prompt for user
-    // 2. change affiliation to none
-    // 3. call modify on service
-    // (4. refresh)
-  }
-
-  removeAffiliation(affiliation: JidAffiliation) {
-    // 1. check if this is me? -> WARNING
-    // 2. change affiliation to none
-    // 3. call modify on service
-    // (4. refresh)
   }
 }

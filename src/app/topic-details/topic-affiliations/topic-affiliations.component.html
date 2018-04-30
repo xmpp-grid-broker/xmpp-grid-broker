@@ -11,19 +11,32 @@
     </div>
   </xgb-list-item>
   <xgb-list-item>
-    <div class="jid-affiliation">
+    <form class="new-jid" (submit)="addAffiliation(form)" #form="ngForm">
       <div class="jid">
         <input type="text"
+               name="jid"
                xgbFormInput
-               placeholder="jid"/>
+               placeholder="jid"
+               required
+               ngModel
+               [xgbNoDuplicatesAllowed]="jidAffiliations"
+               xgbDuplicateKey="jid"
+               #jid="ngModel"/>
+        <p *ngIf="!jid.valid && jid.errors['required']" class="form-input-hint">Please provide a JID</p>
+        <p *ngIf="!jid.valid && jid.errors['duplicate']" class="form-input-hint">Duplicates are not allowed</p>
       </div>
       <div class="actions">
-        <select xgbFormInput>
+        <select xgbFormInput
+                name="affiliation"
+                required
+                ngModel>
           <option *ngFor="let affiliation of affiliations;" [value]="affiliation.value">{{affiliation.label}}</option>
         </select>
-        <button xgbActionButton (click)="addAffiliation()">add</button>
+        <button type="submit"
+                [disabled]="!form.valid"
+                xgbActionButton>add</button>
       </div>
-    </div>
+    </form>
   </xgb-list-item>
 
   <div class="empty" *ngIf="jidAffiliations.length == 0">

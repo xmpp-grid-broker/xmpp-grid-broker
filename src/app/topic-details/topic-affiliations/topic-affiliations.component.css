@@ -1,4 +1,4 @@
-.jid-affiliation {
+.jid-affiliation, .new-jid {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -15,4 +15,8 @@
 
 .actions select {
   width: auto;
+}
+
+.form-input-hint {
+ margin-bottom: 0;
 }

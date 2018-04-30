@@ -5,6 +5,8 @@ import {SharedModule} from '../../shared/shared.module';
 import {TopicDetailsService} from '../topic-details.service';
 import {DebugElement} from '@angular/core';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
+import {ActivatedRoute} from '@angular/router';
+import {FormsModule} from '@angular/forms';
 
 describe('TopicAffiliationsComponent', () => {
   let component: TopicAffiliationsComponent;
@@ -12,23 +14,20 @@ describe('TopicAffiliationsComponent', () => {
   let de: DebugElement;
 
   let mockService: TopicDetailsService;
-  let loadedAffiliations: JidAffiliation[];
-  let loadingProblem: {};
+  let loadJidAffiliationsResult: Promise<JidAffiliation[]>;
+  let modifyJidAffiliationResult: Promise<void>;
 
   const setup = () => {
     mockService = jasmine.createSpyObj('TopicDetailsService', {
-      'loadJidAffiliations': new Promise((resolve, reject) => {
-        if (loadingProblem) {
-          reject(loadingProblem);
-        } else {
-          resolve(loadedAffiliations);
-        }
-      })
+      'loadJidAffiliations': loadJidAffiliationsResult,
+      'modifyJidAffiliation': modifyJidAffiliationResult
     });
     TestBed.configureTestingModule({
-      imports: [SharedModule],
+      imports: [SharedModule, FormsModule],
       declarations: [TopicAffiliationsComponent],
-      providers: [{provide: TopicDetailsService, useValue: mockService}]
+      providers: [{provide: TopicDetailsService, useValue: mockService},
+        {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}}
+      ]
     });
 
     fixture = TestBed.createComponent(TopicAffiliationsComponent);
@@ -39,17 +38,18 @@ describe('TopicAffiliationsComponent', () => {
   };
 
   beforeEach(fakeAsync(() => {
-    loadingProblem = undefined;
-    loadedAffiliations = [];
+    loadJidAffiliationsResult = undefined;
+    modifyJidAffiliationResult = undefined;
   }));
 
   describe('given some existing affiliations', () => {
 
     beforeEach(fakeAsync(() => {
-      loadedAffiliations = [
+      loadJidAffiliationsResult = Promise.resolve([
         new JidAffiliation('bard@shakespeare.lit', Affiliation.Publisher),
         new JidAffiliation('hamlet@denmark.lit', Affiliation.None)
-      ];
+      ]);
+      modifyJidAffiliationResult = Promise.resolve();
       setup();
     }));
 
@@ -79,8 +79,8 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       // The list is now loaded
-      const listItems = de.nativeElement.querySelectorAll('.jid');
-      expect(listItems.length).toBe(3); // 2 JIDs + the input form
+      const listItems = de.nativeElement.querySelectorAll('.jid-affiliation .jid');
+      expect(listItems.length).toBe(2);
       expect(listItems[0].innerText).toBe('bard@shakespeare.lit');
       expect(listItems[1].innerText).toBe('hamlet@denmark.lit');
 
@@ -91,8 +91,8 @@ describe('TopicAffiliationsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      const select = de.nativeElement.querySelectorAll('.actions select');
-      expect(select.length).toBe(3);  // 2 JIDs + the input form
+      const select = de.nativeElement.querySelectorAll('.jid-affiliation .actions select');
+      expect(select.length).toBe(2);
       expect(select[0].children.length).toBe(5);
       expect(select[0].children.length).toBe(5);
 
@@ -103,18 +103,146 @@ describe('TopicAffiliationsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      const removeButton = de.nativeElement.querySelectorAll('.actions button');
-      expect(removeButton.length).toBe(3);  // 2 JIDs + the input form
+      const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button');
+      expect(removeButton.length).toBe(2);
       expect(removeButton[0].innerText).toBe('remove');
       expect(removeButton[0].innerText).toBe('remove');
 
     }));
 
+    it('should render the input fields for a new affiliation', fakeAsync(() => {
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      const inputField = de.nativeElement.querySelector('.new-jid .jid input');
+      const addButton = de.nativeElement.querySelector('.new-jid .actions button');
+      expect(addButton.innerText).toBe('add');
+      expect(inputField.innerText).toBeDefined();
+    }));
+
+    it('should show a spinner when removing an entry', fakeAsync(() => {
+      // Get rid of the loading spinner
+      fixture.detectChanges();
+      tick();
+
+      // Click the first remove button
+      const removeButton = de.nativeElement.querySelector('.jid-affiliation .actions button');
+      removeButton.click();
+
+      // Begin with delete operation
+      fixture.detectChanges();
+      tick();
+
+      // Expect the spinner
+      let spinner = de.nativeElement.querySelector('.loading');
+      expect(spinner).toBeTruthy();
+
+      // result is here
+      fixture.detectChanges();
+      tick();
+
+      // Expect spinner to be gone
+      spinner = de.nativeElement.querySelector('.loading');
+      expect(spinner).toBeFalsy();
+
+    }));
+
+    describe('when adding a new jid', () => {
+      let inputField;
+      let addButton;
+      let selectBox;
+
+      beforeEach(fakeAsync(() => {
+        // Get rid of the spinner
+        fixture.detectChanges();
+        tick();
+
+        // Trigger validation
+        fixture.detectChanges();
+        tick();
+
+        inputField = de.nativeElement.querySelector('.new-jid .jid input');
+        addButton = de.nativeElement.querySelector('.new-jid .actions button');
+        selectBox = de.nativeElement.querySelector('.new-jid .actions select');
+      }));
+
+      it('should disable the add button when no jid is provided', fakeAsync(() => {
+        expect(addButton.getAttribute('disabled')).toBe('');
+      }));
+
+      it('should enable the add button when a valid jid and affiliation is provided', fakeAsync(() => {
+        inputField.value = 'foo@baa.lit';
+        inputField.dispatchEvent(new Event('input'));
+
+        selectBox.selectedIndex = 2;
+        selectBox.dispatchEvent(new Event('change'));
+
+        // Trigger validation
+        fixture.detectChanges();
+        tick();
+
+        expect(addButton.getAttribute('disabled')).toBe(null);
+      }));
+
+      it('should disable the add button & show error when a adding a duplicate jid', fakeAsync(() => {
+        // Set input
+        inputField.value = 'hamlet@denmark.lit';
+        inputField.dispatchEvent(new Event('input'));
+
+        // Select affiliation
+        selectBox.selectedIndex = 2;
+        selectBox.dispatchEvent(new Event('change'));
+
+        // Trigger validation
+        fixture.detectChanges();
+        tick();
+
+        const hintBox = de.nativeElement.querySelector('.new-jid .jid p');
+        expect(addButton.getAttribute('disabled')).toBe('');
+        expect(hintBox.innerText).toBe('Duplicates are not allowed');
+      }));
+
+      it('should show a spinner when adding a new value', fakeAsync(() => {
+        // Set input
+        inputField.value = 'foo@baa.lit';
+        inputField.dispatchEvent(new Event('input'));
+
+        // Select affiliation
+        selectBox.selectedIndex = 2;
+        selectBox.dispatchEvent(new Event('change'));
+
+        // Validate
+        fixture.detectChanges();
+        tick();
+
+        // Click add button
+        addButton.click();
+        fixture.detectChanges();
+        tick();
+
+        // Expect the spinner
+        let spinner = de.nativeElement.querySelector('.loading');
+        expect(spinner).toBeTruthy();
+
+        // result is here
+        fixture.detectChanges();
+        tick();
+
+        // Expect spinner to be gone
+        spinner = de.nativeElement.querySelector('.loading');
+        expect(spinner).toBeFalsy();
+
+      }));
+
+
+    });
+
   });
   describe('given an empty list of affiliations', () => {
 
     beforeEach(fakeAsync(() => {
-      loadedAffiliations = [];
+      loadJidAffiliationsResult = Promise.resolve([]);
       setup();
     }));
 
@@ -131,7 +259,7 @@ describe('TopicAffiliationsComponent', () => {
   describe('given an error when loading the affiliations', () => {
 
     beforeEach(fakeAsync(() => {
-      loadingProblem = {condition: 'bad-request'};
+      loadJidAffiliationsResult = Promise.reject({condition: 'bad-request'});
       setup();
     }));
 
