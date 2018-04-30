@@ -7,6 +7,7 @@ import {DebugElement} from '@angular/core';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {ActivatedRoute} from '@angular/router';
 import {FormsModule} from '@angular/forms';
+import {XmppService} from '../../core/xmpp/xmpp.service';
 
 describe('TopicAffiliationsComponent', () => {
   let component: TopicAffiliationsComponent;
@@ -22,10 +23,15 @@ describe('TopicAffiliationsComponent', () => {
       'loadJidAffiliations': loadJidAffiliationsResult,
       'modifyJidAffiliation': modifyJidAffiliationResult
     });
+    const mockXmppService = jasmine.createSpyObj('XmppService', {
+      'isJidCurrentUser': Promise.resolve(false)
+    });
     TestBed.configureTestingModule({
       imports: [SharedModule, FormsModule],
       declarations: [TopicAffiliationsComponent],
-      providers: [{provide: TopicDetailsService, useValue: mockService},
+      providers: [
+        {provide: TopicDetailsService, useValue: mockService},
+        {provide: XmppService, useValue: mockXmppService},
         {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}}
       ]
     });
@@ -121,32 +127,6 @@ describe('TopicAffiliationsComponent', () => {
       expect(inputField.innerText).toBeDefined();
     }));
 
-    it('should show a spinner when removing an entry', fakeAsync(() => {
-      // Get rid of the loading spinner
-      fixture.detectChanges();
-      tick();
-
-      // Click the first remove button
-      const removeButton = de.nativeElement.querySelector('.jid-affiliation .actions button');
-      removeButton.click();
-
-      // Begin with delete operation
-      fixture.detectChanges();
-      tick();
-
-      // Expect the spinner
-      let spinner = de.nativeElement.querySelector('.loading');
-      expect(spinner).toBeTruthy();
-
-      // result is here
-      fixture.detectChanges();
-      tick();
-
-      // Expect spinner to be gone
-      spinner = de.nativeElement.querySelector('.loading');
-      expect(spinner).toBeFalsy();
-
-    }));
 
     describe('when adding a new jid', () => {
       let inputField;

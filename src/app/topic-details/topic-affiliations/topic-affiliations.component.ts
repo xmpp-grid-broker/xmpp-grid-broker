@@ -3,6 +3,7 @@ import {TopicDetailsService} from '../topic-details.service';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
+import {XmppService} from '../../core/xmpp/xmpp.service';
 
 @Component({
   selector: 'xgb-topic-affiliations',
@@ -37,7 +38,7 @@ export class TopicAffiliationsComponent implements OnInit {
    * angular templates.
    */
   readonly affiliations = Object.keys(Affiliation).reduce((acc, key) => {
-    if (key === Affiliation.None) { // because none means delete
+    if (Affiliation[key] === Affiliation.None) { // because none means delete
       return acc;
     }
     acc.push({label: key, value: Affiliation[key]});
@@ -50,6 +51,7 @@ export class TopicAffiliationsComponent implements OnInit {
   private nodeId: string;
 
   constructor(private route: ActivatedRoute,
+              private xmppService: XmppService,
               private topicDetailsService: TopicDetailsService) {
   }
 
@@ -71,25 +73,41 @@ export class TopicAffiliationsComponent implements OnInit {
         form.reset();
         this.refresh();
       })
-      .catch(() => {
-        // TODO
-        this.refresh();
-      });
+      .catch(this.handleFailedJidModification);
+  }
+
+  changeAffiliation(affiliation: JidAffiliation, newAffiliation, selectBox) {
+    // TODO: TEST AND TEST CONFIRM!
+    this.xmppService.isJidCurrentUser(affiliation.jid).then((doChangeOwnConfig) => {
+      if (doChangeOwnConfig && !confirm('You are modifying you own rights. Are you sure to proceed?')) {
+        selectBox.value = affiliation.affiliation;
+        return;
+      }
+      this.isLoaded = false;
+      affiliation.affiliation = newAffiliation;
+      this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+        .then(() => {
+          this.refresh();
+        })
+        .catch(this.handleFailedJidModification);
+    });
+
   }
 
   removeAffiliation(affiliation: JidAffiliation) {
-    // TODO: SHOW PROMT IF my own rights are degraded!
-    affiliation.affiliation = Affiliation.None;
-
-    this.isLoaded = false;
-    this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
-      .then(() => {
-        this.refresh();
-      })
-      .catch(() => {
-        // TODO:
-        this.refresh();
-      });
+    // TODO: TEST CONFIRM!
+    this.xmppService.isJidCurrentUser(affiliation.jid).then((doChangeOwnConfig) => {
+      if (doChangeOwnConfig && !confirm('YOU ARE IN THE PROCESS OF REMOVING YOUR MANAGEMENT PERMISSIONS. Are you sure to proceed?')) {
+        return;
+      }
+      affiliation.affiliation = Affiliation.None;
+      this.isLoaded = false;
+      this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+        .then(() => {
+          this.refresh();
+        })
+        .catch(this.handleFailedJidModification);
+    });
   }
 
   private refresh() {
@@ -104,12 +122,18 @@ export class TopicAffiliationsComponent implements OnInit {
         this.isLoaded = true;
         this.hasError = true;
         if (error && error.condition) {
-          // TODO: handle according to the error codes...
+          // TODO: IMPLEMENT AND TEST PROPER ERROR HANDLING
           this.errorMessage = 'TODO: Better Message';
         } else {
-          // TODO: handle according to the error codes...
+          // TODO: IMPLEMENT AND TEST PROPER ERROR HANDLING
         }
 
       });
+  }
+
+  private handleFailedJidModification(err) {
+    // TODO: IMPLEMENT AND TEST PROPER ERROR HANDLING
+    console.log(err);
+    this.refresh();
   }
 }

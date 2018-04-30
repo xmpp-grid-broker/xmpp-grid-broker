@@ -50,8 +50,20 @@ export class XmppService {
     this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid_domain}`));
   }
 
+  /**
+   * Returns the title of the configured server.
+   */
   public getServerTitle(): Promise<string> {
     return this._config.then(config => config.jid_domain);
+  }
+
+  /**
+   * Returns true if the given bare jid is
+   * equal to the bare jid of the current user
+   * (meaning the user who is connected to the xmpp server)
+   */
+  public isJidCurrentUser(bareJid: string): Promise<boolean> {
+    return this._config.then(config => config.jid.bare === bareJid);
   }
 
   /**

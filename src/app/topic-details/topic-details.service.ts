@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {XmppDataForm} from '../core/models/FormModels';
-import {XmppService} from '../core/xmpp/xmpp.service';
+import {IqType, XmppService} from '../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
 import {Affiliation, JidAffiliation} from '../core/models/Affiliation';
 
@@ -32,14 +32,42 @@ export class TopicDetailsService {
    * Loads all jid affiliations of the given node.
    */
   public loadJidAffiliations(node: string): Promise<JidAffiliation[]> {
-    return Promise.resolve([
-      new JidAffiliation('bard@shakespeare.lit', Affiliation.Publisher),
-      new JidAffiliation('hamlet@denmark.lit', Affiliation.None)
-    ]);
+    // TODO: WRITE TEST!
+    const cmd = {
+      type: IqType.Get,
+      pubsubOwner: {
+        affiliations: {
+          node: node
+        }
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd).then((response) => {
+      const jidAffiliations = response.pubsubOwner.affiliations.list
+        .map((entry) => new JidAffiliation(entry.jid.full, entry.type));
+      return jidAffiliations;
+    });
   }
 
+  /**
+   * Updates/Adds/Deletes the given affiliation on the given node.
+   *
+   * If the affiliation is none, the affiliation will be removed (according to xep-0060).
+   */
   public modifyJidAffiliation(node: string, affiliation: JidAffiliation): Promise<void> {
-    return Promise.resolve();
+    // TODO: WRITE TEST!
+    const cmd = {
+      type: IqType.Set,
+      pubsubOwner: {
+        affiliations: {
+          node: node,
+          affiliation: {
+            jid: affiliation.jid,
+            type: affiliation.affiliation
+          }
+        }
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd);
   }
 
   private _loadFormFromClient(client: any, pubSubJid: JID, topicIdentifier: string): Promise<XmppDataForm> {

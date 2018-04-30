@@ -3,8 +3,11 @@
     <div class="jid-affiliation">
       <div class="jid">{{jidAffiliation.jid}}</div>
       <div class="actions">
-        <select xgbFormInput>
-          <option *ngFor="let affiliation of affiliations;" [value]="affiliation.value">{{affiliation.label}}</option>
+        <select xgbFormInput (change)="changeAffiliation(jidAffiliation, select.value,select)" #select>
+          <option *ngFor="let affiliation of affiliations;"
+                  [value]="affiliation.value"
+                  [attr.selected]="affiliation.value==jidAffiliation.affiliation ? true : null">{{affiliation.label}}
+          </option>
         </select>
         <button xgbActionButton (click)="removeAffiliation(jidAffiliation)">remove</button>
       </div>
@@ -34,7 +37,8 @@
         </select>
         <button type="submit"
                 [disabled]="!form.valid"
-                xgbActionButton>add</button>
+                xgbActionButton>add
+        </button>
       </div>
     </form>
   </xgb-list-item>
