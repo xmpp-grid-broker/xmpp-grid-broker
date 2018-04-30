@@ -3,12 +3,12 @@
  * defined in xep-0060.
  */
 export enum Affiliation {
-  Owner = 'Owner',
-  Publisher = 'Publisher',
-  PublishOnly = 'Publish-Only',
-  Member = 'Member',
-  None = 'None',
-  Outcast = 'Outcast'
+  Owner = 'owner',
+  Publisher = 'publisher',
+  PublishOnly = 'publish-only',
+  Member = 'member',
+  None = 'none',
+  Outcast = 'outcast'
 }
 
 /**
