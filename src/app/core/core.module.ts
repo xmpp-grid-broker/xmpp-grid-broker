@@ -24,9 +24,15 @@ import {ConfigService} from './config.service';
   }, NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, ConfigService]
 })
 export class CoreModule {
-  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
+  constructor(@Optional() @SkipSelf() parentModule: CoreModule, xmppFeatureService: XmppFeatureService) {
     if (parentModule) {
       throw new Error('CoreModule is already loaded. Import it in the AppModule only');
     }
+
+    xmppFeatureService.checkRequiredFeatures().then(fulfilled => {
+      if (!fulfilled) {
+        throw new Error('Not all required xmpp features are supported!');
+      }
+    });
   }
 }
