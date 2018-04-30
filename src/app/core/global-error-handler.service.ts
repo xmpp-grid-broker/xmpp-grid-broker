@@ -14,7 +14,7 @@ export class GlobalErrorHandlerService implements ErrorHandler {
     }
 
     if (error instanceof Error) {
-      console.log(error.stack);
+      console.log(error);
       notificationService.notify(`${error.stack}`);
     } else if (error != null) {
       notificationService.notify(error.toString());
