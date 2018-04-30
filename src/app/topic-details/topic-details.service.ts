@@ -11,6 +11,12 @@ export enum LoadConfigurationFormErrorCodes {
   NotAllowed = 'not-allowed'
 }
 
+export enum AffiliationManagementErrorCodes {
+  ItemNotFound = 'item-not-found',
+  Unsupported = 'unsupported',
+  Forbidden = 'forbidden',
+}
+
 @Injectable()
 export class TopicDetailsService {
 

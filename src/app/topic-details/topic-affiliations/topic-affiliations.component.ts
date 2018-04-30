@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {TopicDetailsService} from '../topic-details.service';
+import {AffiliationManagementErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
@@ -73,29 +73,28 @@ export class TopicAffiliationsComponent implements OnInit {
         form.reset();
         this.refresh();
       })
-      .catch(this.handleFailedJidModification);
+      .catch(this.handleFailedAffiliationAction);
   }
 
   changeAffiliation(affiliation: JidAffiliation, newAffiliation, selectBox) {
-    // TODO: TEST AND TEST CONFIRM!
-    this.xmppService.isJidCurrentUser(affiliation.jid).then((doChangeOwnConfig) => {
-      if (doChangeOwnConfig && !confirm('You are modifying you own rights. Are you sure to proceed?')) {
-        selectBox.value = affiliation.affiliation;
-        return;
-      }
-      this.isLoaded = false;
-      affiliation.affiliation = newAffiliation;
-      this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
-        .then(() => {
-          this.refresh();
-        })
-        .catch(this.handleFailedJidModification);
-    });
+    this.xmppService.isJidCurrentUser(affiliation.jid)
+      .then((doChangeOwnConfig) => {
+        if (doChangeOwnConfig && !confirm('You are modifying you own rights. Are you sure to proceed?')) {
+          selectBox.value = affiliation.affiliation;
+          return;
+        }
+        this.isLoaded = false;
+        affiliation.affiliation = newAffiliation;
+        this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+          .then(() => {
+            this.refresh();
+          })
+          .catch(this.handleFailedAffiliationAction);
+      });
 
   }
 
   removeAffiliation(affiliation: JidAffiliation) {
-    // TODO: TEST CONFIRM!
     this.xmppService.isJidCurrentUser(affiliation.jid).then((doChangeOwnConfig) => {
       if (doChangeOwnConfig && !confirm('YOU ARE IN THE PROCESS OF REMOVING YOUR MANAGEMENT PERMISSIONS. Are you sure to proceed?')) {
         return;
@@ -106,7 +105,7 @@ export class TopicAffiliationsComponent implements OnInit {
         .then(() => {
           this.refresh();
         })
-        .catch(this.handleFailedJidModification);
+        .catch(this.handleFailedAffiliationAction);
     });
   }
 
@@ -121,19 +120,26 @@ export class TopicAffiliationsComponent implements OnInit {
       .catch((error) => {
         this.isLoaded = true;
         this.hasError = true;
-        if (error && error.condition) {
-          // TODO: IMPLEMENT AND TEST PROPER ERROR HANDLING
-          this.errorMessage = 'TODO: Better Message';
-        } else {
-          // TODO: IMPLEMENT AND TEST PROPER ERROR HANDLING
-        }
-
+        this.handleFailedAffiliationAction(error);
       });
   }
 
-  private handleFailedJidModification(err) {
-    // TODO: IMPLEMENT AND TEST PROPER ERROR HANDLING
-    console.log(err);
-    this.refresh();
+  private handleFailedAffiliationAction(error) {
+    if (error && error.condition) {
+      this.errorMessage = 'TODO: Better Message';
+      switch (error.conndition){
+        case AffiliationManagementErrorCodes.Forbidden:
+          this.errorMessage = 'Node or service does not support affiliation management';
+          break;
+        case AffiliationManagementErrorCodes.Unsupported:
+          this.errorMessage = 'You are not allowed to modify the affiliations because you are not owner';
+          break;
+        case AffiliationManagementErrorCodes.ItemNotFound:
+          this.errorMessage = `Node ${this.nodeId} does not exist`;
+          break;
+      }
+    } else {
+      this.errorMessage = `Unknown error: ${JSON.stringify(error)}`;
+    }
   }
 }

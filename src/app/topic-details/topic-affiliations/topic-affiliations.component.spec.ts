@@ -14,9 +14,10 @@ describe('TopicAffiliationsComponent', () => {
   let fixture: ComponentFixture<TopicAffiliationsComponent>;
   let de: DebugElement;
 
-  let mockService: TopicDetailsService;
+  let mockService;
   let loadJidAffiliationsResult: Promise<JidAffiliation[]>;
   let modifyJidAffiliationResult: Promise<void>;
+  let isJidCurrentUserResult: Promise<boolean>;
 
   const setup = () => {
     mockService = jasmine.createSpyObj('TopicDetailsService', {
@@ -24,7 +25,7 @@ describe('TopicAffiliationsComponent', () => {
       'modifyJidAffiliation': modifyJidAffiliationResult
     });
     const mockXmppService = jasmine.createSpyObj('XmppService', {
-      'isJidCurrentUser': Promise.resolve(false)
+      'isJidCurrentUser': isJidCurrentUserResult
     });
     TestBed.configureTestingModule({
       imports: [SharedModule, FormsModule],
@@ -46,6 +47,7 @@ describe('TopicAffiliationsComponent', () => {
   beforeEach(fakeAsync(() => {
     loadJidAffiliationsResult = undefined;
     modifyJidAffiliationResult = undefined;
+    isJidCurrentUserResult = Promise.resolve(false);
   }));
 
   describe('given some existing affiliations', () => {
@@ -53,7 +55,7 @@ describe('TopicAffiliationsComponent', () => {
     beforeEach(fakeAsync(() => {
       loadJidAffiliationsResult = Promise.resolve([
         new JidAffiliation('bard@shakespeare.lit', Affiliation.Publisher),
-        new JidAffiliation('hamlet@denmark.lit', Affiliation.None)
+        new JidAffiliation('hamlet@denmark.lit', Affiliation.Owner)
       ]);
       modifyJidAffiliationResult = Promise.resolve();
       setup();
@@ -126,7 +128,6 @@ describe('TopicAffiliationsComponent', () => {
       expect(addButton.innerText).toBe('add');
       expect(inputField.innerText).toBeDefined();
     }));
-
 
     describe('when adding a new jid', () => {
       let inputField;
@@ -215,10 +216,124 @@ describe('TopicAffiliationsComponent', () => {
 
       }));
 
-
     });
+  });
+  describe('given the user hamlet and changing the affiliation of hamlet', () => {
+
+    beforeEach(fakeAsync(() => {
+      loadJidAffiliationsResult = Promise.resolve([
+        new JidAffiliation('hamlet@denmark.lit', Affiliation.Owner)
+      ]);
+    }));
+
+    it('shoudl display a confirm dialog and call the service if confirmed', fakeAsync(() => {
+      // Setup spies and responses
+      isJidCurrentUserResult = Promise.resolve(true);
+      modifyJidAffiliationResult = Promise.resolve();
+      setup();
+      const confirm = spyOn(window, 'confirm').and.returnValue(true);
+
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      // Change the value of the select box
+      const selectBox = de.nativeElement.querySelectorAll('.jid-affiliation .actions select')[0];
+      selectBox.value = Affiliation.Member;
+      selectBox.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+      tick();
+
+      expect(confirm).toHaveBeenCalledTimes(1);
+      expect(mockService.modifyJidAffiliation).toHaveBeenCalledTimes(1);
+      const args = mockService.modifyJidAffiliation.calls.mostRecent().args;
+      expect(args[0]).toBe('testing');
+      expect(args[1].affiliation).toBe(Affiliation.Member);
+      expect(args[1].jid).toBe('hamlet@denmark.lit');
+    }));
+
+    it('shoudl display a confirm dialog and cancel if aborted', fakeAsync(() => {
+      // Setup spies and responses
+      isJidCurrentUserResult = Promise.resolve(true);
+      modifyJidAffiliationResult = Promise.resolve();
+      setup();
+      const confirm = spyOn(window, 'confirm').and.returnValue(false);
+
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      // Change the value of the select box
+      const selectBox = de.nativeElement.querySelectorAll('.jid-affiliation .actions select')[0];
+      selectBox.value = Affiliation.Member;
+      selectBox.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+      tick();
+
+      expect(confirm).toHaveBeenCalledTimes(1);
+      expect(mockService.modifyJidAffiliation).toHaveBeenCalledTimes(0);
+    }));
+
 
   });
+
+  describe('given the user hamlet and removing hamlet', () => {
+
+    beforeEach(fakeAsync(() => {
+      loadJidAffiliationsResult = Promise.resolve([
+        new JidAffiliation('hamlet@denmark.lit', Affiliation.Owner)
+      ]);
+    }));
+
+    it('should display a confirm dialog and call the service if confirmed', fakeAsync(() => {
+      // Setup spies and responses
+      isJidCurrentUserResult = Promise.resolve(true);
+      modifyJidAffiliationResult = Promise.resolve();
+      setup();
+      const confirm = spyOn(window, 'confirm').and.returnValue(true);
+
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      // Click the remove butotn
+      const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button')[0];
+      removeButton.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(confirm).toHaveBeenCalledTimes(1);
+      expect(mockService.modifyJidAffiliation).toHaveBeenCalledTimes(1);
+      const args = mockService.modifyJidAffiliation.calls.mostRecent().args;
+      expect(args[0]).toBe('testing');
+      expect(args[1].affiliation).toBe(Affiliation.None);
+      expect(args[1].jid).toBe('hamlet@denmark.lit');
+    }));
+
+    it('should display a confirm dialog and cancel if aborted', fakeAsync(() => {
+      // Setup spies and responses
+      isJidCurrentUserResult = Promise.resolve(true);
+      modifyJidAffiliationResult = Promise.resolve();
+      setup();
+      const confirm = spyOn(window, 'confirm').and.returnValue(false);
+
+      // Get rid of the spinner
+      fixture.detectChanges();
+      tick();
+
+      // Click the remove butotn
+      const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button')[0];
+      removeButton.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(confirm).toHaveBeenCalledTimes(1);
+      expect(mockService.modifyJidAffiliation).toHaveBeenCalledTimes(0);
+    }));
+
+
+  });
+
   describe('given an empty list of affiliations', () => {
 
     beforeEach(fakeAsync(() => {
