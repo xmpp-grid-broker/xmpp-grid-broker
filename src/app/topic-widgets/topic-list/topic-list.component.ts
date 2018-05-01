@@ -16,12 +16,18 @@ export class TopicList {
   errorMessage: string;
   topics: Topics = [];
   page: Paged<Topic>;
+
   private loader: (nextKey: string) => Promise<Paged<Topic>>;
+  private errorHandler: (error: any) => string;
 
 
   public useLoader(load: (string) => Promise<Paged<Topic>>) {
     this.loader = load;
     this.loadPage(undefined);
+  }
+
+  public useErrorMapper(errorHandler: (error: any) => string) {
+    this.errorHandler = errorHandler;
   }
 
   public loadMore() {
@@ -36,13 +42,10 @@ export class TopicList {
         this.page = page;
         this.topics.push(...page.items);
         this.isLoaded = true;
-        // TODO: get rid of "magic" nuber -> set this on the page directly!
       },
       error => {
         this.hasError = true;
-        // TODO: BETTER ERROR HANDLING (ERROR IS OBJECT
-        console.log(error);
-        this.errorMessage = error;
+        this.errorMessage = this.errorHandler(error);
       });
 
   }

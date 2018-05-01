@@ -11,7 +11,4 @@
 </ng-container>
 <xgb-spinner *ngIf="!topicList.hasError && !topicList.isLoaded"></xgb-spinner>
 
-<div *ngIf="topicList.hasError" class="empty">
-  <p class="empty-title h5">Oops, an error occurred!</p>
-  <p class="empty-subtitle">{{topicList.errorMessage}}</p>
-</div>
+<div *ngIf="topicList.hasError" xgbToast toast-error>{{topicList.errorMessage}}</div>

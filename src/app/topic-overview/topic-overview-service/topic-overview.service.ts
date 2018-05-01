@@ -1,20 +1,22 @@
 import {Injectable} from '@angular/core';
 import {CollectionTopic, LeafTopic, Topic, Topics} from '../../core/models/topic';
-import {XmppService} from '../../core/xmpp/xmpp.service';
+import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
 import {XmppDataForm} from '../../core/models/FormModels';
 
 @Injectable()
 export class TopicOverviewService {
+  private readonly PAGE_SIZE = 10;
+
   constructor(private xmppService: XmppService) {
   }
 
   public rootTopics(nextKey: string): Promise<Paged<Topic>> {
     const cmd = {
-      type: 'get',
+      type: IqType.Get,
       discoItems: {
         rsm: {
-          max: 10, // items at a time
+          max: this.PAGE_SIZE,
           after: nextKey
         }
       }
@@ -27,7 +29,6 @@ export class TopicOverviewService {
         return Promise.all(
           items.map((item: any) => this.loadTopicDetailsNew(item.node))
         ).then((values: any) => {
-          // TODO: INVESTIGATE TYPE INCOMPATIBILITY
           const topics: Topics = values;
           return new Paged(
             topics,
@@ -96,7 +97,7 @@ export class TopicOverviewService {
    */
   private loadTopicDetailsNew(name: string, loadChildren = false): Promise<Topic> {
     const cmd = {
-      type: 'get',
+      type: IqType.Get,
       discoInfo: {
         node: name
       }

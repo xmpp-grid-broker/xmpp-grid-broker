@@ -35,15 +35,20 @@ export class TopicOverviewComponent implements OnInit {
     //   case 'root':
     //     promise = this.topicOverviewService.rootTopics();
     //     break;
-      // TODO: FIX TYPES
-      // case 'all':
-      //   promise = this.topicOverviewService.allTopics();
-      //   break;
-      // case 'collections':
-      //   promise = this.topicOverviewService.allCollections();
-      //   break;
+    // TODO: FIX TYPES
+    // case 'all':
+    //   promise = this.topicOverviewService.allTopics();
+    //   break;
+    // case 'collections':
+    //   promise = this.topicOverviewService.allCollections();
+    //   break;
     // }
+    this.topicList.useErrorMapper(this.mapErrors.bind(this));
     this.topicList.useLoader(this.topicOverviewService.rootTopics.bind(this.topicOverviewService));
+  }
+
+  mapErrors(error: any): string {
+    return `Failed to load topics / collection : ${JSON.stringify(error)}`;
   }
 
   createNew(what: string) {
