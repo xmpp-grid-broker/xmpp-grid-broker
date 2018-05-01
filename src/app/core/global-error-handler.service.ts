@@ -14,10 +14,10 @@ export class GlobalErrorHandlerService implements ErrorHandler {
     }
 
     if (error instanceof Error) {
-      console.log(error.stack);
-      notificationService.notify(`${error.stack}`);
+      console.log(error);
+      notificationService.reportError(`${error.stack}`);
     } else if (error != null) {
-      notificationService.notify(error.toString());
+      notificationService.reportError(error.toString());
     }
 
   }

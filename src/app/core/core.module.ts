@@ -6,10 +6,12 @@ import {HeaderComponent} from './header/header.component';
 import {RouterModule} from '@angular/router';
 import {NavigationService} from './navigation.service';
 import {XmppService, XmppClientFactory} from './xmpp/xmpp.service';
+import {XmppFeatureService} from './xmpp/xmpp-feature.service';
 import {GlobalErrorHandlerService} from './global-error-handler.service';
 import {NotificationService} from './notification.service';
 import {NotificationsComponent} from './notifications/notifications.component';
 import {ConfigService} from './config.service';
+import {XmppFeatureGuardService} from './xmpp/xmpp-feature-guard.service';
 
 
 @NgModule({
@@ -20,7 +22,7 @@ import {ConfigService} from './config.service';
   providers: [{
     provide: ErrorHandler,
     useClass: GlobalErrorHandlerService
-  }, NotificationService, NavigationService, XmppService, XmppClientFactory, ConfigService]
+  }, NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService, ConfigService]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

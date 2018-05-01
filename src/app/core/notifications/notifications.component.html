@@ -2,18 +2,17 @@
   <a (click)="hide()" class="modal-overlay" aria-label="Close"></a>
   <div class="modal-container">
     <div class="modal-header">
-      <a (click)="hide()" class="btn btn-clear float-right" aria-label="Close"></a>
-      <div class="modal-title h5">Oops, we have a problem...</div>
+      <a *ngIf="canHide" (click)="hide()" class="btn btn-clear float-right" aria-label="Close"></a>
+      <div class="modal-title h5">{{title}}</div>
     </div>
     <div class="modal-body">
       <div class="content">
-        <p>We're sorry, but an unexpected problem occurred</p>
-        <p>Please <a href="https://github.com/xmpp-grid-broker/xmpp-grid-broker/" target="_blank"> report this issue</a>,
-          so that we can fix it.</p>
-        <ng-container *ngIf="errorMessage">
+        <div *ngIf="messageIsHtml" [innerHTML]="message"></div>
+        <div *ngIf="!messageIsHtml">{{message}}</div>
+        <div *ngIf="details" class="details">
           <b>Details:</b>
-          <pre class="code">{{errorMessage}}</pre>
-        </ng-container>
+          <pre class="code">{{details}}</pre>
+        </div>
       </div>
     </div>
   </div>
