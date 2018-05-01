@@ -6,8 +6,8 @@ import {AbstractControl, NG_VALIDATORS, ValidationErrors, Validator} from '@angu
   providers: [{provide: NG_VALIDATORS, useExisting: NoDuplicatesAllowedDirective, multi: true}]
 })
 export class NoDuplicatesAllowedDirective implements Validator {
-  @Input('xgbNoDuplicatesAllowed') xgbNoDuplicatesAllowed: any[];
-  @Input('xgbDuplicateKey') xgbDuplicateKey: any;
+  @Input() xgbNoDuplicatesAllowed: any[];
+  @Input() xgbDuplicateKey: any;
 
   validate(c: AbstractControl): ValidationErrors | null {
     let list = this.xgbNoDuplicatesAllowed;
