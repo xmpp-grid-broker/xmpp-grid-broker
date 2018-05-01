@@ -33,7 +33,7 @@ class FakeClient {
 
 class FakeConfigService {
   public getConfig(): Promise<Config> {
-    const xmppConfig = new XmppConfig(new JID('admin@openfire'), 'openfire', XmppTransport.Bosh, 'localhost');
+    const xmppConfig = new XmppConfig(new JID('admin@openfire'), XmppTransport.Bosh, undefined, 'localhost');
     const config = new Config(xmppConfig);
     return Promise.resolve(config);
   }
@@ -124,7 +124,7 @@ describe('XmppService', () => {
           fail('Expected Promise to reject');
         })
         .catch((actualError) => {
-          expect(actualError).toBe(expectedError);
+          expect(actualError).toBe(expectedError.error);
           done();
         });
     });

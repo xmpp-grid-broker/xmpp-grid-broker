@@ -14,6 +14,7 @@ import {FormFieldComponent} from './form/form-field.component';
 import {SpinnerComponent} from './spinner/spinner.component';
 import {CollapsibleComponent} from './collapsible/collapsible.component';
 import {ToastDirective} from './toast.directive';
+import {NoDuplicatesAllowedDirective} from './form/no-duplicates-allowed.directive';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,
@@ -28,7 +29,8 @@ const EXPORTED_DECLARATIONS = [
   FormSwitchComponent,
   FormFieldComponent,
   SpinnerComponent,
-  CollapsibleComponent
+  CollapsibleComponent,
+  NoDuplicatesAllowedDirective
 ];
 
 @NgModule({

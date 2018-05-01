@@ -47,11 +47,23 @@ export class XmppService {
   constructor(private xmppClientFactory: XmppClientFactory, private configService: ConfigService) {
     this._config = this.configService.getConfig().then(config => config.xmpp);
     this._client = this._config.then(config => this._getClientInstance(config));
-    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid_domain}`));
+    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid.domain}`));
   }
 
+  /**
+   * Returns the title of the configured server.
+   */
   public getServerTitle(): Promise<string> {
-    return this._config.then(config => config.jid_domain);
+    return this._config.then(config => config.jid.domain);
+  }
+
+  /**
+   * Returns true if the given bare jid is
+   * equal to the bare jid of the current user
+   * (meaning the user who is connected to the xmpp server)
+   */
+  public isJidCurrentUser(bareJid: string): Promise<boolean> {
+    return this._config.then(config => config.jid.bare === bareJid);
   }
 
   /**
@@ -63,10 +75,10 @@ export class XmppService {
       if (this._state === ConnectionState.Up) {
         resolve(client);
       } else {
-          client.on('session:started', () => resolve(client));
-          if (this._state === ConnectionState.Down) {
-            this.connect();
-          }
+        client.on('session:started', () => resolve(client));
+        if (this._state === ConnectionState.Down) {
+          this.connect();
+        }
       }
     }));
   }
@@ -92,10 +104,13 @@ export class XmppService {
     return this.getClient().then((client: any) =>
       new Promise((resolve, reject) => {
         client.sendIq(cmd, (err, result) => {
-          if (err) {
+          if (err && err.error) {
+            reject(err.error);
+          } else if (err) {
             reject(err);
+          } else {
+            resolve(result);
           }
-          resolve(result);
         });
       })
     );

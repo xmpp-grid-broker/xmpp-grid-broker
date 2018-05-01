@@ -8,7 +8,6 @@ export enum XmppTransport {
 export class XmppConfig {
   constructor(
     readonly jid: JID,
-    readonly jid_domain: string,
     readonly transport: XmppTransport,
     readonly wsURL?: string,
     readonly boshURL?: string,
@@ -29,7 +28,7 @@ export class XmppConfig {
    * @returns {XmppConfig}
    */
   static fromJson(json: any): XmppConfig {
-    const requiredFieldNames = ['jid', 'jid_domain', 'transport'];
+    const requiredFieldNames = ['jid', 'transport'];
     for (const fieldName of requiredFieldNames) {
       if (!json[fieldName]) {
         throw Error(`XMPP configuration field "${fieldName}" must be configured`);
@@ -42,7 +41,6 @@ export class XmppConfig {
 
     return new XmppConfig(
       new JID(json.jid),
-      json.jid_domain,
       json.transport,
       json.wsURL,
       json.boshURL,
