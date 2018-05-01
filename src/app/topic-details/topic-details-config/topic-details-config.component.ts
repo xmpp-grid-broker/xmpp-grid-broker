@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {XmppDataForm} from '../../core/models/FormModels';
-import {LoadConfigurationFormErrorCodes, TopicDetailsService} from '../topic-details.service';
+import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
+import {NavigationService} from '../../core/navigation.service';
 
 @Component({
   selector: 'xgb-topic-details-config',
@@ -34,7 +35,8 @@ export class TopicDetailsConfigComponent implements OnInit {
   initialFormLoaded = false;
 
   constructor(private route: ActivatedRoute,
-              private topicDetailsService: TopicDetailsService) {
+              private topicDetailsService: TopicDetailsService,
+              private navigationService: NavigationService) {
   }
 
   ngOnInit(): void {
@@ -82,5 +84,30 @@ export class TopicDetailsConfigComponent implements OnInit {
           error
         });
       });
+  }
+
+  deleteTopic(event) {
+    // TODO: show confirm dialog
+    this.topicDetailsService.deleteTopic(this.nodeId)
+      .then(() => {
+        console.log(this.navigationService.goToHome);
+        this.navigationService.goToHome();
+      })
+      .catch((error) => {
+        switch (error.condition) {
+          case  TopicDeletionErrorCodes.ItemNotFound:
+            this.formProcessing.done({errorMessage: `Node with NodeID ${this.nodeId} does not exist!`});
+            break;
+          case  TopicDeletionErrorCodes.Forbidden:
+            this.formProcessing.done({errorMessage: `Insufficient Privileges to delete node ${this.nodeId}`});
+            break;
+          case  TopicDeletionErrorCodes.NotAllowed:
+            this.formProcessing.done({errorMessage: `You are not allowed to delete the root node ${this.nodeId}!`});
+            break;
+          default:
+            this.formProcessing.done({errorMessage: `An unknown error occurred: ${error.condition}!`, error});
+        }
+      });
+    event.preventDefault();
   }
 }
