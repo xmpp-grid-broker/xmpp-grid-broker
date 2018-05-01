@@ -2,7 +2,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 
 import {TopicAffiliationsComponent} from './topic-affiliations.component';
 import {SharedModule} from '../../shared/shared.module';
-import {TopicDetailsService} from '../topic-details.service';
+import {AffiliationManagementErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {DebugElement} from '@angular/core';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {ActivatedRoute} from '@angular/router';
@@ -78,7 +78,7 @@ describe('TopicAffiliationsComponent', () => {
       const spinner = de.nativeElement.querySelector('.loading');
       expect(spinner).toBeFalsy();
       expect(component.isLoaded).toBeTruthy();
-      expect(component.hasError).toBeFalsy();
+      expect(component.errorMessage).toBeFalsy();
     }));
 
     it('should render all loaded jids', fakeAsync(() => {
@@ -353,12 +353,10 @@ describe('TopicAffiliationsComponent', () => {
   });
   describe('given an error when loading the affiliations', () => {
 
-    beforeEach(fakeAsync(() => {
-      loadJidAffiliationsResult = Promise.reject({condition: 'bad-request'});
-      setup();
-    }));
-
     it('should hide the spinner whe the error is received', fakeAsync(() => {
+      loadJidAffiliationsResult = Promise.reject({condition: AffiliationManagementErrorCodes.Forbidden});
+      setup();
+
       // Spinner is currently present...
       fixture.detectChanges();
       tick();
@@ -366,19 +364,28 @@ describe('TopicAffiliationsComponent', () => {
       const spinner = de.nativeElement.querySelector('.loading');
       expect(spinner).toBeFalsy();
       expect(component.isLoaded).toBeTruthy();
-      expect(component.hasError).toBeTruthy();
+      expect(component.errorMessage).toBeTruthy();
     }));
+    [
+      {condition: AffiliationManagementErrorCodes.ItemNotFound, message: 'Node testing does not exist'},
+      {condition: AffiliationManagementErrorCodes.Unsupported, message: 'Node or service does not support affiliation management'},
+      {
+        condition: AffiliationManagementErrorCodes.Forbidden,
+        message: 'You are not allowed to modify the affiliations because you are not owner'
+      },
+    ].forEach(({condition, message}) => {
+      it('should render an error box whe the error is received', fakeAsync(() => {
 
-    it('should render an error box whe the error is received', fakeAsync(() => {
-      // Spinner is currently present...
-      fixture.detectChanges();
-      tick();
+        loadJidAffiliationsResult = Promise.reject({condition});
+        setup();
 
-      const errorBoxTitle = de.nativeElement.querySelector('.empty-title');
-      expect(errorBoxTitle.innerText).toBe('Oops, an error occurred!');
-      const errorBoxMessage = de.nativeElement.querySelector('.empty-subtitle');
-      expect(errorBoxMessage.innerText).toBe('TODO: Better Message');
-    }));
+        // Spinner is currently present...
+        fixture.detectChanges();
+        tick();
 
+        const errorBoxMessage = de.nativeElement.querySelector('.toast-error');
+        expect(errorBoxMessage.innerText).toBe(message);
+      }));
+    });
   });
 });

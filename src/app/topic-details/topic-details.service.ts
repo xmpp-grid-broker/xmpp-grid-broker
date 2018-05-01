@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {XmppDataForm} from '../core/models/FormModels';
 import {IqType, XmppService} from '../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
-import {Affiliation, JidAffiliation} from '../core/models/Affiliation';
+import {JidAffiliation} from '../core/models/Affiliation';
 
 export enum LoadConfigurationFormErrorCodes {
   ItemNotFound = 'item-not-found',
@@ -14,7 +14,7 @@ export enum LoadConfigurationFormErrorCodes {
 export enum AffiliationManagementErrorCodes {
   ItemNotFound = 'item-not-found',
   Unsupported = 'unsupported',
-  Forbidden = 'forbidden',
+  Forbidden = 'forbidden'
 }
 
 @Injectable()
@@ -38,7 +38,6 @@ export class TopicDetailsService {
    * Loads all jid affiliations of the given node.
    */
   public loadJidAffiliations(node: string): Promise<JidAffiliation[]> {
-    // TODO: WRITE TEST!
     const cmd = {
       type: IqType.Get,
       pubsubOwner: {
@@ -48,9 +47,8 @@ export class TopicDetailsService {
       }
     };
     return this.xmppService.executeIqToPubsub(cmd).then((response) => {
-      const jidAffiliations = response.pubsubOwner.affiliations.list
+      return response.pubsubOwner.affiliations.list
         .map((entry) => new JidAffiliation(entry.jid.full, entry.type));
-      return jidAffiliations;
     });
   }
 
@@ -60,7 +58,6 @@ export class TopicDetailsService {
    * If the affiliation is none, the affiliation will be removed (according to xep-0060).
    */
   public modifyJidAffiliation(node: string, affiliation: JidAffiliation): Promise<void> {
-    // TODO: WRITE TEST!
     const cmd = {
       type: IqType.Set,
       pubsubOwner: {

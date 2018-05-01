@@ -19,11 +19,8 @@ export class TopicAffiliationsComponent implements OnInit {
   isLoaded: boolean;
 
   /**
-   * will be set to true if the a service method call has failed.
-   */
-  hasError: boolean;
-  /**
-   * If `hasError` is true, this is the error message to display
+   * will be set if a service method call has failed.
+   * this is the error message to display
    * to the user.
    */
   errorMessage: string;
@@ -111,7 +108,6 @@ export class TopicAffiliationsComponent implements OnInit {
 
   private refresh() {
     this.isLoaded = false;
-    this.hasError = false;
     this.topicDetailsService.loadJidAffiliations(this.nodeId)
       .then((loadedAffiliations: JidAffiliation[]) => {
         this.isLoaded = true;
@@ -119,24 +115,24 @@ export class TopicAffiliationsComponent implements OnInit {
       })
       .catch((error) => {
         this.isLoaded = true;
-        this.hasError = true;
         this.handleFailedAffiliationAction(error);
       });
   }
 
   private handleFailedAffiliationAction(error) {
     if (error && error.condition) {
-      this.errorMessage = 'TODO: Better Message';
-      switch (error.conndition){
-        case AffiliationManagementErrorCodes.Forbidden:
+      switch (error.condition) {
+        case AffiliationManagementErrorCodes.Unsupported:
           this.errorMessage = 'Node or service does not support affiliation management';
           break;
-        case AffiliationManagementErrorCodes.Unsupported:
+        case AffiliationManagementErrorCodes.Forbidden:
           this.errorMessage = 'You are not allowed to modify the affiliations because you are not owner';
           break;
         case AffiliationManagementErrorCodes.ItemNotFound:
           this.errorMessage = `Node ${this.nodeId} does not exist`;
           break;
+        default:
+          this.errorMessage = `Unknown error "${error.condition}": ${JSON.stringify(error)}`;
       }
     } else {
       this.errorMessage = `Unknown error: ${JSON.stringify(error)}`;

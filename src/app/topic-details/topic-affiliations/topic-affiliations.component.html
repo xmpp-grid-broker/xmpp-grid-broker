@@ -1,4 +1,4 @@
-<xgb-list *ngIf="!hasError && isLoaded">
+<xgb-list *ngIf="!errorMessage && isLoaded">
   <xgb-list-item *ngFor="let jidAffiliation of jidAffiliations">
     <div class="jid-affiliation">
       <div class="jid">{{jidAffiliation.jid}}</div>
@@ -48,8 +48,4 @@
   </div>
 </xgb-list>
 <xgb-spinner *ngIf="!isLoaded"></xgb-spinner>
-
-<div *ngIf="hasError" class="empty">
-  <p class="empty-title h5">Oops, an error occurred!</p>
-  <p class="empty-subtitle">{{errorMessage}}</p>
-</div>
+<div *ngIf="errorMessage" xgbToast toast-error>{{errorMessage}}</div>
