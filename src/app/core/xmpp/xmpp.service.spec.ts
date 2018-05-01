@@ -124,7 +124,7 @@ describe('XmppService', () => {
           fail('Expected Promise to reject');
         })
         .catch((actualError) => {
-          expect(actualError).toBe(expectedError);
+          expect(actualError).toBe(expectedError.error);
           done();
         });
     });

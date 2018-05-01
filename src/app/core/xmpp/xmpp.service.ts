@@ -75,10 +75,10 @@ export class XmppService {
       if (this._state === ConnectionState.Up) {
         resolve(client);
       } else {
-          client.on('session:started', () => resolve(client));
-          if (this._state === ConnectionState.Down) {
-            this.connect();
-          }
+        client.on('session:started', () => resolve(client));
+        if (this._state === ConnectionState.Down) {
+          this.connect();
+        }
       }
     }));
   }
@@ -104,10 +104,13 @@ export class XmppService {
     return this.getClient().then((client: any) =>
       new Promise((resolve, reject) => {
         client.sendIq(cmd, (err, result) => {
-          if (err) {
+          if (err && err.error) {
+            reject(err.error);
+          } else if (err) {
             reject(err);
+          } else {
+            resolve(result);
           }
-          resolve(result);
         });
       })
     );
