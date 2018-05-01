@@ -155,4 +155,32 @@ describe('TopicDetailsService', () => {
       });
     });
   });
+
+  describe('concerning the deletion of a topic', () => {
+    let spy: jasmine.Spy;
+    beforeEach(() => {
+      spy = spyOn(xmppService, 'executeIqToPubsub')
+        .and.returnValue(Promise.resolve({}));
+    });
+    it('should resolve when successful', (done) => {
+      service.deleteTopic(
+        'testing'
+      ).then(() => {
+        done();
+      });
+    });
+
+    it('should execute an iq to delete the topic', (done) => {
+      service.deleteTopic(
+        'testing'
+      ).then(() => {
+        expect(spy).toHaveBeenCalledTimes(1);
+        const cmd = spy.calls.mostRecent().args[0];
+        expect(cmd.type).toBe(IqType.Set);
+        expect(cmd.pubsubOwner.del).toBe('testing');
+        done();
+      });
+    });
+  });
+
 });
