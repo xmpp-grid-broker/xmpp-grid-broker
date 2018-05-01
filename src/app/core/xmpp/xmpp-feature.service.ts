@@ -5,10 +5,10 @@ import {IqType, XmppService} from './xmpp.service';
 @Injectable()
 export class XmppFeatureService {
   static readonly REQUIRED_PUBSUB_FEATURES = [
-      'access-open', 'collections', 'config-node', 'create-and-configure', 'create-nodes', 'delete-nodes', 'get-pending', 'instant-nodes',
-      'item-ids', 'meta-data', 'modify-affiliations', 'manage-subscriptions', 'multi-subscribe', 'outcast-affiliation', 'persistent-items',
-      'presence-notifications', 'publish', 'publisher-affiliation', 'purge-nodes', 'retract-items', 'retrieve-affiliations',
-      'retrieve-default', 'retrieve-items', 'retrieve-subscriptions', 'subscribe', 'subscription-options'
+    'access-open', 'collections', 'config-node', 'create-and-configure', 'create-nodes', 'delete-nodes', 'get-pending', 'instant-nodes',
+    'item-ids', 'meta-data', 'modify-affiliations', 'manage-subscriptions', 'multi-subscribe', 'outcast-affiliation', 'persistent-items',
+    'presence-notifications', 'publish', 'publisher-affiliation', 'purge-nodes', 'retract-items', 'retrieve-affiliations',
+    'retrieve-default', 'retrieve-items', 'retrieve-subscriptions', 'subscribe', 'subscription-options'
   ];
   private _protocolFeatures: Map<string, Promise<string[]>> = new Map();
 
@@ -16,9 +16,11 @@ export class XmppFeatureService {
   }
 
   /**
-   * Checks for a basic set of required features.
+   * Checks for a basic set of required features and returns
+   * a list of all missing features.
+   * If all required features are present, the list is empty
    */
-  checkRequiredFeatures(): Promise<boolean> {
+  public getMissingRequiredFeatures(): Promise<string[]> {
     return this.checkFeatures('pubsub', XmppFeatureService.REQUIRED_PUBSUB_FEATURES);
   }
 
@@ -26,7 +28,7 @@ export class XmppFeatureService {
    * Queries the XMPP server for the support of a specific feature.
    * Unsupported features are logged to the console.
    */
-  checkFeature(protocol: string, feature: string = ''): Promise<boolean> {
+  public checkFeature(protocol: string, feature: string = ''): Promise<boolean> {
     return this._getProtocolFeatures(protocol)
       .then(features => {
         const supported = features.includes(feature);
@@ -40,15 +42,22 @@ export class XmppFeatureService {
 
   /**
    * Queries the XMPP server for supported feature of a protocol,
-   * and returns whether all requested features are supported.
+   * and returns a list unsupported features.
+   *
+   * If all required features are present, the returned list is empty.
    */
-  checkFeatures(protocol: string, features: string[]): Promise<boolean> {
-      const featureSupport = features
-        .map((feature => this.checkFeature(protocol, feature)));
-
-      // check that _every_ requested feature is supported.
-      return Promise.all(featureSupport).then(resolvedFeatures => {
-        return resolvedFeatures.every((resolvedFeature) => resolvedFeature);
+  public checkFeatures(protocol: string, features: string[]): Promise<string[]> {
+    const featureSupport = features
+      .map((feature => this.checkFeature(protocol, feature)));
+    // check that _every_ requested feature is supported.
+    return Promise.all(featureSupport)
+      .then((resolvedFeatures) => {
+        return resolvedFeatures
+          .map((item, idx) => {
+            return {isSuported: item, label: `${features[idx]}(${protocol})`};
+          })
+          .filter((feature) => !feature.isSuported)
+          .map((feature) => feature.label);
       });
   }
 
@@ -62,23 +71,24 @@ export class XmppFeatureService {
     }
 
 
-    const query = this.configService.getConfig().then(config => {
-      const cmd = {
-        type: IqType.Get,
-        to: config.xmpp.jid.domain,
-        discoInfo: {}
-      };
+    const query = this.configService.getConfig()
+      .then(config => {
+        const cmd = {
+          type: IqType.Get,
+          to: config.xmpp.jid.domain,
+          discoInfo: {}
+        };
 
-      switch (protocol) {
-        case 'pubsub':
-          return this.xmppService.executeIqToPubsub(cmd);
-        default:
-          return this.xmppService.executeIq(cmd);
-      }
-    })
+        switch (protocol) {
+          case 'pubsub':
+            return this.xmppService.executeIqToPubsub(cmd);
+          default:
+            return this.xmppService.executeIq(cmd);
+        }
+      })
       .then(rawFeatures => {
         const features = rawFeatures.discoInfo.features
-          // Map URLs to feature strings
+        // Map URLs to feature strings
           .map(url => {
             if (url.startsWith(`http://jabber.org/protocol/${protocol}`)) {
               if (url.includes('#')) {

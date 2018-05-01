@@ -11,6 +11,7 @@ import {GlobalErrorHandlerService} from './global-error-handler.service';
 import {NotificationService} from './notification.service';
 import {NotificationsComponent} from './notifications/notifications.component';
 import {ConfigService} from './config.service';
+import {XmppFeatureGuardService} from './xmpp/xmpp-feature-guard.service';
 
 
 @NgModule({
@@ -21,18 +22,12 @@ import {ConfigService} from './config.service';
   providers: [{
     provide: ErrorHandler,
     useClass: GlobalErrorHandlerService
-  }, NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, ConfigService]
+  }, NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService, ConfigService]
 })
 export class CoreModule {
-  constructor(@Optional() @SkipSelf() parentModule: CoreModule, xmppFeatureService: XmppFeatureService) {
+  constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
     if (parentModule) {
       throw new Error('CoreModule is already loaded. Import it in the AppModule only');
     }
-
-    xmppFeatureService.checkRequiredFeatures().then(fulfilled => {
-      if (!fulfilled) {
-        throw new Error('Not all required xmpp features are supported!');
-      }
-    });
   }
 }

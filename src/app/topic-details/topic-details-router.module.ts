@@ -3,11 +3,13 @@ import {RouterModule, Routes} from '@angular/router';
 import {TopicDetailsComponent} from './topic-details/topic-details.component';
 import {TopicDetailsConfigComponent} from './topic-details-config/topic-details-config.component';
 import {TopicAffiliationsComponent} from './topic-affiliations/topic-affiliations.component';
+import {XmppFeatureGuardService as XmppFeatureGuard} from '../core/xmpp/xmpp-feature-guard.service';
 
 
 const routes: Routes = [
   {
     path: 'topics/details/:id',
+    canActivate: [XmppFeatureGuard],
     component: TopicDetailsComponent,
     children: [
       {path: '', redirectTo: 'configuration', pathMatch: 'full'},

@@ -17,19 +17,43 @@ export class NotificationService {
 
   /**
    * Show the given message to the user.
+   * If recoverable is false, the notification
+   * cannot be dismissed.
+   *
+   * WARNING: Use msgIsHtml with caution! If set to true, the message
+   * is rendered as raw HTML allowing XSS and other possible attacks
+   * if user generated content is rendered!!
    */
-  public notify(message: string) {
+  public notify(title, message, canHide = false, details?: any, msgIsHtml?: any) {
     // Dynamically generate a new component
     const factory = this.factoryResolver.resolveComponentFactory(NotificationsComponent);
     const componentRef = factory.create(this.rootViewContainer.parentInjector);
 
     // Populate the fields on the component
     const component = componentRef.instance;
-    component.errorMessage = message;
+    component.title = title;
+    component.message = message;
+    component.messageIsHtml = msgIsHtml || false;
+    component.details = details;
+    component.canHide = canHide;
     component.setViewRef(componentRef);
 
     // Insert the component into the DOM
     this.rootViewContainer.insert(componentRef.hostView);
+  }
+
+  /**
+   * Reports an unexpected/unhandled error.
+   */
+  public reportError(details: any, recoverable = false) {
+    if (!(details instanceof String)) {
+      details = JSON.stringify(details);
+    }
+    const title = 'Oops, we have a problem...';
+    const message = '<p>We are sorry, but an unexpected problem occurred</p>' +
+      '<p>Please <a href="https://github.com/xmpp-grid-broker/xmpp-grid-broker/" target="_blank">' +
+      'report this issue</a> so that we can fix it.</p>';
+    this.notify(title, message, recoverable, details, true);
   }
 
   /**

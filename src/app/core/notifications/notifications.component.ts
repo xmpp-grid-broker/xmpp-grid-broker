@@ -7,14 +7,22 @@ import {Component, ComponentRef} from '@angular/core';
 })
 export class NotificationsComponent {
 
-  public errorMessage: string;
+  public details: any;
+  public canHide = true;
+
+  public title: string;
+  public messageIsHtml: boolean;
+  public message: string;
+
   private componentRef: ComponentRef<NotificationsComponent>;
 
   /**
    * Hide / destroy this notification.
    */
   public hide() {
-    this.componentRef.destroy();
+    if (this.canHide) {
+      this.componentRef.destroy();
+    }
   }
 
   /**

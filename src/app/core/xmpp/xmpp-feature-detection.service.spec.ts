@@ -66,7 +66,8 @@ describe('XmppFeatureService', () => {
     xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
     service.checkFeatures('pubsub', ['do-magic', 'subscribe']).then(result => {
       expect(xmppSpy).toHaveBeenCalled();
-      expect(result).toBe(false);
+      expect(result.length).toBe(1);
+      expect(result).toContain('do-magic(pubsub)');
       done();
     });
   });
@@ -75,7 +76,7 @@ describe('XmppFeatureService', () => {
     xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
     service.checkFeatures('pubsub', ['collections', 'subscribe']).then(result => {
       expect(xmppSpy).toHaveBeenCalled();
-      expect(result).toBe(true);
+      expect(result.length).toBe(0);
       done();
     });
   });
@@ -86,9 +87,11 @@ describe('XmppFeatureService', () => {
       .filter(feature => !feature.endsWith('collections'));
 
     xmppSpy.and.returnValue(discovery_result);
-    service.checkRequiredFeatures().then(result => {
+    service.getMissingRequiredFeatures().then(result => {
       expect(xmppSpy).toHaveBeenCalled();
-      expect(result).toBe(false);
+      expect(result.length).toBe(1);
+      expect(result).toContain('collections(pubsub)');
+
       done();
     });
   });

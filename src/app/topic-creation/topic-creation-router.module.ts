@@ -1,14 +1,21 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {TopicCreationComponent} from './topic-creation/topic-creation.component';
+import {XmppFeatureGuardService as XmppFeatureGuard} from '../core/xmpp/xmpp-feature-guard.service';
 
 
 const routes: Routes = [
   {
-    path: 'topics/new/topic', component: TopicCreationComponent, data: {type: 'leaf'}
-  },
-  {
-    path: 'topics/new/collection', component: TopicCreationComponent, data: {type: 'collection'}
+    path: 'topics/new',
+    canActivate: [XmppFeatureGuard],
+    children: [
+      {
+        path: 'topic', component: TopicCreationComponent, data: {type: 'leaf'}
+      },
+      {
+        path: 'collection', component: TopicCreationComponent, data: {type: 'collection'}
+      }
+    ]
   }
 ];
 
