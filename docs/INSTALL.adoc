@@ -50,7 +50,6 @@ A minimal configuration example can be found in this repository under link:../st
 
 * `xmpp`: Object containing the XMPP server connection configuration.
 ** `jid`: the JID of the xmpp user, with which the XMPP-Grid Broker connects to the XMPP server, e.g. `admin@xmpp.example.com`
-** `jid_domain`: The domain part of the JID, e.g. `xmpp.example.com`
 ** `boshURL`: BOSH-Endpoint URL, e.g. `https://bosh.example.com/http-bind`
 ** `wsURL`: WebSocket-Endpoint URL, e.g. `wss://bosh.example.com/ws`
 ** `transport`: Should be the string `bosh` for a BOSH endpoint or `websocket` for a WebSocket endpoint.

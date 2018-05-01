@@ -29,7 +29,6 @@ describe('ConfigService', () => {
   const JSON_CONFIG = {
     xmpp: {
       jid: 'admin@openfire',
-      jid_domain: 'openfire',
       transport: 'bosh',
       boshURL: 'localhost',
       useStreamManagement: false
@@ -38,7 +37,6 @@ describe('ConfigService', () => {
 
   const REFERENCE_CONFIG = new Config(new XmppConfig(
     new JID('admin@openfire'),
-    'openfire',
     XmppTransport.Bosh,
     undefined,
     'localhost',
@@ -62,7 +60,7 @@ describe('ConfigService', () => {
     service = new ConfigService(httpClient);
 
     service.getConfig().then((config: Config) => {
-      const required =  ['jid_domain', 'transport', 'boshUrl', 'useStreamManagement'];
+      const required =  ['transport', 'boshUrl', 'useStreamManagement'];
       for (const name of required) {
         expect(config.xmpp[name]).toBe(REFERENCE_CONFIG.xmpp[name]);
       }
