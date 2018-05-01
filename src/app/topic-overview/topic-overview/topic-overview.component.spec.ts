@@ -1,13 +1,14 @@
 import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TopicOverviewService} from '../topic-overview-service/topic-overview.service';
+import {Paged, TopicOverviewService} from '../topic-overview-service/topic-overview.service';
 import {TopicOverviewComponent} from './topic-overview.component';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
 import {NavigationService} from '../../core/navigation.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
+import {LeafTopic, Topic} from '../../core/models/topic';
 
 class MockXmppService {
   // Disabled because it is used via Mock
@@ -18,7 +19,7 @@ class MockXmppService {
 }
 
 class MockTopicOverviewService {
-  constructor(private _rootTopics = [{title: 'a'}, {title: 'b'}],
+  constructor(private _rootTopics = new Paged<Topic>([new LeafTopic('a'), new LeafTopic('b')], 2, false, null, null),
               private _allTopics = [],
               private _allCollections = []) {
   }
@@ -85,7 +86,6 @@ describe('TopicOverviewComponent', () => {
       tick();
       fixture.detectChanges();
       tick();
-
       expect(de.querySelectorAll('xgb-list-item').length).toBe(2);
     }));
 

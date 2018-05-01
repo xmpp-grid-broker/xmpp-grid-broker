@@ -11,7 +11,7 @@ export class TopicOverviewService {
   constructor(private xmppService: XmppService) {
   }
 
-  public rootTopics(nextKey: string): Promise<Paged<Topic>> {
+  public rootTopics(nextKey?: string): Promise<Paged<Topic>> {
     const cmd = {
       type: IqType.Get,
       discoItems: {

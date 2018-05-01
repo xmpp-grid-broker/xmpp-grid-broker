@@ -1,5 +1,5 @@
-import {TopicOverviewService} from './topic-overview.service';
-import {Topics} from '../../core/models/topic';
+import {Paged, TopicOverviewService} from './topic-overview.service';
+import {Topic, Topics} from '../../core/models/topic';
 import {JID} from 'stanza.io';
 
 class FakeClient {
@@ -11,12 +11,16 @@ class FakeClient {
 }
 
 class FakeXmppService {
-  public  _client = new FakeClient();
+  public _client = new FakeClient();
   public pubSubJid = Promise.resolve(new JID('pubsub.xmppserver'));
 
 
   getClient(): Promise<any> {
     return Promise.resolve(this._client);
+  }
+
+  executeIqToPubsub(cmd): Promise<any> {
+    return Promise.resolve();
   }
 }
 
@@ -32,7 +36,13 @@ describe('TopicOverviewService', () => {
           'jid': new JID('pubsub.xmppserver'),
           'node': 'collection1'
         }
-      ]
+      ],
+      'rsm': {
+        'count': 2,
+        'firstIndex': 0,
+        'first': 'pubsub.xmppserver#leaf1',
+        'last': 'pubsub.xmppserver#collection1'
+      }
     },
     'lang': 'en',
     'id': '72977f2f-8db8-47f9-8a46-78c001905a12',
@@ -47,8 +57,14 @@ describe('TopicOverviewService', () => {
         {
           'jid': new JID('pubsub.xmppserver'),
           'node': 'leaf2'
-        }
-      ]
+        },
+      ],
+      'rsm': {
+        'count': 1,
+        'firstIndex': 0,
+        'first': 'pubsub.xmppserver#leaf2',
+        'last':  'pubsub.xmppserver#leaf2'
+      }
     },
     'lang': 'en',
     'id': '99999999-8db8-47f9-8a46-78c999999912',
@@ -136,32 +152,29 @@ describe('TopicOverviewService', () => {
     xmppService = new FakeXmppService();
     service = new TopicOverviewService(xmppService);
 
-    spyOn(xmppService._client, 'getDiscoItems')
-      .and.callFake((jid: any, node: string, cb: (err?: any, data?: any) => void) => {
-      switch (node) {
-        case 'collection1':
-          cb(null, DISCO_ITEMS_NODE_COLLECTION1);
-          break;
-        default:
-          cb(null, DISCO_ITEMS_NODE_ROOT);
-          break;
-      }
-    });
+    spyOn(xmppService, 'executeIqToPubsub').and.callFake(
+      (cmd) => {
+        if (cmd.discoItems) {
+          switch (cmd.discoItems.node) {
+            case 'collection1':
+              return Promise.resolve(DISCO_ITEMS_NODE_COLLECTION1);
+            default:
+              return Promise.resolve(DISCO_ITEMS_NODE_ROOT);
+          }
+        } else if (cmd.discoInfo) {
+          switch (cmd.discoInfo.node) {
+            case 'leaf1':
+              return Promise.resolve(DISCO_INFO_NODE_LEAF1);
+            case 'leaf2':
+              return Promise.resolve(DISCO_INFO_NODE_LEAF2);
+            case 'collection1':
+              return Promise.resolve(DISCO_INFO_NODE_COLLECTION1);
+          }
+        }
 
-    spyOn(xmppService._client, 'getDiscoInfo')
-      .and.callFake((jid: any, node: string, cb: (err?: any, data?: any) => void) => {
-      switch (node) {
-        case 'leaf1':
-          cb(null, DISCO_INFO_NODE_LEAF1);
-          break;
-        case 'leaf2':
-          cb(null, DISCO_INFO_NODE_LEAF2);
-          break;
-        case 'collection1':
-          cb(null, DISCO_INFO_NODE_COLLECTION1);
-          break;
+        return Promise.reject('No clever impl found...');
       }
-    });
+    );
   });
 
   it('should return a fake set of all topics', (done) => {
@@ -178,10 +191,10 @@ describe('TopicOverviewService', () => {
   });
 
   it('should return a fake set of root topics', (done) => {
-    service.rootTopics().then((topics: Topics) => {
-        expect(topics.length).toBe(2);
-        expect(topics[0].title).toBe('collection1');
-        expect(topics[1].title).toBe('leaf1');
+    service.rootTopics().then((topics: Paged<Topic>) => {
+        expect(topics.items.length).toBe(2);
+        expect(topics.items[0].title).toBe('leaf1');
+        expect(topics.items[1].title).toBe('collection1');
         done();
       },
       (error) => {
