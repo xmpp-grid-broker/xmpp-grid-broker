@@ -46,7 +46,7 @@ export class NotificationService {
    * Reports an unexpected/unhandled error.
    */
   public reportError(details: any, recoverable = false) {
-    if (!(details instanceof String)) {
+    if (typeof details !== 'string') {
       details = JSON.stringify(details);
     }
     const title = 'Oops, we have a problem...';
