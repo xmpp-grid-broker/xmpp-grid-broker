@@ -17,6 +17,13 @@ export enum AffiliationManagementErrorCodes {
   Forbidden = 'forbidden'
 }
 
+
+export enum TopicDeletionErrorCodes {
+  Forbidden = 'forbidden',
+  ItemNotFound = 'item-not-found',
+  NotAllowed = 'not-allowed' // Deleting the Root Node, see XEP-0248
+}
+
 @Injectable()
 export class TopicDetailsService {
 
@@ -68,6 +75,20 @@ export class TopicDetailsService {
             type: affiliation.affiliation
           }
         }
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd);
+  }
+
+
+  /**
+   * Deletes the topic with the given topicIdentifier.
+   */
+  public deleteTopic(topicIdentifier: string): Promise<void> {
+    const cmd = {
+      type: IqType.Set,
+      pubsubOwner: {
+        del: topicIdentifier
       }
     };
     return this.xmppService.executeIqToPubsub(cmd);
