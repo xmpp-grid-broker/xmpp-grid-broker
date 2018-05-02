@@ -101,7 +101,7 @@ export class TopicAffiliationsComponent implements OnInit {
         this.doRemoveAffiliation(affiliation);
         return;
       }
-      this.notificationService.confirm('Warning', 'You\'re about to remove your affiliation with this topic.' +
+      this.notificationService.confirm('Warning', 'You\'re about to remove your affiliation with this topic. ' +
         'This means that you may no longer have access rights. Are you sure to proceed?')
         .then((confirmed) => {
           if (confirmed) {
