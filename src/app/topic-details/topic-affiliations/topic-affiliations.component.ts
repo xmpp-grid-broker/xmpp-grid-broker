@@ -4,6 +4,7 @@ import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
 import {XmppService} from '../../core/xmpp/xmpp.service';
+import {NotificationService} from '../../core/notifications/notification.service';
 
 @Component({
   selector: 'xgb-topic-affiliations',
@@ -49,7 +50,8 @@ export class TopicAffiliationsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private xmppService: XmppService,
-              private topicDetailsService: TopicDetailsService) {
+              private topicDetailsService: TopicDetailsService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit() {
@@ -76,34 +78,57 @@ export class TopicAffiliationsComponent implements OnInit {
   changeAffiliation(affiliation: JidAffiliation, newAffiliation, selectBox) {
     this.xmppService.isJidCurrentUser(affiliation.jid)
       .then((doChangeOwnConfig) => {
-        if (doChangeOwnConfig && !confirm('You are modifying you own rights. Are you sure to proceed?')) {
-          selectBox.value = affiliation.affiliation;
+        if (!doChangeOwnConfig) {
+          this.doChangeAffiliation(affiliation, newAffiliation);
           return;
         }
-        this.isLoaded = false;
-        affiliation.affiliation = newAffiliation;
-        this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
-          .then(() => {
-            this.refresh();
-          })
-          .catch(this.handleFailedAffiliationAction);
+        this.notificationService.confirm('Warning', 'You are about to change your own access rights. ' +
+          'This means that you may no longer have access rights. Are you sure to proceed?')
+          .then((confirmed) => {
+            if (confirmed) {
+              this.doChangeAffiliation(affiliation, newAffiliation);
+            } else {
+              selectBox.value = affiliation.affiliation;
+            }
+          });
       });
 
   }
 
   removeAffiliation(affiliation: JidAffiliation) {
     this.xmppService.isJidCurrentUser(affiliation.jid).then((doChangeOwnConfig) => {
-      if (doChangeOwnConfig && !confirm('YOU ARE IN THE PROCESS OF REMOVING YOUR MANAGEMENT PERMISSIONS. Are you sure to proceed?')) {
+      if (!doChangeOwnConfig) {
+        this.doRemoveAffiliation(affiliation);
         return;
       }
-      affiliation.affiliation = Affiliation.None;
-      this.isLoaded = false;
-      this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
-        .then(() => {
-          this.refresh();
-        })
-        .catch(this.handleFailedAffiliationAction);
+      this.notificationService.confirm('Warning', 'You\'re about to remove your affiliation with this topic.' +
+        'This means that you may no longer have access rights. Are you sure to proceed?')
+        .then((confirmed) => {
+          if (confirmed) {
+            this.doRemoveAffiliation(affiliation);
+          }
+        });
     });
+  }
+
+  private doRemoveAffiliation(affiliation: JidAffiliation) {
+    affiliation.affiliation = Affiliation.None;
+    this.isLoaded = false;
+    this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+      .then(() => {
+        this.refresh();
+      })
+      .catch(this.handleFailedAffiliationAction);
+  }
+
+  private doChangeAffiliation(affiliation: JidAffiliation, newAffiliation) {
+    this.isLoaded = false;
+    affiliation.affiliation = newAffiliation;
+    this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+      .then(() => {
+        this.refresh();
+      })
+      .catch(this.handleFailedAffiliationAction);
   }
 
   private refresh() {

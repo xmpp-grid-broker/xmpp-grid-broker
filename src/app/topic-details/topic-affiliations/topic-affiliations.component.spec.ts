@@ -8,6 +8,7 @@ import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {ActivatedRoute} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {XmppService} from '../../core/xmpp/xmpp.service';
+import {NotificationService} from '../../core/notifications/notification.service';
 
 describe('TopicAffiliationsComponent', () => {
   let component: TopicAffiliationsComponent;
@@ -15,6 +16,7 @@ describe('TopicAffiliationsComponent', () => {
   let de: DebugElement;
 
   let mockService;
+  let notificationService: jasmine.SpyObj<NotificationService>;
   let loadJidAffiliationsResult: Promise<JidAffiliation[]>;
   let modifyJidAffiliationResult: Promise<void>;
   let isJidCurrentUserResult: Promise<boolean>;
@@ -27,12 +29,14 @@ describe('TopicAffiliationsComponent', () => {
     const mockXmppService = jasmine.createSpyObj('XmppService', {
       'isJidCurrentUser': isJidCurrentUserResult
     });
+    notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
     TestBed.configureTestingModule({
       imports: [SharedModule, FormsModule],
       declarations: [TopicAffiliationsComponent],
       providers: [
         {provide: TopicDetailsService, useValue: mockService},
         {provide: XmppService, useValue: mockXmppService},
+        {provide: NotificationService, useValue: notificationService},
         {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}}
       ]
     });
@@ -226,12 +230,13 @@ describe('TopicAffiliationsComponent', () => {
       ]);
     }));
 
-    it('shoudl display a confirm dialog and call the service if confirmed', fakeAsync(() => {
+    it('should display a confirm dialog and call the service if confirmed', fakeAsync(() => {
       // Setup spies and responses
       isJidCurrentUserResult = Promise.resolve(true);
       modifyJidAffiliationResult = Promise.resolve();
       setup();
-      const confirm = spyOn(window, 'confirm').and.returnValue(true);
+      // const confirm = spyOn(notificationService, 'confirm').and.returnValue(true);
+      const confirm = notificationService.confirm.and.returnValue(Promise.resolve(true));
 
       // Get rid of the spinner
       fixture.detectChanges();
@@ -252,12 +257,12 @@ describe('TopicAffiliationsComponent', () => {
       expect(args[1].jid).toBe('hamlet@denmark.lit');
     }));
 
-    it('shoudl display a confirm dialog and cancel if aborted', fakeAsync(() => {
+    it('should display a confirm dialog and cancel if aborted', fakeAsync(() => {
       // Setup spies and responses
       isJidCurrentUserResult = Promise.resolve(true);
       modifyJidAffiliationResult = Promise.resolve();
       setup();
-      const confirm = spyOn(window, 'confirm').and.returnValue(false);
+      const confirm = notificationService.confirm.and.returnValue(Promise.resolve(false));
 
       // Get rid of the spinner
       fixture.detectChanges();
@@ -290,13 +295,13 @@ describe('TopicAffiliationsComponent', () => {
       isJidCurrentUserResult = Promise.resolve(true);
       modifyJidAffiliationResult = Promise.resolve();
       setup();
-      const confirm = spyOn(window, 'confirm').and.returnValue(true);
+      const confirm = notificationService.confirm.and.returnValue(Promise.resolve(true));
 
       // Get rid of the spinner
       fixture.detectChanges();
       tick();
 
-      // Click the remove butotn
+      // Click the remove button
       const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button')[0];
       removeButton.click();
       fixture.detectChanges();
@@ -315,13 +320,13 @@ describe('TopicAffiliationsComponent', () => {
       isJidCurrentUserResult = Promise.resolve(true);
       modifyJidAffiliationResult = Promise.resolve();
       setup();
-      const confirm = spyOn(window, 'confirm').and.returnValue(false);
+      const confirm = notificationService.confirm.and.returnValue(Promise.resolve(false));
 
       // Get rid of the spinner
       fixture.detectChanges();
       tick();
 
-      // Click the remove butotn
+      // Click the remove button
       const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button')[0];
       removeButton.click();
       fixture.detectChanges();
