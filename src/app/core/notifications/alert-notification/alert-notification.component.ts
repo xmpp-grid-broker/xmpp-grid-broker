@@ -2,10 +2,10 @@ import {Component, ComponentRef} from '@angular/core';
 
 @Component({
   selector: 'xgb-notifications',
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.css']
+  templateUrl: './alert-notification.component.html',
+  styleUrls: ['./alert-notification.component.css']
 })
-export class NotificationsComponent {
+export class AlertNotificationComponent {
 
   public details: any;
   public canHide = true;
@@ -14,7 +14,7 @@ export class NotificationsComponent {
   public messageIsHtml: boolean;
   public message: string;
 
-  private componentRef: ComponentRef<NotificationsComponent>;
+  private componentRef: ComponentRef<AlertNotificationComponent>;
 
   /**
    * Hide / destroy this notification.
@@ -28,7 +28,7 @@ export class NotificationsComponent {
   /**
    * Sets the reference to this view to be able to destroy it.
    */
-  public setViewRef(componentRef: ComponentRef<NotificationsComponent>) {
+  public setViewRef(componentRef: ComponentRef<AlertNotificationComponent>) {
     this.componentRef = componentRef;
   }
 }

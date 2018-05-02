@@ -1,6 +1,7 @@
 import 'rxjs/add/operator/publish';
 import {ComponentFactoryResolver, Injectable, ViewContainerRef} from '@angular/core';
-import {NotificationsComponent} from './notifications/notifications.component';
+import {AlertNotificationComponent} from './alert-notification/alert-notification.component';
+import {ConfirmNotificationComponent} from './confirm-notification/confirm-notification.component';
 
 /**
  * The Notification can be used to send notification
@@ -24,9 +25,9 @@ export class NotificationService {
    * is rendered as raw HTML allowing XSS and other possible attacks
    * if user generated content is rendered!!
    */
-  public notify(title, message, canHide = false, details?: any, msgIsHtml?: any) {
+  public alert(title, message, canHide = false, details?: any, msgIsHtml?: any) {
     // Dynamically generate a new component
-    const factory = this.factoryResolver.resolveComponentFactory(NotificationsComponent);
+    const factory = this.factoryResolver.resolveComponentFactory(AlertNotificationComponent);
     const componentRef = factory.create(this.rootViewContainer.parentInjector);
 
     // Populate the fields on the component
@@ -53,8 +54,32 @@ export class NotificationService {
     const message = '<p>We are sorry, but an unexpected problem occurred</p>' +
       '<p>Please <a href="https://github.com/xmpp-grid-broker/xmpp-grid-broker/" target="_blank">' +
       'report this issue</a> so that we can fix it.</p>';
-    this.notify(title, message, recoverable, details, true);
+    this.alert(title, message, recoverable, details, true);
   }
+
+  /**
+   * Reports an unexpected/unhandled error.
+   */
+  public confirm(title: string, message: string, confirmButtonLabel = 'confirm', cancelButtonLabel = 'cancel'): Promise<boolean> {
+    // Dynamically generate a new component
+    const factory = this.factoryResolver.resolveComponentFactory(ConfirmNotificationComponent);
+    const componentRef = factory.create(this.rootViewContainer.parentInjector);
+
+    // Populate the fields on the component
+    const component = componentRef.instance;
+    component.title = title;
+    component.message = message;
+    component.confirmButtonLabel = confirmButtonLabel;
+    component.cancelButtonLabel = cancelButtonLabel;
+
+    component.setViewRef(componentRef);
+
+    // Insert the component into the DOM
+    this.rootViewContainer.insert(componentRef.hostView);
+
+    return component.resolvePromise;
+  }
+
 
   /**
    * sets view into which the component is inserted.
