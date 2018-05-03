@@ -1,0 +1,73 @@
+server {
+    listen 80;
+    server_name e2e.localhost.redbackup.org;
+
+    access_log /var/log/nginx/${host}.access.log;
+    error_log /var/log/nginx/${host}.error.log info;
+
+    keepalive_timeout 6000;
+
+    # support up to ~20MB uploads
+    client_max_body_size 20M;
+
+    # security headers
+    # See docs/SECURITY.md
+    # Note that the CSP includes "unsafe-eval" to allow auto-reload during development.
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';" always;
+    # Origin localhost for locally executed e2e tests
+    add_header 'Access-Control-Allow-Origin' 'localhost' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, PUT, POST, DELETE, HEAD, OPTIONS' always;
+
+    # Openfire BOSH
+    location /http-bind {
+        if ($request_method = 'OPTIONS') {
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+        proxy_set_header Host localhost.redbackup.org;
+        proxy_set_header X-Forwarded-Host localhost.redbackup.org;
+        proxy_set_header X-Forwarded-Server localhost.redbackup.org;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_hide_header 'Content-Security-Policy';
+        proxy_hide_header 'Access-Control-Allow-Origin';
+        proxy_hide_header 'Access-Control-Allow-Methods';
+
+
+        proxy_ssl_certificate /etc/dehydrated/certs/client/admin@openfire/fullchain.pem;
+        proxy_ssl_certificate_key /etc/dehydrated/certs/client/admin@openfire/privkey.pem;
+        proxy_ssl_trusted_certificate /etc/dehydrated/certs/ca-fullchain.pem;
+        proxy_ssl_verify on;
+        proxy_ssl_session_reuse off;
+
+        proxy_pass https://openfire/http-bind;
+        break;
+    }
+
+    # Openfire WebSocket
+    location /ws {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+
+        proxy_set_header Host localhost.redbackup.org;
+        proxy_set_header X-Forwarded-Host localhost.redbackup.org;
+        proxy_set_header X-Forwarded-Server localhost.redbackup.org;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_hide_header 'Content-Security-Policy';
+        proxy_hide_header 'Access-Control-Allow-Origin';
+        proxy_hide_header 'Access-Control-Allow-Methods';
+
+        proxy_pass https://openfire/ws;
+        break;
+    }
+
+    location /configuration-e2e.json {
+      root /mnt/;
+      break;
+    }
+}
