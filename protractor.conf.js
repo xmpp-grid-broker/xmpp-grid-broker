@@ -6,8 +6,7 @@ const docker_compose = 'docker-compose --project-name xgb_e2e';
 
 // noinspection JSUnusedGlobalSymbols
 exports.config = {
-  allScriptsTimeout: 30000,
-  //allScriptsTimeout: 11000,
+  allScriptsTimeout: 20000,
   specs: [
     './e2e/**/*.e2e-spec.ts'
   ],
