@@ -6,7 +6,7 @@ const docker_compose = 'docker-compose --project-name xgb_e2e -f docker-compose.
 
 // noinspection JSUnusedGlobalSymbols
 exports.config = {
-  allScriptsTimeout: 20000,
+  allScriptsTimeout: 60*1000,
   specs: [
     './e2e/**/*.e2e-spec.ts'
   ],
@@ -22,12 +22,12 @@ exports.config = {
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 30000
+    defaultTimeoutInterval: 55*1000
   },
   beforeLaunch() {
     require('child_process').execSync(`${docker_compose} up -d`);
     return new Promise(resolve => {
-      setTimeout(resolve, 10000); // wait 10 seconds to give the stack time to finish loading
+      setTimeout(resolve, 15000); // give the stack some time to finish loading
     });
   },
   afterLaunch() {
