@@ -2,6 +2,8 @@ import {browser} from 'protractor';
 import {TopicsOverviewPage} from './page-objects/topics-overview.po';
 import {Helpers} from './helpers';
 
+browser.waitForAngularEnabled(false);
+
 describe('Routes', () => {
   let topicsOverview: TopicsOverviewPage;
 
