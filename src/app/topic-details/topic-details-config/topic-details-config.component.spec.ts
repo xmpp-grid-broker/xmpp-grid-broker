@@ -201,6 +201,7 @@ describe('TopicDetailsConfigComponent', () => {
     }));
 
     it('should show a confirm dialog when clicking delete', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(Promise.resolve(true));
       const serviceCallSpy = spyOn(mockService, 'deleteTopic').and.callThrough();
 
       deleteTopicButton.nativeElement.click();
