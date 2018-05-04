@@ -7,7 +7,7 @@ export class Helpers {
         if (count === 0) {
           resolve();
         } else {
-          setTimeout(() => Helpers._waitForNoSpinner(resolve), retryMs);
+          setTimeout(() => Helpers._waitForNoSpinner(resolve, retryMs), retryMs);
         }
       });
   }
