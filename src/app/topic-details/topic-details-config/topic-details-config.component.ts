@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {XmppDataForm} from '../../core/models/FormModels';
-import {LoadConfigurationFormErrorCodes, TopicDetailsService} from '../topic-details.service';
+import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
+import {NavigationService} from '../../core/navigation.service';
+import {NotificationService} from '../../core/notifications/notification.service';
 
 @Component({
   selector: 'xgb-topic-details-config',
@@ -34,7 +36,9 @@ export class TopicDetailsConfigComponent implements OnInit {
   initialFormLoaded = false;
 
   constructor(private route: ActivatedRoute,
-              private topicDetailsService: TopicDetailsService) {
+              private topicDetailsService: TopicDetailsService,
+              private navigationService: NavigationService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -81,6 +85,43 @@ export class TopicDetailsConfigComponent implements OnInit {
           errorMessage: `Failed to update the configuration (Server responded with: ${error.condition})`,
           error
         });
+      });
+  }
+
+  deleteTopic(event) {
+
+    this.notificationService.confirm(
+      'Warning',
+      `You are about to permanently delete the Topic ${this.nodeId}! Are you sure to proceed?`,
+      `Yes, permanently delete ${this.nodeId}`, 'Cancel')
+      .then((confirmed) => {
+        if (confirmed) {
+          this.doDeleteTopic();
+        }
+      });
+    event.preventDefault();
+  }
+
+  private doDeleteTopic() {
+    this.topicDetailsService.deleteTopic(this.nodeId)
+      .then(() => {
+        console.log(this.navigationService.goToHome);
+        this.navigationService.goToHome();
+      })
+      .catch((error) => {
+        switch (error.condition) {
+          case  TopicDeletionErrorCodes.ItemNotFound:
+            this.formProcessing.done({errorMessage: `Node with NodeID ${this.nodeId} does not exist!`});
+            break;
+          case  TopicDeletionErrorCodes.Forbidden:
+            this.formProcessing.done({errorMessage: `Insufficient Privileges to delete node ${this.nodeId}`});
+            break;
+          case  TopicDeletionErrorCodes.NotAllowed:
+            this.formProcessing.done({errorMessage: `You are not allowed to delete the root node ${this.nodeId}!`});
+            break;
+          default:
+            this.formProcessing.done({errorMessage: `An unknown error occurred: ${error.condition}!`, error});
+        }
       });
   }
 }

@@ -15,6 +15,9 @@ export class ActionButtonDirective {
     if (el.nativeElement.hasAttribute('primary')) {
       el.nativeElement.classList.add('btn-primary');
     }
+    if (el.nativeElement.hasAttribute('danger')) {
+      el.nativeElement.classList.add('btn-error');
+    }
   }
 
 }

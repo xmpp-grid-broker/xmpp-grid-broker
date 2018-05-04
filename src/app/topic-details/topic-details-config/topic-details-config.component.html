@@ -8,5 +8,7 @@
                   [xmppDataForm]="loadedForm"
                   submitLabel="Update"
                   (configSubmitted)="submit($event)">
-
+  <xgb-collapsible title="Danger Zone">
+    <button xgbActionButton danger (click)="deleteTopic($event)">Delete Topic {{nodeId}}</button>
+  </xgb-collapsible>
 </xgb-topic-config>
