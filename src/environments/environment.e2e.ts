@@ -4,5 +4,5 @@
  */
 export const environment = {
   production: false,
-  config_url: 'http://e2e.localhost.redbackup.org/configuration-e2e.json'
+  config_url: 'http://e2e.localhost.redbackup.org:8080/configuration.json'
 };

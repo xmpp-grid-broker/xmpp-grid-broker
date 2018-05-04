@@ -2,7 +2,7 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const {SpecReporter} = require('jasmine-spec-reporter');
-const docker_compose = 'docker-compose --project-name xgb_e2e';
+const docker_compose = 'docker-compose --project-name xgb_e2e -f docker-compose.e2e.yml';
 
 // noinspection JSUnusedGlobalSymbols
 exports.config = {

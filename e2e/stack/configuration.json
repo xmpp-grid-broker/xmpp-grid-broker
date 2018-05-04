@@ -2,6 +2,6 @@
   "xmpp": {
     "jid":        "admin@openfire",
     "transport":  "bosh",
-    "boshURL":    "http://e2e.localhost.redbackup.org/http-bind"
+    "boshURL":    "http://e2e.localhost.redbackup.org:8080/http-bind"
   }
 }

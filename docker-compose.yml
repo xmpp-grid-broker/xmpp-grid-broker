@@ -26,7 +26,6 @@ services:
       - ./stack/nginx:/etc/nginx/sites:ro
       - ./stack/certs/keys:/etc/dehydrated/certs:ro
       - ./stack/configuration.json:/mnt/configuration.json:ro
-      - ./stack/configuration-e2e.json:/mnt/configuration-e2e.json:ro
     ports:
       - 443:443
       - 80:80
