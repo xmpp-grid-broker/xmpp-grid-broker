@@ -135,29 +135,7 @@ export class XmppService {
       throw Error('XMPP session error');
     });
 
-    this.addMissingStanzas(client);
     return client;
-  }
-
-  /**
-   * TODO: FIX in https://github.com/otalk/jxt-xmpp/blob/master/src/pubsubOwner.js
-   * and open a PR to get rid of this.
-   */
-  private addMissingStanzas(client: any) {
-    const JXT = client.stanzas;
-    // TODO: REMOVE TEMPORARY WORKAROUND.
-    if (!JXT) {
-      return;
-    }
-    const PubSub = JXT.getDefinition('pubsub', NS.PUBSUB_OWNER);
-    const Default = JXT.define({
-      name: 'default',
-      namespace: NS.PUBSUB_OWNER,
-      element: 'default'
-    });
-    JXT.use(() => {
-      JXT.extend(PubSub, Default);
-    });
   }
 
   /**
