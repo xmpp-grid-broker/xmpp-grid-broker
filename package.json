@@ -29,6 +29,7 @@
     "rxjs": "^5.5.6",
     "spectre.css": "^0.5.1",
     "stanza.io": "^v9.0.2",
+    "jxt-xmpp": "^3.2.0",
     "stylelint": "^9.2.0",
     "xmpp-jid": "^1.2.3",
     "zone.js": "^0.8.19"
