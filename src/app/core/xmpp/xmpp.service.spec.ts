@@ -1,6 +1,7 @@
 import {JID} from 'xmpp-jid';
 import {IqType, XmppService} from './xmpp.service';
 import {Config, XmppConfig, XmppTransport} from '../models/config';
+import {NotificationService} from '../notifications/notification.service';
 
 class FakeClient {
   private handlers: Map<string, Array<() => any>> = new Map();
@@ -48,16 +49,17 @@ class FakeXmppClientFactory {
 }
 
 describe('XmppService', () => {
-  let xmppClientFactory, service: XmppService, configService;
+  let xmppClientFactory, service: XmppService, configService, notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
     xmppClientFactory = new FakeXmppClientFactory();
     spyOn(xmppClientFactory, 'createClient').and.callThrough();
     spyOn(xmppClientFactory.client, 'connect').and.callThrough();
+    notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['alert']);
 
     configService = new FakeConfigService();
 
-    service = new XmppService(xmppClientFactory, configService);
+    service = new XmppService(xmppClientFactory, configService, notificationServiceSpy);
 
   });
 
@@ -141,12 +143,28 @@ describe('XmppService', () => {
     });
   });
 
-  it('should throw an error if authentication fails or session errors', (done) => {
-    service.getClient().then(() => {
-      expect(() => xmppClientFactory.client.emit('auth:failed')).toThrow();
-      expect(() => xmppClientFactory.client.emit('session:error')).toThrow();
-      expect(() => xmppClientFactory.client.emit('session:end')).not.toThrow();
-      done();
+  [{
+    event: 'auth:failed',
+    title: 'Authentication Failed',
+    message: 'Failed to authenticate on the XMPP server. Are using the right credentials?',
+    canHide: false
+  },
+    {
+      event: 'disconnected',
+      title: 'Connection lost',
+      message: 'You have lost connection with the XMPP server. Check your internet connection and reload the page.',
+      canHide: false
+    }].forEach(({event, title, message, canHide}) => {
+    it(`should show a notification when ${event} is emitted`, (done) => {
+      service.getClient().then(() => {
+        xmppClientFactory.client.emit(event);
+        expect(notificationServiceSpy.alert).toHaveBeenCalledTimes(1);
+        const args = notificationServiceSpy.alert.calls.mostRecent().args;
+        expect(args[0]).toBe(title);
+        expect(args[1]).toBe(message);
+        expect(args[2]).toBe(canHide);
+        done();
+      });
     });
   });
 });

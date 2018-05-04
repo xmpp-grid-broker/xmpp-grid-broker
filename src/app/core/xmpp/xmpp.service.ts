@@ -4,6 +4,7 @@ import {Client, createClient} from 'stanza.io';
 import {ConfigService} from '../config.service';
 import {XmppConfig} from '../models/config';
 import {Namespace as NS} from 'xmpp-constants';
+import {NotificationService} from '../notifications/notification.service';
 
 enum ConnectionState {
   Down = 0,
@@ -44,7 +45,9 @@ export class XmppService {
   private readonly _config: Promise<XmppConfig>;
   private _state = ConnectionState.Down;
 
-  constructor(private xmppClientFactory: XmppClientFactory, private configService: ConfigService) {
+  constructor(private xmppClientFactory: XmppClientFactory,
+              private configService: ConfigService,
+              private notificationService: NotificationService) {
     this._config = this.configService.getConfig().then(config => config.xmpp);
     this._client = this._config.then(config => this._getClientInstance(config));
     this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid.domain}`));
@@ -122,17 +125,22 @@ export class XmppService {
    */
   private _getClientInstance(config: XmppConfig): any {
     const client = this.xmppClientFactory.createClient(config);
-    client.on('session:started', () => this._state = ConnectionState.Up);
-    client.on('session:end', () => this._state = ConnectionState.Down);
 
+    client.on('session:started', () => this._state = ConnectionState.Up);
+    client.on('disconnected', () => {
+      this._state = ConnectionState.Down;
+      this.notificationService.alert(
+        'Connection lost',
+        'You have lost connection with the XMPP server. Check your internet connection and reload the page.',
+        false);
+    });
+    client.on('session:end', () => this._state = ConnectionState.Down);
     client.on('auth:failed', () => {
       this._state = ConnectionState.Down;
-      throw Error('XMPP authentication failed');
-    });
-
-    client.on('session:error', () => {
-      this._state = ConnectionState.Down;
-      throw Error('XMPP session error');
+      this.notificationService.alert(
+        'Authentication Failed',
+        'Failed to authenticate on the XMPP server. Are using the right credentials?',
+        false);
     });
 
     this.addMissingStanzas(client);
