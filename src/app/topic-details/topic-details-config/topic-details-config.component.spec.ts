@@ -11,6 +11,8 @@ import {ToastDirective} from '../../shared/toast.directive';
 import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {NavigationService} from '../../core/navigation.service';
 import createSpyObj = jasmine.createSpyObj;
+import SpyObj = jasmine.SpyObj;
+import {NotificationService} from '../../core/notifications/notification.service';
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,
@@ -58,17 +60,20 @@ describe('TopicDetailsConfigComponent', () => {
   let de: DebugElement;
   let mockService: MockTopicDetailsService;
   let submitButton: HTMLElement;
-  let navigationService: NavigationService;
+  let navigationService: SpyObj<NavigationService>;
+  let notificationService: SpyObj<NotificationService>;
 
   beforeEach(fakeAsync(() => {
       mockService = new MockTopicDetailsService();
       navigationService = createSpyObj('NavigationService', ['goToHome']);
+      notificationService = createSpyObj('NotificationService', ['confirm']);
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicDetailsConfigComponent],
         providers: [{provide: TopicDetailsService, useValue: mockService},
           {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
-          {provide: NavigationService, useValue: navigationService}
+          {provide: NavigationService, useValue: navigationService},
+          {provide: NotificationService, useValue: notificationService}
         ]
       });
 
@@ -195,7 +200,30 @@ describe('TopicDetailsConfigComponent', () => {
       expect(deleteTopicButton.nativeElement.innerHTML).toBe('Delete Topic testing');
     }));
 
+    it('should show a confirm dialog when clicking delete', fakeAsync(() => {
+      const serviceCallSpy = spyOn(mockService, 'deleteTopic').and.callThrough();
+
+      deleteTopicButton.nativeElement.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(notificationService.confirm).toHaveBeenCalledTimes(1);
+    }));
+    it('should not call the service and not redirect when delete was not confirmed', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(Promise.resolve(false));
+      const serviceCallSpy = spyOn(mockService, 'deleteTopic').and.callThrough();
+
+      deleteTopicButton.nativeElement.click();
+      fixture.detectChanges();
+      tick();
+
+      expect(serviceCallSpy).toHaveBeenCalledTimes(0);
+      expect(navigationService.goToHome).toHaveBeenCalledTimes(0);
+    }));
+
+
     it('should call the service and redirect when clicking delete', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(Promise.resolve(true));
       const serviceCallSpy = spyOn(mockService, 'deleteTopic').and.callThrough();
 
       deleteTopicButton.nativeElement.click();
@@ -208,6 +236,7 @@ describe('TopicDetailsConfigComponent', () => {
     }));
 
     it('should not redirect when the delete service method fails', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(Promise.resolve(true));
       const serviceCallSpy = spyOn(mockService, 'deleteTopic')
         .and.returnValue(Promise.reject({condition: TopicDeletionErrorCodes.Forbidden}));
 
@@ -227,6 +256,7 @@ describe('TopicDetailsConfigComponent', () => {
       {condition: 'other', message: 'An unknown error occurred: other!'},
     ].forEach(({condition, message}) => {
       it(`should render an error message when the delete service method fails (${condition})`, fakeAsync(() => {
+        notificationService.confirm.and.returnValue(Promise.resolve(true));
         const serviceCallSpy = spyOn(mockService, 'deleteTopic')
           .and.returnValue(Promise.reject({condition}));
 

@@ -4,6 +4,7 @@ import {XmppDataForm} from '../../core/models/FormModels';
 import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
 import {NavigationService} from '../../core/navigation.service';
+import {NotificationService} from '../../core/notifications/notification.service';
 
 @Component({
   selector: 'xgb-topic-details-config',
@@ -36,7 +37,8 @@ export class TopicDetailsConfigComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private topicDetailsService: TopicDetailsService,
-              private navigationService: NavigationService) {
+              private navigationService: NavigationService,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -87,7 +89,20 @@ export class TopicDetailsConfigComponent implements OnInit {
   }
 
   deleteTopic(event) {
-    // TODO: show confirm dialog
+
+    this.notificationService.confirm(
+      'Warning',
+      `You are about to permanently delete the Topic ${this.nodeId}! Are you sure to proceed?`,
+      `Yes, permanently delete ${this.nodeId}`, 'Cancel')
+      .then((confirmed) => {
+        if (confirmed) {
+          this.doDeleteTopic();
+        }
+      });
+    event.preventDefault();
+  }
+
+  private doDeleteTopic() {
     this.topicDetailsService.deleteTopic(this.nodeId)
       .then(() => {
         console.log(this.navigationService.goToHome);
@@ -108,6 +123,5 @@ export class TopicDetailsConfigComponent implements OnInit {
             this.formProcessing.done({errorMessage: `An unknown error occurred: ${error.condition}!`, error});
         }
       });
-    event.preventDefault();
   }
 }
