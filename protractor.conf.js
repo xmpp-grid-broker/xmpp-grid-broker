@@ -24,10 +24,11 @@ exports.config = {
     showColors: true,
     defaultTimeoutInterval: 55*1000
   },
+  SELENIUM_PROMISE_MANAGER: false,
   beforeLaunch() {
     require('child_process').execSync(`${docker_compose} up -d`);
     return new Promise(resolve => {
-      setTimeout(resolve, 15000); // give the stack some time to finish loading
+      setTimeout(resolve, 10000); // give the stack some time to finish loading
     });
   },
   afterLaunch() {
