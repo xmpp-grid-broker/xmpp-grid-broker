@@ -1,11 +1,8 @@
-import { browser, by, element } from 'protractor';
+import {Page} from '../page-elements/page';
 
-export class AppPage {
+export class AppPage extends Page {
+  landingUrl = '/';
   navigateTo() {
-    return browser.get('/');
-  }
-
-  getParagraphText() {
-    return element(by.css('xgb-root h1')).getText();
+    return super.navigateTo(this.landingUrl);
   }
 }
