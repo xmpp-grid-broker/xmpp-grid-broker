@@ -1,20 +1,14 @@
 import {browser} from 'protractor';
-import {TopicsOverviewPage} from './page-objects/topics-overview.po';
-import {Helpers} from './helpers';
+import {TopicOverviewRootCollectionsTab} from './page-objects/topics-overview.po';
+import {AppPage} from './page-objects/app.po';
 
-browser.waitForAngularEnabled(false);
 
 describe('Routes', () => {
-  let topicsOverview: TopicsOverviewPage;
+  it('root should redirect to topics overview', async() => {
+    const appPage = new AppPage();
+    await appPage.navigateTo();
 
-  beforeEach(() => {
-    topicsOverview = new TopicsOverviewPage();
-  });
-
-  it('root should redirect to topics overview', async () => {
-    await browser.get('/');
-    await Helpers.noSpinners();
-
-    expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + topicsOverview.landingUrl);
+    const destination = new TopicOverviewRootCollectionsTab();
+    expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + destination.landingUrl);
   });
 });
