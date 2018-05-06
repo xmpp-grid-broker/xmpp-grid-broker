@@ -2,4 +2,4 @@ version: '2.2'
 services:
   openfire:
     volumes:
-      - ./stack/openfire:/var/lib/openfire:rw
+      - ./stack/openfire:/var/lib/openfire:Z

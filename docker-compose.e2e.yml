@@ -5,8 +5,8 @@ services:
   openfire:
     image: xmpp-grid-broker/openfire
     build:
-      context: ./stack/
-      dockerfile: Dockerfile
+      context: ./e2e/stack/
+      dockerfile: Dockerfile-openfire
     networks:
       - backend
   nginx:

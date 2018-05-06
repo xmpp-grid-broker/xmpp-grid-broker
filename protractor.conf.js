@@ -28,11 +28,11 @@ exports.config = {
   beforeLaunch() {
     require('child_process').execSync(`${docker_compose} up -d`);
     return new Promise(resolve => {
-      setTimeout(resolve, 10000); // give the stack some time to finish loading
+      setTimeout(resolve, 5000); // give the stack some time to finish loading
     });
   },
   afterLaunch() {
-    require('child_process').execSync(`${docker_compose} stop`);
+    require('child_process').execSync(`${docker_compose} rm --stop --force`);
   },
   onPrepare() {
     require('ts-node').register({
