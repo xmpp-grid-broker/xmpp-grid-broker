@@ -10,7 +10,7 @@ export abstract class Page {
   }
 
   /**
-   * Navigate to {@param path} and wait until
+   * Navigate to {@member fullUrl} and wait until
    * the page loads and there are no waiting spinners.
    */
   async navigateTo() {

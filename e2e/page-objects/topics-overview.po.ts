@@ -13,7 +13,23 @@ export class TopicsOverviewPage extends Page {
     return '/topics';
   }
 
-  tab: TopicsOverviewTab = new TopicOverviewRootCollectionsTab();
+  get elementLocator() {
+    return element(by.tagName('xgb-topic-overview'));
+  }
+
+  private _tab: TopicsOverviewTab;
+  get tab() {
+    if (this._tab === undefined) {
+      // create default tab on first call, as the parent element might not be rendered earlier
+      this._tab = new TopicOverviewRootCollectionsTab(this.elementLocator);
+    }
+    return this._tab;
+  }
+  set tab(tab) {
+    tab.parentElement = this.elementLocator;
+    this._tab = tab;
+  }
+
 
   get newTopicButton() {
     return element(by.cssContainingText('button', 'New Topic'));

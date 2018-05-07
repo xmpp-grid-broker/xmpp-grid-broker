@@ -18,7 +18,6 @@ export class List {
 
 
   constructor(readonly parentElement) {
-
   }
 
 
