@@ -8,6 +8,48 @@ import {List} from '../page-elements/list';
 
 type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 
+export class TopicOverviewRootCollectionsTab extends Tab {
+  get content() {
+    return element(by.tagName('xgb-topics'));
+  }
+
+  get list() {
+    return new List(this.content);
+  }
+
+  get landingUrl() {
+    return '/topics/root';
+  }
+
+  get linkText() {
+    return 'Root Collections';
+  }
+}
+
+export class TopicOverviewAllTopicsTab extends Tab {
+  list = new List(element(by.tagName('xgb-topics')));
+
+  get landingUrl() {
+    return '/topics/all';
+  }
+
+  get linkText() {
+    return 'All Topics';
+  }
+}
+
+export class TopicOverviewAllCollectionsTab extends Tab {
+  list = new List(element(by.tagName('xgb-topics')));
+
+  get landingUrl() {
+    return '/topics/collections';
+  }
+
+  get linkText() {
+    return 'All Collections';
+  }
+}
+
 export class TopicsOverviewPage extends Page {
   get landingUrl() {
     return '/topics';
@@ -17,7 +59,7 @@ export class TopicsOverviewPage extends Page {
     return element(by.tagName('xgb-topic-overview'));
   }
 
-  private _tab: TopicsOverviewTab;
+  private _tab: TopicsOverviewTab = undefined;
   get tab() {
     if (this._tab === undefined) {
       // create default tab on first call, as the parent element might not be rendered earlier
@@ -58,47 +100,5 @@ export class TopicsOverviewPage extends Page {
     await Spinner.waitOnNone();
 
     return new CreateCollectionPage();
-  }
-}
-
-export class TopicOverviewRootCollectionsTab extends Tab {
-  get content() {
-    return element(by.tagName('xgb-topics'));
-  }
-
-  get list() {
-    return new List(this.content);
-  }
-
-  get landingUrl() {
-    return '/topics/root';
-  }
-
-  get linkText() {
-    return 'Root Collections';
-  }
-}
-
-export class TopicOverviewAllTopicsTab extends Tab {
-  list = new List(element(by.tagName('xgb-topics')));
-
-  get landingUrl() {
-    return '/topics/all';
-  }
-
-  get linkText() {
-    return 'All Topics';
-  }
-}
-
-export class TopicOverviewAllCollectionsTab extends Tab {
-  list = new List(element(by.tagName('xgb-topics')));
-
-  get landingUrl() {
-    return '/topics/collections';
-  }
-
-  get linkText() {
-    return 'All Collections';
   }
 }
