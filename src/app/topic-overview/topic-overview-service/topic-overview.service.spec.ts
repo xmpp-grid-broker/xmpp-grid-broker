@@ -1,28 +1,8 @@
-import {Paged, TopicOverviewService} from './topic-overview.service';
-import {Topic, Topics} from '../../core/models/topic';
-import {JID} from 'stanza.io';
-
-class FakeClient {
-  public getDiscoInfo() {
-  }
-
-  public getDiscoItems() {
-  }
-}
-
-class FakeXmppService {
-  public _client = new FakeClient();
-  public pubSubJid = Promise.resolve(new JID('pubsub.xmppserver'));
-
-
-  getClient(): Promise<any> {
-    return Promise.resolve(this._client);
-  }
-
-  executeIqToPubsub(cmd): Promise<any> {
-    return Promise.resolve();
-  }
-}
+import {TopicOverviewService} from './topic-overview.service';
+import {XmppService} from '../../core/xmpp/xmpp.service';
+import createSpyObj = jasmine.createSpyObj;
+import SpyObj = jasmine.SpyObj;
+import {JID} from 'xmpp-jid';
 
 describe('TopicOverviewService', () => {
   const DISCO_ITEMS_NODE_ROOT = {
@@ -63,7 +43,7 @@ describe('TopicOverviewService', () => {
         'count': 1,
         'firstIndex': 0,
         'first': 'pubsub.xmppserver#leaf2',
-        'last':  'pubsub.xmppserver#leaf2'
+        'last': 'pubsub.xmppserver#leaf2'
       }
     },
     'lang': 'en',
@@ -145,14 +125,14 @@ describe('TopicOverviewService', () => {
     'type': 'result'
   };
 
-  let xmppService;
+  let xmppService: SpyObj<XmppService>;
   let service: TopicOverviewService;
 
   beforeEach(() => {
-    xmppService = new FakeXmppService();
+    xmppService = createSpyObj('XmppService', ['executeIqToPubsub']);
     service = new TopicOverviewService(xmppService);
 
-    spyOn(xmppService, 'executeIqToPubsub').and.callFake(
+    xmppService.executeIqToPubsub.and.callFake(
       (cmd) => {
         if (cmd.discoItems) {
           switch (cmd.discoItems.node) {
@@ -177,42 +157,24 @@ describe('TopicOverviewService', () => {
     );
   });
 
-  it('should return a fake set of all topics', (done) => {
-    service.allTopics().then((topics: Topics) => {
-        expect(topics.length).toBe(2);
-        expect(topics[0].title).toBe('leaf1');
-        expect(topics[1].title).toBe('leaf2');
-        done();
-      },
-      (error) => {
-        throw error;
-      }
-    );
+  it('should return an iterator of all topics', async () => {
+    const iterator = service.allTopics();
+    expect((await iterator.next()).value.title).toBe('leaf1');
+    expect((await iterator.next()).value.title).toBe('leaf2');
+    expect((await iterator.next()).done).toBe(true);
   });
 
-  it('should return a fake set of root topics', (done) => {
-    service.rootTopics().then((topics: Paged<Topic>) => {
-        expect(topics.items.length).toBe(2);
-        expect(topics.items[0].title).toBe('leaf1');
-        expect(topics.items[1].title).toBe('collection1');
-        done();
-      },
-      (error) => {
-        throw error;
-      }
-    );
-  });
 
-  it('should return a fake set of collections', (done) => {
-    service.allCollections().then((topics: Topics) => {
-        expect(topics.length).toBe(1);
-        expect(topics[0].title).toBe('collection1');
-        done();
-      },
-      (error) => {
-        throw error;
-      }
-    );
+  it('should return an iterator of all root topics', async () => {
+    const iterator = service.rootTopics();
+    expect((await iterator.next()).value.title).toBe('leaf1');
+    expect((await iterator.next()).value.title).toBe('collection1');
+    expect((await iterator.next()).done).toBe(true);
+  });
+  it('should return an iterator of all collections', async () => {
+    const iterator = service.allCollections();
+    expect((await iterator.next()).value.title).toBe('collection1');
+    expect((await iterator.next()).done).toBe(true);
   });
 });
 

@@ -1,29 +1,28 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Topic, Topics} from '../../core/models/topic';
-import {Paged} from '../../topic-overview/topic-overview-service/topic-overview.service';
 
 /**
  * This class abstracts the loading and error handling
  * to simplify the usage of the topic list component.
  *
- * It accepts a observable of topics that will be rendered.
- * Users still must manually unsubscribe the observables
- * using the `unsubscribe` method.
+ * It accepts an async iterator of topics that will be rendered.
  */
 export class TopicList {
   isLoaded = false;
   hasError = false;
   errorMessage: string;
   topics: Topics = [];
-  page: Paged<Topic>;
+  hasMore: boolean;
 
-  private loader: (nextKey: string) => Promise<Paged<Topic>>;
+  private iterator: AsyncIterableIterator<Topic>;
   private errorHandler: (error: any) => string;
+  private readonly PAGE_SIZE = 10;
 
 
-  public useLoader(load: (string) => Promise<Paged<Topic>>) {
-    this.loader = load;
-    this.loadPage(undefined);
+  public useIterator(iterator: AsyncIterableIterator<Topic>) {
+    this.iterator = iterator;
+    this.hasMore = false;
+    this.loadMore();
   }
 
   public useErrorMapper(errorHandler: (error: any) => string) {
@@ -31,23 +30,31 @@ export class TopicList {
   }
 
   public loadMore() {
-    this.loadPage(this.page.nextKey);
-  }
-
-  private loadPage(nextKey: string) {
     this.isLoaded = false;
     this.hasError = false;
-    this.loader(nextKey).then(
-      (page: Paged<Topic>) => {
-        this.page = page;
-        this.topics.push(...page.items);
+    this.loadNextPage()
+      .then((loadedTopics) => {
+        this.topics.push(...loadedTopics);
         this.isLoaded = true;
-      },
-      error => {
+      })
+      .catch((error) => {
         this.hasError = true;
         this.errorMessage = this.errorHandler(error);
       });
+  }
 
+  private async loadNextPage(): Promise<Topics> {
+    const itemsOfPage = [];
+    let next;
+    for (let i = 0; i < this.PAGE_SIZE; i++) {
+      next = await this.iterator.next();
+      if (next.done) {
+        break;
+      }
+      itemsOfPage.push(next.value);
+    }
+    this.hasMore = !next.done;
+    return itemsOfPage;
   }
 }
 

@@ -1,182 +1,129 @@
 import {Injectable} from '@angular/core';
-import {CollectionTopic, LeafTopic, Topic, Topics} from '../../core/models/topic';
+import {CollectionTopic, LeafTopic, Topic} from '../../core/models/topic';
 import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
-import {JID} from 'xmpp-jid';
-import {XmppDataForm} from '../../core/models/FormModels';
 
 @Injectable()
 export class TopicOverviewService {
+  // The internally used page size, meaning how many nodes to load at a time using result set management
   private readonly PAGE_SIZE = 10;
 
   constructor(private xmppService: XmppService) {
   }
 
-  public rootTopics(nextKey?: string): Promise<Paged<Topic>> {
-    const cmd = {
-      type: IqType.Get,
-      discoItems: {
-        rsm: {
-          max: this.PAGE_SIZE,
-          after: nextKey
+
+  public rootTopics(): AsyncIterableIterator<Topic> {
+    return this.createTopicsIterator(false);
+  }
+
+  public allTopics(): AsyncIterableIterator<Topic> {
+    return this.createFilterTopicsIterator((value) => value instanceof LeafTopic);
+  }
+
+  public allCollections(): AsyncIterableIterator<Topic> {
+    return this.createFilterTopicsIterator((value) => value instanceof CollectionTopic);
+  }
+
+  /**
+   * Returns an async iterator that yields all root topics/collections.
+   * If recursive is set to true, all child topics/collections of the
+   * root topics/collections are yielded as well.
+   */
+  private async* createTopicsIterator(recursive: boolean): AsyncIterableIterator<Topic> {
+
+    const topicsForWhichTheChildsShallBeLoaded = [undefined]; // undefinded = root
+    const visitedTopics = []; // To prevent duplicates...
+    while (topicsForWhichTheChildsShallBeLoaded.length > 0) {
+      const topicName = topicsForWhichTheChildsShallBeLoaded.pop();
+
+      // Iterate over all it's children
+      const iterator = this.createTopicChildrenIterator(topicName);
+      let next = await iterator.next();
+      while (!next.done) {
+        const topic = next.value;
+        // top prevent duplicates...
+        if (visitedTopics.indexOf(topic.title) >= 0) {
+          continue;
         }
+        yield topic;
+        visitedTopics.push(topic.title);
+        if (recursive && topic instanceof CollectionTopic) {
+          topicsForWhichTheChildsShallBeLoaded.push(topic.title);
+        }
+        next = await iterator.next();
       }
-    };
-
-    return this.xmppService.executeIqToPubsub(cmd)
-      .then(data => {
-        const items = data.discoItems.items === undefined ? [] : data.discoItems.items;
-        const rsm = data.discoItems.rsm;
-        return Promise.all(
-          items.map((item: any) => this.loadTopicDetailsNew(item.node))
-        ).then((values: any) => {
-          const topics: Topics = values;
-          return new Paged(
-            topics,
-            parseInt(rsm.count, 10),
-            parseInt(rsm.firstIndex, 10) + 10 < parseInt(rsm.count, 10),
-            rsm.last,
-            rsm.first);
-        });
-      });
-  }
-
-  public allTopics(): Promise<Topics> {
-    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
-      .then(([client, pubSubJid]) => this.getAllTopicsFlat(client, pubSubJid))
-      .then(items => items.filter((e: any) => e instanceof LeafTopic))
-      .then(topics => TopicOverviewService.sortTopics(topics));
-  }
-
-  public allCollections(): Promise<Topics> {
-    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
-      .then(([client, pubSubJid]) => this.getAllTopicsFlat(client, pubSubJid))
-      .then(items => items.filter((e: any) => e instanceof CollectionTopic))
-      .then(topics => TopicOverviewService.sortTopics(topics));
+    }
   }
 
   /**
-   * Load detailed topic information for by the given topic name.
-   *
-   * @param client the XMPP client to re-use
-   * @param {string} name the topic identifier to load
-   * @param {boolean} loadChildren true if all children of a collection shall be loaded as well (not fully recursive!)
+   * Returns an async iterator that yields all direct child topics/collections
+   * of the given topic identifier.
    */
-  private loadTopicDetails(client: any, pubSubJid: JID, name: string, loadChildren = false): Promise<Topic> {
-    return new Promise((resolve, reject) => {
-      client.getDiscoInfo(pubSubJid, name, (err?: any, data?: any) => {
-
-        if (err !== null) {
-          reject(`${err.error.code}: ${err.error.condition}`);
-          return;
+  private async* createTopicChildrenIterator(topicIdentifier: string): AsyncIterableIterator<Topic> {
+    let loadAfter;
+    let hasMore = true;
+    do {
+      const cmd = {
+        type: IqType.Get,
+        discoItems: {
+          node: topicIdentifier,
+          rsm: {
+            max: this.PAGE_SIZE,
+            after: loadAfter
+          }
         }
+      };
 
-        const topicTitle = data.discoInfo.node;
-        const topicType = data.discoInfo.identities[0]['type'];
+      const response = await this.xmppService.executeIqToPubsub(cmd);
+      const items = response.discoItems.items === undefined ? [] : response.discoItems.items;
+      const rsm = response.discoItems.rsm;
+      loadAfter = rsm.last;
+      hasMore = parseInt(rsm.firstIndex, 10) + this.PAGE_SIZE < parseInt(rsm.count, 10);
 
-        if (topicType === 'leaf') {
-          resolve(new LeafTopic(topicTitle));
-        } else if (topicType === 'collection' && loadChildren) {
-          this.loadChildTopics(client, pubSubJid, topicTitle).then((childTopics) => {
-            resolve(new CollectionTopic(topicTitle, childTopics));
-          });
-        } else if (topicType === 'collection') {
-          resolve(new CollectionTopic(topicTitle));
-        } else {
-          reject(`XMPP: Unsupported PubSub type "${topicType}"`);
-        }
-      });
-    });
+      for (let idx = 0; idx < items.length; idx++) {
+        const item = items[idx];
+        const topic = await this.loadTopicByIdentifier(item.node);
+        yield topic;
+      }
+    } while (hasMore);
   }
 
   /**
-   * Load detailed topic information for by the given topic name.
-   *
-   * @param client the XMPP client to re-use
-   * @param {string} name the topic identifier to load
-   * @param {boolean} loadChildren true if all children of a collection shall be loaded as well (not fully recursive!)
+   * Load detailed Topic information (ie. Leaf or Collection) by its identifier.
    */
-  private loadTopicDetailsNew(name: string, loadChildren = false): Promise<Topic> {
+  private async loadTopicByIdentifier(name: string): Promise<Topic> {
     const cmd = {
       type: IqType.Get,
       discoInfo: {
         node: name
       }
     };
-    return this.xmppService.executeIqToPubsub(cmd).then((data) => {
-      const topicTitle = data.discoInfo.node;
-      const topicType = data.discoInfo.identities[0]['type'];
+    const response = await this.xmppService.executeIqToPubsub(cmd);
+    const topicTitle = response.discoInfo.node;
+    const topicType = response.discoInfo.identities[0]['type'];
 
-      if (topicType === 'leaf') {
-        return new LeafTopic(topicTitle);
-      } else if (topicType === 'collection' && loadChildren) {
-        // TODO: IMPLEMENT
-        // this.loadChildTopics(client, pubSubJid, topicTitle).then((childTopics) => {
-        //   return new CollectionTopic(topicTitle, childTopics);
-        // });
-      } else if (topicType === 'collection') {
-        return new CollectionTopic(topicTitle);
-      } else {
-        throw new Error(`XMPP: Unsupported PubSub type "${topicType}"`);
-      }
-    });
+    if (topicType === 'leaf') {
+      return new LeafTopic(topicTitle);
+    } else if (topicType === 'collection') {
+      return new CollectionTopic(topicTitle);
+    } else {
+      throw new Error(`XMPP: Unsupported PubSub type "${topicType}"`);
+    }
 
-  }
-
-  private loadChildTopics(client: any, pubSubJid: JID, parent_collection?: string, recursive = false): Promise<Topics> {
-    return new Promise((resolve, reject) => {
-      client.getDiscoItems(pubSubJid, parent_collection, (err?: any, data?: any) => {
-        if (err !== null) {
-          return reject(err);
-        }
-        const items: Array<any> = data.discoItems.items === undefined ? [] : data.discoItems.items;
-
-        Promise.all(
-          items.map((e: any) => this.loadTopicDetails(client, pubSubJid, e.node, recursive))
-        ).then((values) => {
-          resolve(values);
-        });
-      });
-    });
   }
 
   /**
-   * Returns the same as `getTopics` but as a
-   * flat list instead of a hierarchical structure.
+   * Same as createTopicsIterator(true), but only yield the elements for which the
+   * given predicate returns true.
    */
-  private getAllTopicsFlat(client: any, pubSubJid: JID): Promise<Topics> {
-    return this.loadChildTopics(client, pubSubJid, undefined, true)
-      .then((childTopics) => {
-        const result: Topics = [];
-        this.flatten(childTopics, result);
-        return result;
-      });
-  }
+  private async* createFilterTopicsIterator(predicate: (value) => boolean): AsyncIterableIterator<Topic> {
+    const iterator = this.createTopicsIterator(true);
 
-
-  private flatten(topics: Topics, result: Topics) {
-    if (topics !== undefined) {
-
-      result.push(...topics);
-      topics.forEach((it) => {
-        if (it instanceof CollectionTopic) {
-          this.flatten(it.children, result);
-        }
-      });
+    let next = await iterator.next();
+    while (!next.done) {
+      if (predicate(next.value)) {
+        yield next.value;
+      }
+      next = await iterator.next();
     }
-  }
-
-  private static sortTopics(topics: Topics): Promise<Topics> {
-    return new Promise((resolve) => {
-      resolve(topics.sort((a, b) => a.title.localeCompare(b.title)));
-    });
-  }
-}
-
-export class Paged<T> {
-  constructor(public readonly items: T[],
-              public readonly count: number,
-              public readonly hasMore: boolean,
-              public readonly nextKey: string,
-              public readonly previousKey: string) {
   }
 }

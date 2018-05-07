@@ -28,23 +28,22 @@ export class TopicOverviewComponent implements OnInit {
     this.xmppService.getServerTitle().then((serverTitle) => {
       this.serverTitle = serverTitle;
     });
-    // TODO: support all categories
-    // let promise: Promise<Paged<Topic>>;
 
-    // switch (this.route.snapshot.data.filter) {
-    //   case 'root':
-    //     promise = this.topicOverviewService.rootTopics();
-    //     break;
-    // TODO: FIX TYPES
-    // case 'all':
-    //   promise = this.topicOverviewService.allTopics();
-    //   break;
-    // case 'collections':
-    //   promise = this.topicOverviewService.allCollections();
-    //   break;
-    // }
+    let iterator: AsyncIterableIterator<Topic>;
+
+    switch (this.route.snapshot.data.filter) {
+      case 'root':
+        iterator = this.topicOverviewService.rootTopics();
+        break;
+    case 'all':
+      iterator = this.topicOverviewService.allTopics();
+      break;
+    case 'collections':
+      iterator = this.topicOverviewService.allCollections();
+      break;
+    }
     this.topicList.useErrorMapper(this.mapErrors.bind(this));
-    this.topicList.useLoader(this.topicOverviewService.rootTopics.bind(this.topicOverviewService));
+    this.topicList.useIterator(iterator);
   }
 
   mapErrors(error: any): string {
