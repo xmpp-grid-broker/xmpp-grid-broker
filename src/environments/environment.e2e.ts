@@ -3,6 +3,6 @@
  * Production environment configuration.
  */
 export const environment = {
-  production: true,
-  config_url: './configuration.json'
+  production: false,
+  config_url: 'http://e2e.localhost.redbackup.org:8080/configuration.json'
 };

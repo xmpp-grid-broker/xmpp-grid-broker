@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Config} from './models/config';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class ConfigService {
@@ -8,7 +9,7 @@ export class ConfigService {
    * The URL of the configuration file.
    * @type {string}
    */
-  static readonly CONFIG_FILE = './configuration.json';
+  static readonly CONFIG_FILE = environment.config_url;
   private readonly _config: Promise<Config>;
 
   constructor(private http: HttpClient) {
