@@ -1,30 +1,33 @@
-import {browser, by, element} from 'protractor';
+import {by, element} from 'protractor';
 import {Page} from '../page-elements/page';
 import {Tab} from '../page-elements/tab';
 import {CreateTopicPage} from './create-topic.po';
 import {Spinner} from '../page-elements/spinner';
 import {CreateCollectionPage} from './create-collection.po';
+import {List} from '../page-elements/list';
 
-type TopicsOverviewTab = TopicOverviewRootCollectionsTab;
+type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 
 export class TopicsOverviewPage extends Page {
   get landingUrl() {
     return '/topics';
   }
 
-  tab = new TopicOverviewRootCollectionsTab();
+  tab: TopicsOverviewTab = new TopicOverviewRootCollectionsTab();
 
   get newTopicButton() {
     return element(by.cssContainingText('button', 'New Topic'));
 
   }
+
   get newCollectionButton() {
     return element(by.cssContainingText('button', 'New Collection'));
-  };
+  }
 
-  navigateToTab(tab: TopicsOverviewTab) {
+  async navigateToTab(tab: TopicsOverviewTab) {
     this.tab = tab;
-    tab.navigateTo();
+    await tab.linkElement.click();
+    return Spinner.waitOnNone();
   }
 
   async clickNewTopic () {
@@ -42,9 +45,44 @@ export class TopicsOverviewPage extends Page {
   }
 }
 
-export class TopicOverviewRootCollectionsTab extends Tab implements TopicsOverviewTab {
+export class TopicOverviewRootCollectionsTab extends Tab {
+  get content() {
+    return element(by.tagName('xgb-topics'));
+  }
+
+  get list() {
+    return new List(this.content);
+  }
+
   get landingUrl() {
     return '/topics/root';
   }
 
+  get linkText() {
+    return 'Root Collections';
+  }
+}
+
+export class TopicOverviewAllTopicsTab extends Tab {
+  list = new List(element(by.tagName('xgb-topics')));
+
+  get landingUrl() {
+    return '/topics/all';
+  }
+
+  get linkText() {
+    return 'All Topics';
+  }
+}
+
+export class TopicOverviewAllCollectionsTab extends Tab {
+  list = new List(element(by.tagName('xgb-topics')));
+
+  get landingUrl() {
+    return '/topics/collections';
+  }
+
+  get linkText() {
+    return 'All Collections';
+  }
 }

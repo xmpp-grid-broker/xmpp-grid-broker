@@ -1,4 +1,9 @@
-import {TopicOverviewRootCollectionsTab, TopicsOverviewPage} from './page-objects/topics-overview.po';
+import {
+  TopicOverviewAllCollectionsTab,
+  TopicOverviewAllTopicsTab,
+  TopicOverviewRootCollectionsTab,
+  TopicsOverviewPage
+} from './page-objects/topics-overview.po';
 import {browser} from 'protractor';
 
 
@@ -29,14 +34,10 @@ describe('TopicOverview', () => {
     expect(buttonPresent).toBe(true);
   });
 
-  it('should got to new collection on button click', async () => {
+  it('should go to new collection on button click', async () => {
     const newPage = await page.clickNewCollection();
     expect(browser.getCurrentUrl()).toBe(newPage.fullUrl);
   });
-
-  xit('should have the three tabs');
-
-
 
   describe('TopicOverviewRootCollectionsTab', () => {
     let tab: TopicOverviewRootCollectionsTab;
@@ -46,9 +47,52 @@ describe('TopicOverview', () => {
       await page.navigateToTab(tab);
     });
 
+    it('should have the tabs url', () => {
+      expect(browser.getCurrentUrl()).toEqual(page.tab.fullUrl);
+    });
 
-    xit('should list all default root collections', () => {
-      // and not the leaf topics
+
+    it('should list all default root collections', async () => {
+      const expectedTopics = ['collection1', 'collection2', 'topic1', 'topic2'];
+      expect(await tab.list.listContent()).toEqual(expectedTopics);
+    });
+  });
+
+  describe('TopicOverviewAllTopicsTab', () => {
+    let tab: TopicOverviewAllTopicsTab;
+
+    beforeEach(async () => {
+      tab = new TopicOverviewAllTopicsTab();
+      await page.navigateToTab(tab);
+    });
+
+    it('should have the tabs url', () => {
+      expect(browser.getCurrentUrl()).toEqual(page.tab.fullUrl);
+    });
+
+
+    it('should list all default topics', async () => {
+      const expectedTopics = ['topic1', 'topic1.1', 'topic2'];
+      expect(await tab.list.listContent()).toEqual(expectedTopics);
+    });
+  });
+
+  describe('TopicOverviewAllCollectionsTab', () => {
+    let tab: TopicOverviewAllCollectionsTab;
+
+    beforeEach(async () => {
+      tab = new TopicOverviewAllCollectionsTab();
+      await page.navigateToTab(tab);
+    });
+
+    it('should have the tabs url', () => {
+      expect(browser.getCurrentUrl()).toEqual(page.tab.fullUrl);
+    });
+
+
+    it('should list all default collections', async () => {
+      const expectedTopics = ['collection1', 'collection1.1', 'collection2'];
+      expect(await tab.list.listContent()).toEqual(expectedTopics);
     });
   });
 });
