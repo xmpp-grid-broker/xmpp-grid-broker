@@ -3,7 +3,7 @@
 version: '2.2'
 services:
   openfire:
-    image: xmpp-grid-broker/openfire
+    image: xmpp-grid-broker/openfire-e2e
     build:
       context: ./e2e/stack/
       dockerfile: Dockerfile-openfire
