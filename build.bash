@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-set -exu
+set -e
+set -x
+set -u
 
 npm install
 npm run ng -- lint

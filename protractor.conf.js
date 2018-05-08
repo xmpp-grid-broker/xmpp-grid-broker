@@ -26,13 +26,13 @@ exports.config = {
   },
   SELENIUM_PROMISE_MANAGER: false,
   beforeLaunch() {
-    require('child_process').execSync(`${docker_compose} up -d`);
+    require('child_process').execSync(`${docker_compose} up --build -d`);
     return new Promise(resolve => {
       setTimeout(resolve, 10000); // give the stack some time to finish loading
     });
   },
   afterLaunch() {
-    require('child_process').execSync(`${docker_compose} stop`);
+    require('child_process').execSync(`${docker_compose} rm --stop --force`);
   },
   onPrepare() {
     require('ts-node').register({

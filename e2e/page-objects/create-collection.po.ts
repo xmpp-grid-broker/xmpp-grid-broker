@@ -1,7 +1,7 @@
 import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
 
-export class AppPage extends UrlAddressableComponent {
+export class CreateCollectionPage extends UrlAddressableComponent {
   get landingUrl(): string {
-    return '/';
+    return '/topics/new/collection';
   }
 }
