@@ -3,7 +3,6 @@ import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
 import {ConfigService} from '../config.service';
 import {XmppConfig} from '../models/config';
-import {Namespace as NS} from 'xmpp-constants';
 import {NotificationService} from '../notifications/notification.service';
 
 enum ConnectionState {
@@ -125,7 +124,7 @@ export class XmppService {
    */
   private _getClientInstance(config: XmppConfig): any {
     const client = this.xmppClientFactory.createClient(config);
-
+    client.use(XmppService.RawXmlStanzaAddon);
     client.on('session:started', () => this._state = ConnectionState.Up);
     client.on('disconnected', () => {
       this._state = ConnectionState.Down;
@@ -144,6 +143,30 @@ export class XmppService {
     });
 
     return client;
+  }
+
+  private static RawXmlStanzaAddon(_, JXT) {
+    const XMLExtension = {
+      get: function () {
+
+        const data = this.xml.children;
+        if (data) {
+          return this.xml.children.toString();
+        }
+      },
+      set: function (value) {
+        if (value) {
+          const parsed = JXT.utils.parse(value);
+          this.xml.appendChild(parsed);
+        }
+      }
+    };
+
+
+    JXT.withPubsubItem(function (Item) {
+
+      JXT.add(Item, 'rawXML', XMLExtension);
+    });
   }
 
   /**

@@ -1,15 +1,25 @@
-import { TestBed, inject } from '@angular/core/testing';
-
-import { PersistedItemsService } from './persisted-items.service';
+import {PersistedItemsService} from './persisted-items.service';
+import {XmppService} from '../core/xmpp/xmpp.service';
 
 describe('PersistedItemsService', () => {
+  let service: PersistedItemsService;
+
+  let xmppService: jasmine.SpyObj<XmppService>;
+
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [PersistedItemsService]
-    });
+    xmppService = jasmine.createSpyObj('XmppService', ['executeIqToPubsub']);
+    service = new PersistedItemsService(xmppService);
+
   });
 
-  it('should be created', inject([PersistedItemsService], (service: PersistedItemsService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
+
+
+  it('should yield persistedItems', () => {
+    expect(service).toBeTruthy();
+  });
+
+
 });
