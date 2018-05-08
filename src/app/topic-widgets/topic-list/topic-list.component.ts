@@ -5,30 +5,62 @@ import {Topic, Topics} from '../../core/models/topic';
  * This class abstracts the loading and error handling
  * to simplify the usage of the topic list component.
  *
- * It accepts a observable of topics that will be rendered.
- * Users still must manually unsubscribe the observables
- * using the `unsubscribe` method.
+ * It accepts an async iterator of topics that will be rendered.
  */
 export class TopicList {
   isLoaded = false;
   hasError = false;
   errorMessage: string;
-  topics: Topics;
+  topics: Topics = [];
+  hasMore: boolean;
 
-  usePromise(promise: Promise<Topics>) {
+  private iterator: AsyncIterableIterator<Topic>;
+  private errorHandler: (error: any) => string;
+  private readonly PAGE_SIZE = 10;
+
+
+  public useIterator(iterator: AsyncIterableIterator<Topic>) {
+    this.iterator = iterator;
+    this.hasMore = false;
+    this.loadMore();
+  }
+
+  public useErrorMapper(errorHandler: (error: any) => string) {
+    this.errorHandler = errorHandler;
+  }
+
+  public loadMore() {
     this.isLoaded = false;
     this.hasError = false;
-    promise.then(
-      (topics: Topics) => {
-        this.topics = topics;
+    this.loadNextPage()
+      .then((loadedTopics) => {
+        this.topics.push(...loadedTopics);
         this.isLoaded = true;
-      },
-      error => {
+      })
+      .catch((error) => {
         this.hasError = true;
-        this.errorMessage = error;
+        this.errorMessage = this.errorHandler(error);
       });
   }
 
+  private async loadNextPage(): Promise<Topics> {
+    const unresolvedItrs = [];
+    for (let i = 0; i < this.PAGE_SIZE; i++) {
+      unresolvedItrs.push(this.iterator.next());
+    }
+    const result = [];
+    const resolvedItrs = await Promise.all(unresolvedItrs);
+    for (const next of resolvedItrs) {
+      if (next.done) {
+        this.hasMore = false;
+        break;
+      }
+      result.push(next.value);
+      this.hasMore = true;
+    }
+
+    return result;
+  }
 }
 
 @Component({
@@ -42,4 +74,5 @@ export class TopicListComponent {
   topicClick(node: Topic) {
     this.topicClicked.next(node);
   }
+
 }

@@ -8,45 +8,23 @@ import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
 import {NavigationService} from '../../core/navigation.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
-
-class MockXmppService {
-  // Disabled because it is used via Mock
-  // noinspection JSUnusedGlobalSymbols
-  getServerTitle() {
-    return Promise.resolve('xmpp.hsr.ch');
-  }
-}
-
-class MockTopicOverviewService {
-  constructor(private _rootTopics = [{title: 'a'}, {title: 'b'}],
-              private _allTopics = [],
-              private _allCollections = []) {
-  }
-
-  rootTopics() {
-    return Promise.resolve(this._rootTopics);
-  }
-
-  allTopics() {
-    return Promise.resolve(this._allTopics);
-  }
-
-  allCollections() {
-    return Promise.resolve(this._allCollections);
-  }
-}
+import {LeafTopic} from '../../core/models/topic';
+import SpyObj = jasmine.SpyObj;
+import createSpyObj = jasmine.createSpyObj;
 
 describe('TopicOverviewComponent', () => {
 
   let component: TopicOverviewComponent;
   let fixture: ComponentFixture<TopicOverviewComponent>;
   let de: HTMLElement;
-  let mockTopicOverviewService: MockTopicOverviewService;
-  let mockXmppService: MockXmppService;
+  let mockTopicOverviewService: SpyObj<TopicOverviewService>;
+  let mockXmppService: SpyObj<XmppService>;
 
   function setup(route: string) {
-    mockTopicOverviewService = new MockTopicOverviewService();
-    mockXmppService = new MockXmppService();
+    mockTopicOverviewService = createSpyObj('TopicOverviewService', ['rootTopics', 'allTopics', 'allCollections']);
+    mockXmppService = createSpyObj('XmppService', ['getServerTitle']);
+
+    mockXmppService.getServerTitle.and.returnValue(Promise.resolve('xmpp.hsr.ch'));
 
     const activatedRouteMock = {
       snapshot: {url: [{path: route}], data: {filter: route}}
@@ -72,12 +50,15 @@ describe('TopicOverviewComponent', () => {
   describe('given /topics/root as path ', function () {
     beforeEach(() => {
       setup('root');
+      mockTopicOverviewService.rootTopics.and.callFake(function* () {
+        yield new LeafTopic('a');
+        yield new LeafTopic('b');
+      });
     });
 
     it('should call to rootTopics', async(() => {
-      const routeSpy = spyOn(mockTopicOverviewService, 'rootTopics').and.callThrough();
       fixture.detectChanges();
-      expect(routeSpy.calls.count()).toBe(1);
+      expect(mockTopicOverviewService.rootTopics.calls.count()).toBe(1);
     }));
 
     it('should render topics when resolved', fakeAsync(() => {
@@ -85,7 +66,8 @@ describe('TopicOverviewComponent', () => {
       tick();
       fixture.detectChanges();
       tick();
-
+      fixture.detectChanges();
+      tick();
       expect(de.querySelectorAll('xgb-list-item').length).toBe(2);
     }));
 
@@ -94,26 +76,27 @@ describe('TopicOverviewComponent', () => {
   describe('given /topics/all as path', function () {
     beforeEach(() => {
       setup('all');
+      mockTopicOverviewService.rootTopics.and.callFake(function* () {
+      });
     });
 
     it('should call allTopics', async(() => {
-      const routeSpy = spyOn(mockTopicOverviewService, 'allTopics').and.callThrough();
       fixture.detectChanges();
-      expect(routeSpy.calls.count()).toBe(1);
+      expect(mockTopicOverviewService.allTopics.calls.count()).toBe(1);
     }));
   });
 
   describe('given /topics/collections as path', function () {
     beforeEach(() => {
       setup('collections');
+      mockTopicOverviewService.allCollections.and.callFake(function* () {
+      });
     });
 
     it('should call allCollections ', async(() => {
-      const routeSpy = spyOn(mockTopicOverviewService, 'allCollections').and.callThrough();
-
       fixture.detectChanges();
 
-      expect(routeSpy.calls.count()).toBe(1);
+      expect(mockTopicOverviewService.allCollections.calls.count()).toBe(1);
     }));
 
     it('should render "loading title" while the title is lazily loaded', async(() => {

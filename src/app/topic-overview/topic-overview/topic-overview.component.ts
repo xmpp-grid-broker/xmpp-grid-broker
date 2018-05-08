@@ -5,7 +5,7 @@ import 'rxjs/add/operator/filter';
 import {NavigationService} from '../../core/navigation.service';
 import {TopicOverviewService} from '../topic-overview-service/topic-overview.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
-import {Topic, Topics} from '../../core/models/topic';
+import {Topic} from '../../core/models/topic';
 
 
 @Component({
@@ -28,20 +28,26 @@ export class TopicOverviewComponent implements OnInit {
     this.xmppService.getServerTitle().then((serverTitle) => {
       this.serverTitle = serverTitle;
     });
-    let promise: Promise<Topics>;
+
+    let iterator: AsyncIterableIterator<Topic>;
 
     switch (this.route.snapshot.data.filter) {
       case 'root':
-        promise = this.topicOverviewService.rootTopics();
+        iterator = this.topicOverviewService.rootTopics();
         break;
-      case 'all':
-        promise = this.topicOverviewService.allTopics();
-        break;
-      case 'collections':
-        promise = this.topicOverviewService.allCollections();
-        break;
+    case 'all':
+      iterator = this.topicOverviewService.allTopics();
+      break;
+    case 'collections':
+      iterator = this.topicOverviewService.allCollections();
+      break;
     }
-    this.topicList.usePromise(promise);
+    this.topicList.useErrorMapper(this.mapErrors.bind(this));
+    this.topicList.useIterator(iterator);
+  }
+
+  mapErrors(error: any): string {
+    return `Failed to load topics / collection : ${JSON.stringify(error)}`;
   }
 
   createNew(what: string) {

@@ -2,7 +2,7 @@ import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {TopicList, TopicListComponent} from './topic-list.component';
 import {SharedModule} from '../../shared/shared.module';
-import {LeafTopic} from '../../core/models/topic';
+import {LeafTopic, Topic} from '../../core/models/topic';
 
 
 describe('TopicListComponent', () => {
@@ -40,7 +40,8 @@ describe('TopicListComponent', () => {
 
   it('should hide loading spinner when initialized', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.resolve([]));
+    component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
+    }());
 
     waitUntilLoaded();
     expect(de.querySelector('.loading')).toBeFalsy();
@@ -49,7 +50,8 @@ describe('TopicListComponent', () => {
 
   it('should show empty screen when no topics are present', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.resolve([]));
+    component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
+    }());
 
     waitUntilLoaded();
 
@@ -59,19 +61,24 @@ describe('TopicListComponent', () => {
 
   it('should show error screen when failed to load topics', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.reject(new Error('a problem')));
+    component.topicList.useErrorMapper((err) => `${err}`);
+    component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
+      throw new Error('a problem');
+    }());
+
 
     waitUntilLoaded();
 
-    expect(de.querySelector('.empty')).toBeTruthy();
-    expect(de.querySelector('.empty-title').innerHTML).toBe('Oops, an error occurred!');
-    expect(de.querySelector('.empty-subtitle').innerHTML).toBe('Error: a problem');
+    expect(de.querySelector('[toast-error]')).toBeTruthy();
+    expect(de.querySelector('[toast-error]').innerHTML).toBe('Error: a problem');
   }));
 
   it('should list topics when topics are provided', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.resolve([new LeafTopic('Topic #1'), new LeafTopic('Topic #2')]));
-
+    component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
+      yield new LeafTopic('Topic #1');
+      yield new LeafTopic('Topic #2');
+    }());
     waitUntilLoaded();
 
     expect(de.querySelector('xgb-list')).toBeTruthy();
@@ -80,7 +87,10 @@ describe('TopicListComponent', () => {
 
   it('should show topic name when topics are provided', fakeAsync(() => {
     component.topicList = new TopicList();
-    component.topicList.usePromise(Promise.resolve(([new LeafTopic('Topic #1'), new LeafTopic('Topic #2')])));
+    component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
+      yield new LeafTopic('Topic #1');
+      yield new LeafTopic('Topic #2');
+    }());
 
     waitUntilLoaded();
 

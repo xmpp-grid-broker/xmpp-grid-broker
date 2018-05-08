@@ -1,12 +1,15 @@
-<xgb-list *ngIf="!topicList.hasError && topicList.isLoaded">
-  <xgb-list-item *ngFor="let node of topicList.topics" (click)="topicClick(node)">{{node.title}}</xgb-list-item>
-  <div class="empty" *ngIf="topicList.topics.length == 0">
-    <p class="empty-title h5">No Topics found</p>
-  </div>
-</xgb-list>
-<xgb-spinner *ngIf="!topicList.hasError && !topicList.isLoaded"></xgb-spinner>
+<div *ngIf="topicList.hasError" xgbToast toast-error>{{topicList.errorMessage}}</div>
 
-<div *ngIf="topicList.hasError" class="empty">
-  <p class="empty-title h5">Oops, an error occurred!</p>
-  <p class="empty-subtitle">{{topicList.errorMessage}}</p>
-</div>
+<ng-container>
+  <xgb-list>
+    <xgb-list-item *ngFor="let node of topicList.topics" (click)="topicClick(node)">{{node.title}}</xgb-list-item>
+    <div class="empty" *ngIf="topicList.isLoaded && topicList.topics.length == 0">
+      <p class="empty-title h5">No Topics found</p>
+    </div>
+  </xgb-list>
+  <xgb-spinner *ngIf="!topicList.hasError && !topicList.isLoaded"></xgb-spinner>
+  <div *ngIf="topicList.hasMore" style="text-align: center;">
+    <button xgbActionButton (click)="topicList.loadMore()">load more</button>
+  </div>
+</ng-container>
+
