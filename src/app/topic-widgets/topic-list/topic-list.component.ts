@@ -44,17 +44,22 @@ export class TopicList {
   }
 
   private async loadNextPage(): Promise<Topics> {
-    const itemsOfPage = [];
-    let next;
+    const unresolvedItrs = [];
     for (let i = 0; i < this.PAGE_SIZE; i++) {
-      next = await this.iterator.next();
+      unresolvedItrs.push(this.iterator.next());
+    }
+    const result = [];
+    const resolvedItrs = await Promise.all(unresolvedItrs);
+    for (const next of resolvedItrs) {
       if (next.done) {
+        this.hasMore = false;
         break;
       }
-      itemsOfPage.push(next.value);
+      result.push(next.value);
+      this.hasMore = true;
     }
-    this.hasMore = !next.done;
-    return itemsOfPage;
+
+    return result;
   }
 }
 
