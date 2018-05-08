@@ -1,5 +1,5 @@
-import {by, element} from 'protractor';
-import {Page} from '../page-elements/page';
+import {by, element, ElementFinder} from 'protractor';
+import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
 import {Tab} from '../page-elements/tab';
 import {CreateTopicPage} from './create-topic.po';
 import {Spinner} from '../page-elements/spinner';
@@ -9,96 +9,110 @@ import {List} from '../page-elements/list';
 type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 
 export class TopicOverviewRootCollectionsTab extends Tab {
-  get content() {
-    return element(by.tagName('xgb-topics'));
+  get list(): List {
+    return new List(element(by.tagName('xgb-topics')));
   }
 
-  get list() {
-    return new List(this.content);
-  }
-
-  get landingUrl() {
+  get landingUrl(): string {
     return '/topics/root';
   }
 
-  get linkText() {
+  get linkText(): string {
     return 'Root Collections';
   }
+
+  constructor(parentElement?: ElementFinder) {
+    super(parentElement);
+  }
+
 }
 
 export class TopicOverviewAllTopicsTab extends Tab {
-  list = new List(element(by.tagName('xgb-topics')));
+  get list(): List {
+    return new List(element(by.tagName('xgb-topics')));
+  }
 
-  get landingUrl() {
+  get landingUrl(): string {
     return '/topics/all';
   }
 
-  get linkText() {
+  get linkText(): string {
     return 'All Topics';
+  }
+
+  constructor(parentElement?: ElementFinder) {
+    super(parentElement);
   }
 }
 
 export class TopicOverviewAllCollectionsTab extends Tab {
-  list = new List(element(by.tagName('xgb-topics')));
+  get list(): List {
+    return new List(element(by.tagName('xgb-topics')));
+  }
 
-  get landingUrl() {
+  get landingUrl(): string {
     return '/topics/collections';
   }
 
-  get linkText() {
+  get linkText(): string {
     return 'All Collections';
+  }
+
+  constructor(parentElement?: ElementFinder) {
+    super(parentElement);
   }
 }
 
-export class TopicsOverviewPage extends Page {
-  get landingUrl() {
+export class TopicsOverviewPage extends UrlAddressableComponent {
+  get landingUrl(): string {
     return '/topics';
   }
 
-  get elementLocator() {
+  private get elementLocator(): ElementFinder {
     return element(by.tagName('xgb-topic-overview'));
   }
 
   private _tab: TopicsOverviewTab = undefined;
-  get tab() {
+
+  get tab(): TopicsOverviewTab {
     if (this._tab === undefined) {
       // create default tab on first call, as the parent element might not be rendered earlier
       this._tab = new TopicOverviewRootCollectionsTab(this.elementLocator);
     }
     return this._tab;
   }
-  set tab(tab) {
+
+  set tab(tab: TopicsOverviewTab) {
     tab.parentElement = this.elementLocator;
     this._tab = tab;
   }
 
-
-  get newTopicButton() {
-    return element(by.cssContainingText('button', 'New Topic'));
-
-  }
-
-  get newCollectionButton() {
-    return element(by.cssContainingText('button', 'New Collection'));
-  }
-
-  async navigateToTab(tab: TopicsOverviewTab) {
+  async navigateToTab(tab: TopicsOverviewTab): Promise<void> {
     this.tab = tab;
     await tab.linkElement.click();
     return Spinner.waitOnNone();
   }
 
-  async clickNewTopic () {
+  async clickNewTopic(): Promise<CreateTopicPage> {
     await this.newTopicButton.click();
     await Spinner.waitOnNone();
 
     return new CreateTopicPage();
   }
 
-  async clickNewCollection () {
+  async clickNewCollection(): Promise<CreateCollectionPage> {
     await this.newCollectionButton.click();
     await Spinner.waitOnNone();
 
     return new CreateCollectionPage();
   }
+
+  private get newTopicButton(): ElementFinder {
+    return element(by.cssContainingText('button', 'New Topic'));
+  }
+
+  private get newCollectionButton(): ElementFinder {
+    return element(by.cssContainingText('button', 'New Collection'));
+  }
+
 }

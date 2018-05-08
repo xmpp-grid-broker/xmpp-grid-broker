@@ -19,19 +19,9 @@ describe('TopicOverview', () => {
     expect(browser.getCurrentUrl()).toEqual(page.tab.fullUrl);
   });
 
-  it('should have new topic button', async () => {
-    const buttonPresent = await page.newTopicButton.isPresent();
-    expect(buttonPresent).toBe(true);
-  });
-
   it('should go to new topic on button click', async () => {
     const newPage = await page.clickNewTopic();
     expect(browser.getCurrentUrl()).toBe(newPage.fullUrl);
-  });
-
-  it('should have new collection button', async () => {
-    const buttonPresent = await page.newCollectionButton.isPresent();
-    expect(buttonPresent).toBe(true);
   });
 
   it('should go to new collection on button click', async () => {
@@ -50,7 +40,6 @@ describe('TopicOverview', () => {
     it('should have the tabs url', () => {
       expect(browser.getCurrentUrl()).toEqual(page.tab.fullUrl);
     });
-
 
     it('should list all default root collections', async () => {
       const expectedTopics = ['collection1', 'collection2', 'topic1', 'topic2'];

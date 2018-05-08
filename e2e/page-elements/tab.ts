@@ -1,14 +1,15 @@
-import {Page} from './page';
-import {by, element} from 'protractor';
+import {UrlAddressableComponent} from './urlAddressableComponent';
+import {by, element, ElementFinder} from 'protractor';
 
-export abstract class Tab extends Page {
+export abstract class Tab extends UrlAddressableComponent {
 
-  get tabElement() {
+  abstract get linkText(): string;
+
+  get tabElement(): ElementFinder {
     return this.parentElement.element(by.tagName('xgb-tabs'));
   }
 
-  abstract get linkText();
-  get linkElement() {
+  get linkElement(): ElementFinder {
     return this.tabElement.element(by.linkText(this.linkText));
   }
 

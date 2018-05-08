@@ -1,7 +1,7 @@
-import {Page} from '../page-elements/page';
+import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
 
-export class CreateCollectionPage extends Page {
-  get landingUrl() {
+export class CreateCollectionPage extends UrlAddressableComponent {
+  get landingUrl(): string {
     return '/topics/new/collection';
   }
 }

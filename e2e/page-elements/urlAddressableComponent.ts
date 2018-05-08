@@ -1,7 +1,7 @@
 import {browser} from 'protractor';
 import {Spinner} from './spinner';
 
-export abstract class Page {
+export abstract class UrlAddressableComponent {
 
   abstract get landingUrl();
 
