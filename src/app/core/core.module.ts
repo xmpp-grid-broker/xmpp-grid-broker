@@ -5,7 +5,7 @@ import {ErrorPageComponent} from './error-page/error-page.component';
 import {HeaderComponent} from './header/header.component';
 import {RouterModule} from '@angular/router';
 import {NavigationService} from './navigation.service';
-import {XmppService, XmppClientFactory} from './xmpp/xmpp.service';
+import {XmppClientFactory, XmppService} from './xmpp/xmpp.service';
 import {XmppFeatureService} from './xmpp/xmpp-feature.service';
 import {GlobalErrorHandlerService} from './global-error-handler.service';
 import {NotificationService} from './notifications/notification.service';
@@ -20,10 +20,9 @@ import {AlertNotificationComponent} from './notifications/alert-notification/ale
   declarations: [HeaderComponent, ErrorPageComponent, AlertNotificationComponent, ConfirmNotificationComponent],
   exports: [HeaderComponent, AlertNotificationComponent, ConfirmNotificationComponent],
   entryComponents: [AlertNotificationComponent, ConfirmNotificationComponent],
-  providers: [{
-    provide: ErrorHandler,
-    useClass: GlobalErrorHandlerService
-  }, NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService, ConfigService]
+  providers: [
+    {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
+    NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService, ConfigService]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

@@ -7,7 +7,7 @@ export class NavigationService {
 
   public goToUrl(url: string): void {
     // noinspection JSIgnoredPromiseFromCall
-    this.router.navigateByUrl(encodeURI(url));
+    this.router.navigateByUrl(url);
   }
 
   public goToNewTopic(): void {
@@ -20,10 +20,11 @@ export class NavigationService {
 
 
   public goToTopic(topic: string | Topic): void {
+    // The topic title might contain a "/" character, so prior URI encoding is required.
     if (topic instanceof Topic) {
-      this.goToUrl(`/topics/details/${topic.title}`);
+      this.goToUrl(`/topics/details/${encodeURIComponent(topic.title)}`);
     } else {
-      this.goToUrl(`/topics/details/${topic}`);
+      this.goToUrl(`/topics/details/${encodeURIComponent(topic)}`);
     }
   }
 
