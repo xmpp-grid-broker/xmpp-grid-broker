@@ -20,10 +20,11 @@ export class NavigationService {
 
 
   public goToTopic(topic: string | Topic): void {
+    // The topic title might contain a "/" character, so prior URI encoding is required.
     if (topic instanceof Topic) {
-      this.goToUrl(`/topics/details/${encodeURI(topic.title)}`);
+      this.goToUrl(`/topics/details/${encodeURIComponent(topic.title)}`);
     } else {
-      this.goToUrl(`/topics/details/${encodeURI(topic)}`);
+      this.goToUrl(`/topics/details/${encodeURIComponent(topic)}`);
     }
   }
 

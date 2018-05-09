@@ -26,7 +26,7 @@ export class CustomUrlSerializer implements UrlSerializer {
       .filter(path => path.length !== 0)
       .map(path => {
         try {
-          return new UrlSegment(decodeURI(path), {});
+          return new UrlSegment(decodeURIComponent(path), {});
         } catch (URIError) {
           return new UrlSegment(path, {});
         }
@@ -47,7 +47,7 @@ export class CustomUrlSerializer implements UrlSerializer {
   }
 
   private segmentToUrl(segment: UrlSegmentGroup) {
-    const res = segment.segments.map((s) => encodeURI(s.path)).join('/');
+    const res = segment.segments.map((s) => encodeURIComponent(s.path)).join('/');
     if (segment.children && segment.children['primary']) {
       return res + '/' + this.segmentToUrl(segment.children['primary']);
     }
