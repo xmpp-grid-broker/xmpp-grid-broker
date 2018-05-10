@@ -2,7 +2,7 @@ import {by, ElementArrayFinder} from 'protractor';
 
 export class List {
   private get listElements(): ElementArrayFinder {
-    const listElement = this.parentElement.element(by.tagName('xgb-list'));
+    const listElement = this.parentElement.locator.element(by.tagName('xgb-list'));
     return listElement.all(by.tagName('xgb-list-item'));
   }
 

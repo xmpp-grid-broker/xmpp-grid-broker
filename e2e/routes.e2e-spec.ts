@@ -8,7 +8,7 @@ describe('Routes', () => {
     const appPage = new AppPage();
     await appPage.navigateTo();
 
-    const destination = new TopicOverviewRootCollectionsTab();
+    const destination = new TopicOverviewRootCollectionsTab(appPage);
     expect(browser.getCurrentUrl()).toEqual(browser.baseUrl + destination.landingUrl);
   });
 });

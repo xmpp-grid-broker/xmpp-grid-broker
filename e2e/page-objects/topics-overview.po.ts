@@ -5,6 +5,7 @@ import {CreateTopicPage} from './create-topic.po';
 import {Spinner} from '../page-elements/spinner';
 import {CreateCollectionPage} from './create-collection.po';
 import {List} from '../page-elements/list';
+import {Locatable} from '../page-elements/locatable';
 
 type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 
@@ -21,7 +22,7 @@ export class TopicOverviewRootCollectionsTab extends Tab {
     return 'Root Collections';
   }
 
-  constructor(parentElement?: ElementFinder) {
+  constructor(parentElement: Locatable) {
     super(parentElement);
   }
 
@@ -40,7 +41,7 @@ export class TopicOverviewAllTopicsTab extends Tab {
     return 'All Topics';
   }
 
-  constructor(parentElement?: ElementFinder) {
+  constructor(parentElement: Locatable) {
     super(parentElement);
   }
 }
@@ -58,17 +59,17 @@ export class TopicOverviewAllCollectionsTab extends Tab {
     return 'All Collections';
   }
 
-  constructor(parentElement?: ElementFinder) {
+  constructor(parentElement: Locatable) {
     super(parentElement);
   }
 }
 
-export class TopicsOverviewPage extends UrlAddressableComponent {
+export class TopicsOverviewPage extends UrlAddressableComponent implements Locatable {
   get landingUrl(): string {
     return '/topics';
   }
 
-  private get elementLocator(): ElementFinder {
+  get locator(): ElementFinder {
     return element(by.tagName('xgb-topic-overview'));
   }
 
@@ -77,20 +78,20 @@ export class TopicsOverviewPage extends UrlAddressableComponent {
   get tab(): TopicsOverviewTab {
     if (this._tab === undefined) {
       // create default tab on first call, as the parent element might not be rendered earlier
-      this._tab = new TopicOverviewRootCollectionsTab(this.elementLocator);
+      this._tab = new TopicOverviewRootCollectionsTab(this);
     }
     return this._tab;
   }
 
   set tab(tab: TopicsOverviewTab) {
-    tab.parentElement = this.elementLocator;
     this._tab = tab;
   }
 
   async navigateToTab(tab: TopicsOverviewTab): Promise<void> {
-    this.tab = tab;
     await tab.linkElement.click();
-    return Spinner.waitOnNone();
+    return Spinner.waitOnNone().then(() => {
+      this.tab = tab;
+    });
   }
 
   async clickNewTopic(): Promise<CreateTopicPage> {

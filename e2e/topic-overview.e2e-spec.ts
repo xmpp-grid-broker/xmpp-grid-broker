@@ -33,7 +33,7 @@ describe('TopicOverview', () => {
     let tab: TopicOverviewRootCollectionsTab;
 
     beforeEach(async () => {
-      tab = new TopicOverviewRootCollectionsTab();
+      tab = new TopicOverviewRootCollectionsTab(page);
       await page.navigateToTab(tab);
     });
 
@@ -51,7 +51,7 @@ describe('TopicOverview', () => {
     let tab: TopicOverviewAllTopicsTab;
 
     beforeEach(async () => {
-      tab = new TopicOverviewAllTopicsTab();
+      tab = new TopicOverviewAllTopicsTab(page);
       await page.navigateToTab(tab);
     });
 
@@ -70,7 +70,7 @@ describe('TopicOverview', () => {
     let tab: TopicOverviewAllCollectionsTab;
 
     beforeEach(async () => {
-      tab = new TopicOverviewAllCollectionsTab();
+      tab = new TopicOverviewAllCollectionsTab(page);
       await page.navigateToTab(tab);
     });
 
