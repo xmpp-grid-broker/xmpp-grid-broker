@@ -39,6 +39,6 @@ export class Toast implements Locatable {
     return element.getAttribute('class').then((classes) => {
       return classes.split(' ').includes(cls);
     });
-  };
+  }
 
 }

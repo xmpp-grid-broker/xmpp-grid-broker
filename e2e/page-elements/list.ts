@@ -1,4 +1,5 @@
 import {by, ElementArrayFinder} from 'protractor';
+import {Locatable} from './locatable';
 
 export class List {
   private get listElements(): ElementArrayFinder {
@@ -16,6 +17,6 @@ export class List {
     return list.length;
   }
 
-  constructor(readonly parentElement) {
+  constructor(readonly parentElement: Locatable) {
   }
 }

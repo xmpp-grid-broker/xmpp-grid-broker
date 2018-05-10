@@ -11,7 +11,7 @@ type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopic
 
 export class TopicOverviewRootCollectionsTab extends Tab {
   get list(): List {
-    return new List(element(by.tagName('xgb-topics')));
+    return new List(this);
   }
 
   get landingUrl(): string {
@@ -30,7 +30,7 @@ export class TopicOverviewRootCollectionsTab extends Tab {
 
 export class TopicOverviewAllTopicsTab extends Tab {
   get list(): List {
-    return new List(element(by.tagName('xgb-topics')));
+    return new List(this);
   }
 
   get landingUrl(): string {
@@ -48,7 +48,7 @@ export class TopicOverviewAllTopicsTab extends Tab {
 
 export class TopicOverviewAllCollectionsTab extends Tab {
   get list(): List {
-    return new List(element(by.tagName('xgb-topics')));
+    return new List(this);
   }
 
   get landingUrl(): string {

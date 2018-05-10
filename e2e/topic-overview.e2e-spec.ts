@@ -42,8 +42,13 @@ describe('TopicOverview', () => {
     });
 
     it('should list all default root collections', async () => {
-      const expectedTopics = ['collection1', 'collection2', 'topic1', 'topic2'];
-      expect(await tab.list.listContent()).toEqual(expectedTopics);
+      const listContent = await tab.list.listContent();
+
+      expect(listContent.length).toBe(4);
+      expect(listContent).toContain('collection1');
+      expect(listContent).toContain('collection2');
+      expect(listContent).toContain('topic1');
+      expect(listContent).toContain('topic2');
     });
   });
 
@@ -61,8 +66,11 @@ describe('TopicOverview', () => {
 
 
     it('should list all default topics', async () => {
-      const expectedTopics = ['topic1', 'topic1.1', 'topic2'];
-      expect(await tab.list.listContent()).toEqual(expectedTopics);
+      const listContent = await tab.list.listContent();
+      expect(listContent.length).toBe(3);
+      expect(listContent).toContain('topic1');
+      expect(listContent).toContain('topic1.1');
+      expect(listContent).toContain('topic2');
     });
   });
 
@@ -80,8 +88,11 @@ describe('TopicOverview', () => {
 
 
     it('should list all default collections', async () => {
-      const expectedTopics = ['collection1', 'collection1.1', 'collection2'];
-      expect(await tab.list.listContent()).toEqual(expectedTopics);
+      const listContent = await tab.list.listContent();
+      expect(listContent.length).toBe(3);
+      expect(listContent).toContain('collection1');
+      expect(listContent).toContain('collection1.1');
+      expect(listContent).toContain('collection2');
     });
   });
 });

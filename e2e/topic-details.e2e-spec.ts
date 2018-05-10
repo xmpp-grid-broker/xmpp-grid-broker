@@ -4,7 +4,7 @@ import {Spinner} from './page-elements/spinner';
 import {ToastContent} from './page-elements/toast';
 
 
-fdescribe('TopicDetails', () => {
+describe('TopicDetails', () => {
   const defaultTopicId = 'topic1.1';
   let page: TopicDetailsPage;
 
