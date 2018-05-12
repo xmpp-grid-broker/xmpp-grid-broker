@@ -136,4 +136,31 @@ describe('PersistedItemsService', () => {
       await expect(args[0].discoItems.rsm.after).toBe('item 20');
     });
   });
+  describe('when calling loadPersistedItemContent', () => {
+
+    it('it should call the xmpp service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
+
+      await service.deletePersistedItem('test-topic', new PersistedItem('001'));
+
+      expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      expect(cmd.pubsub.retract.node).toBe('test-topic');
+      expect(cmd.pubsub.retract.item.id).toBe('001');
+    });
+
+    it('should reject when executeIqToPubsub fails', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
+        {condition: 'example-error'}
+      ));
+
+      try {
+        await service.deletePersistedItem('test-topic', new PersistedItem('001'));
+        fail(`expected an error`);
+      } catch (e) {
+        expect(e.condition).toBe('example-error');
+      }
+    });
+
+  });
 });
