@@ -1,7 +1,7 @@
 <div *ngIf="persistedItemsList.hasError" xgbToast toast-error>{{persistedItemsList.errorMessage}}</div>
 <ng-container>
   <xgb-action-bar>
-    <button xgbActionButton danger *ngIf="persistedItemsList.items.length > 0">Purge persisted items</button>
+    <button xgbActionButton danger *ngIf="persistedItemsList.items.length > 0" (click)="purgeItems()">Purge persisted items</button>
   </xgb-action-bar>
   <xgb-list>
     <xgb-list-item *ngFor="let item of persistedItemsList.items">

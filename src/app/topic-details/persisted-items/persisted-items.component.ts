@@ -41,6 +41,18 @@ export class PersistedItemsComponent implements OnInit {
     }
   }
 
+  async purgeItems() {
+    const confirmation = await this.notificationService.confirm(
+      'Warning',
+      `You are about to permanently delete all persisted items from ${this.nodeId}! Are you sure to proceed?`,
+      `Yes, permanently delete ALL items`, 'Cancel');
+    if (!confirmation) {
+      return;
+    }
+    await this.executeAndRefreshIterator(this.service.purgePersistedItem(this.nodeId));
+  }
+
+
   async removeItem(item: PersistedItem) {
 
     const confirmation = await this.notificationService.confirm(
@@ -50,19 +62,24 @@ export class PersistedItemsComponent implements OnInit {
     if (!confirmation) {
       return;
     }
+
+    await this.executeAndRefreshIterator(this.service.deletePersistedItem(this.nodeId, item));
+  }
+
+  private setError(err) {
+    this.persistedItemsList.hasError = true;
+    this.persistedItemsList.errorMessage = PersistedItemsComponent.errorConditionToMessage(err);
+  }
+
+  private async executeAndRefreshIterator(promise: Promise<void>) {
     try {
-      await this.service.deletePersistedItem(this.nodeId, item);
+      await promise;
       this.persistedItemsList.useIterator(this.service.persistedItems(this.nodeId));
     } catch (err) {
       this.persistedItemsList.useIterator(this.service.persistedItems(this.nodeId))
         .then(() => this.setError(err))
         .catch(() => this.setError(err));
     }
-  }
-
-  private setError(err) {
-    this.persistedItemsList.hasError = true;
-    this.persistedItemsList.errorMessage = PersistedItemsComponent.errorConditionToMessage(err);
   }
 
   private static errorConditionToMessage(error: any): string {
