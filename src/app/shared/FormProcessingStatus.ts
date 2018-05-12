@@ -18,12 +18,9 @@ export class FormProcessingStatus {
     this.processing = true;
   }
 
-  public done(params: { successMessage?: string, errorMessage?: string, error?: any } = {}) {
+  public done(params: { successMessage?: string, errorMessage?: string } = {}) {
     this.success = params.successMessage;
     this.error = params.errorMessage;
-    if (params.error) {
-      console.log(params.error);
-    }
     this.processing = false;
   }
 

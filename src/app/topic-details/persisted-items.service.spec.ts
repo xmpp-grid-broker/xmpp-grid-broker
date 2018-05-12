@@ -51,7 +51,6 @@ describe('PersistedItemsService', () => {
         const result = await service.loadPersistedItemContent('test-topic', new PersistedItem('001'));
         fail(`expected an error but got: ${result}`);
       } catch (e) {
-        console.log(e);
         expect(e.condition).toBe('example-error');
       }
     });

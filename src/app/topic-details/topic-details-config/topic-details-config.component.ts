@@ -66,7 +66,7 @@ export class TopicDetailsConfigComponent implements OnInit {
             this.formProcessing.done({errorMessage: `There are no configuration options available`});
             break;
           default:
-            this.formProcessing.done({errorMessage: `An unknown error occurred: ${error.condition}!`, error});
+            this.formProcessing.done({errorMessage: `An unknown error occurred: ${JSON.stringify(error)}!`});
         }
       });
   }
@@ -82,8 +82,7 @@ export class TopicDetailsConfigComponent implements OnInit {
       })
       .catch((error) => {
         this.formProcessing.done({
-          errorMessage: `Failed to update the configuration (Server responded with: ${error.condition})`,
-          error
+          errorMessage: `Failed to update the configuration (Server responded with: ${JSON.stringify(error)})`
         });
       });
   }
@@ -105,7 +104,6 @@ export class TopicDetailsConfigComponent implements OnInit {
   private doDeleteTopic() {
     this.topicDetailsService.deleteTopic(this.nodeId)
       .then(() => {
-        console.log(this.navigationService.goToHome);
         this.navigationService.goToHome();
       })
       .catch((error) => {
@@ -120,7 +118,7 @@ export class TopicDetailsConfigComponent implements OnInit {
             this.formProcessing.done({errorMessage: `You are not allowed to delete the root node ${this.nodeId}!`});
             break;
           default:
-            this.formProcessing.done({errorMessage: `An unknown error occurred: ${error.condition}!`, error});
+            this.formProcessing.done({errorMessage: `An unknown error occurred: ${JSON.stringify(error)}!`});
         }
       });
   }

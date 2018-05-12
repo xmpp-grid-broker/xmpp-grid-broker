@@ -104,7 +104,7 @@ describe('TopicDetailsConfigComponent', () => {
     {condition: LoadConfigurationFormErrorCodes.Unsupported, message: 'Node configuration is not supported by the XMPP server'},
     {condition: LoadConfigurationFormErrorCodes.Forbidden, message: 'Insufficient Privileges to configure node testing'},
     {condition: LoadConfigurationFormErrorCodes.NotAllowed, message: 'There are no configuration options available'},
-    {condition: 'other', message: 'An unknown error occurred: other!'},
+    {condition: 'other', message: 'An unknown error occurred: {"condition":"other"}!'},
   ].forEach(({condition, message}) => {
     it('should show an error message when loading the for fails', fakeAsync(() => {
       spyOn(mockService, 'loadConfigurationForm').and.callFake(() => {
@@ -254,7 +254,7 @@ describe('TopicDetailsConfigComponent', () => {
       {condition: TopicDeletionErrorCodes.NotAllowed, message: 'You are not allowed to delete the root node testing!'},
       {condition: TopicDeletionErrorCodes.Forbidden, message: 'Insufficient Privileges to delete node testing'},
       {condition: TopicDeletionErrorCodes.ItemNotFound, message: 'Node with NodeID testing does not exist!'},
-      {condition: 'other', message: 'An unknown error occurred: other!'},
+      {condition: 'other', message: 'An unknown error occurred: {"condition":"other"}!'},
     ].forEach(({condition, message}) => {
       it(`should render an error message when the delete service method fails (${condition})`, fakeAsync(() => {
         notificationService.confirm.and.returnValue(Promise.resolve(true));
@@ -332,7 +332,7 @@ describe('TopicDetailsConfigComponent', () => {
       const notificationDivs = de.queryAll(By.directive(ToastDirective));
       expect(notificationDivs.length).toBe(1);
       expect(notificationDivs[0].nativeElement.innerText).toBe(
-        'Failed to update the configuration (Server responded with: not-acceptable)'
+        'Failed to update the configuration (Server responded with: {"condition":"not-acceptable"})'
       );
       expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
     }));

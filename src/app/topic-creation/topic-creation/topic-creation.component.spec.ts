@@ -137,7 +137,7 @@ describe('TopicCreationComponent', () => {
       {condition: TopicCreationErrors.Forbidden, message: 'Requesting entity is prohibited from creating nodes'},
       {condition: TopicCreationErrors.Conflict, message: 'A topic with the given identifier does already exist'},
       {condition: TopicCreationErrors.NodeIdRequired, message: 'Service does not support instant nodes'},
-      {condition: '?!?!', message: 'Failed to create new topic: (unknown: ?!?!)'}
+      {condition: '?!?!', message: 'Failed to create new topic: {"condition":"?!?!","type":"unknown"}'}
     ].forEach((testParams) => {
       it(`should show an error if it fails (${testParams.condition})`, fakeAsync(() => {
         spyOn(topicCreationService, 'createTopic').and.callFake(() => {
