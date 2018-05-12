@@ -105,9 +105,7 @@ export class PersistedItemsService {
       pubsub: {
         retract: {
           node: topicIdentifier,
-          item: {
-            id: item.id
-          }
+          id: item.id
         },
       }
     };

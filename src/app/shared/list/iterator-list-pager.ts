@@ -8,7 +8,7 @@ export class IteratorListPager<T> {
   isLoaded = false;
   hasError = false;
   errorMessage: string;
-  items: T[] = [];
+  items: T[];
   hasMore: boolean;
 
   private iterator: AsyncIterableIterator<T>;
@@ -16,20 +16,22 @@ export class IteratorListPager<T> {
   private readonly PAGE_SIZE = 10;
 
 
-  public useIterator(iterator: AsyncIterableIterator<T>) {
+  public useIterator(iterator: AsyncIterableIterator<T>): Promise<void> {
     this.iterator = iterator;
+    this.items = [];
     this.hasMore = false;
-    this.loadMore();
+    this.errorMessage = undefined;
+    return this.loadMore();
   }
 
   public useErrorMapper(errorHandler: (error: any) => string) {
     this.errorHandler = errorHandler;
   }
 
-  public loadMore() {
+  public loadMore(): Promise<void> {
     this.isLoaded = false;
     this.hasError = false;
-    this.loadNextPage()
+    return this.loadNextPage()
       .then((loadedItems) => {
         this.items.push(...loadedItems);
         this.isLoaded = true;

@@ -146,7 +146,7 @@ describe('PersistedItemsService', () => {
       expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
       const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
       expect(cmd.pubsub.retract.node).toBe('test-topic');
-      expect(cmd.pubsub.retract.item.id).toBe('001');
+      expect(cmd.pubsub.retract.id).toBe('001');
     });
 
     it('should reject when executeIqToPubsub fails', async () => {
