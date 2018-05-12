@@ -4,7 +4,8 @@ import {IteratorListPager} from '../../shared/list/iterator-list-pager';
 
 @Component({
   selector: 'xgb-topics',
-  templateUrl: './topic-list.component.html'
+  templateUrl: './topic-list.component.html',
+  styleUrls: ['./topic-list.component.css']
 })
 export class TopicListComponent {
   @Input() topicList: IteratorListPager<Topic>;

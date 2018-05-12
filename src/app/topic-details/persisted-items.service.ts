@@ -1,81 +1,98 @@
 import {Injectable} from '@angular/core';
 import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {JID} from 'xmpp-jid';
 
 export class PersistedItem {
-  constructor(public readonly id: string, public readonly publisher: JID, public readonly rawXML: string) {
-  }
+  /**
+   * The XML payload of the persisted item in the form of a plain xml string.
+   */
+  public rawXML: string;
 
+  constructor(public readonly id: string) {
+  }
+}
+
+export enum LoadPersistedItemsErrors {
+  FeatureNotImplemented = 'feature-not-implemented',
+  NotAuthorized = 'not-authorized',
+  PaymentRequired = 'payment-required',
+  Forbidden = 'forbidden',
+  ItemNotFound = 'item-not-found',
 }
 
 @Injectable()
 export class PersistedItemsService {
+  /**
+   * The number of items to fetch at a time from
+   * the xmpp server (result management page size).
+   */
   private PAGE_SIZE = 10;
 
   constructor(private xmppService: XmppService) {
   }
 
-  insertPersistedItems(topicIdentifier: string): Promise<void> {
-    for (let i = 0; i < 1; i++) {
-
-    }
-    const cmd = {
-      type: IqType.Get,
-      pubsub: {
-        publish: {
-          node: topicIdentifier,
-          item: {
-            rawXML: '<entry xmlns=\'http://www.w3.org/2005/Atom\'>' +
-            '          <title>Soliloquy ' + new Date().toISOString() + '</title>' +
-            '          <summary>' +
-            'To be, or not to be: that is the question:' +
-            'Whether tis nobler in the mind to suffer' +
-            'The slings and arrows of outrageous fortune,' +
-            'Or to take arms against a sea of troubles,' +
-            'And by opposing end them?' +
-            '          </summary>' +
-            '          <link rel=\'alternate\' type=\'text/html\'' +
-            '                href=\'http://denmark.lit/2003/12/13/atom03\'/>' +
-            '          <id>tag:denmark.lit,2003:entry-32397</id>' +
-            '          <published>2003-12-13T18:30:02Z</published>' +
-            '          <updated>2003-12-13T18:30:02Z</updated>' +
-            '        </entry>'
-          }
-        },
-      }
-    };
-    return this.xmppService.executeIqToPubsub(cmd).then(() => {
-    });
-
-
-  }
-
-
-  async* persistedItems(topicIdentifier: string, predicate: (value) => boolean): AsyncIterableIterator<PersistedItem> {
-    // TODO: openfire returns only the last item...
-    const cmd = {
+  /**
+   * Loads and sets the XML payload of the given persisted item.
+   * Will set the value in-place on the provided item and returns
+   * the same instance as well with the raw-xml field populated.
+   */
+  public loadPersistedItemContent(topicIdentifier: string, item: PersistedItem): Promise<PersistedItem> {
+    const detailedCmd = {
       type: IqType.Get,
       pubsub: {
         retrieve: {
           node: topicIdentifier,
+          item: {
+            id: item.id
+          }
         },
-        // TODO: openfire does ignore rsm here...
-        rsm: {
-          max: this.PAGE_SIZE,
-          after: undefined
-        }
       }
     };
 
-    // TODO: the response is crap - the published timestamp is missing and the JID is rubbish...
-    const response = await this.xmppService.executeIqToPubsub(cmd);
-    console.log(response);
-    const items = response.pubsub.retrieve.items;
-    if (!items) {
-      return;
-    }
-    for (const item of items) {
-      yield new PersistedItem(item.id, item.publisher, item.rawXML);
-    }
+    return this.xmppService.executeIqToPubsub(detailedCmd)
+      .then((result) => {
+        const detailedItem = result.pubsub.retrieve.item;
+        item.rawXML = detailedItem.rawXML;
+        return item;
+      });
+  }
+
+  /**
+   * Returns an Async iterator to iterate through all persisted items
+   * of the topic with the given topic identifier.
+   *
+   * Note that the yielded persisted elements do not contain their payload.
+   * Use the corresponding service method on {@link PersistedItemsService#loadPersistedItemContent} instead.
+   */
+  public async* persistedItems(topicIdentifier: string): AsyncIterableIterator<PersistedItem> {
+    let loadAfter;
+    let hasMore = true;
+
+    do {
+      const cmd = {
+        type: IqType.Get,
+        discoItems: {
+          node: topicIdentifier,
+          rsm: {
+            max: this.PAGE_SIZE,
+            after: loadAfter
+          }
+        }
+      };
+
+      const response = await this.xmppService.executeIqToPubsub(cmd);
+      const items = response.discoItems.items;
+      if (!items) {
+        return;
+      }
+
+      const rsm = response.discoItems.rsm;
+      loadAfter = rsm.last;
+      hasMore = parseInt(rsm.firstIndex, 10) + this.PAGE_SIZE < parseInt(rsm.count, 10);
+
+      for (const item of items) {
+        yield new PersistedItem(item.name);
+      }
+    } while (hasMore);
+
   }
 }
