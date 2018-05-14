@@ -19,12 +19,8 @@ export class Form implements Locatable {
     return inputElement.sendKeys(newValue);
   }
 
-  async submit() {
-
-  }
-
   private getInputElement(fieldId: string): ElementFinder {
-    return this.getFieldElement(fieldId).element(by.css('input.form-input'));
+    return this.getFieldElement(fieldId).element(by.css('input.form-input, select.form-select'));
   }
 
   private getFieldElement(fieldId: string): ElementFinder {
