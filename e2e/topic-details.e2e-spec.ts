@@ -1,5 +1,9 @@
 import {browser} from 'protractor';
-import {TopicDetailsConfigurationTab, TopicDetailsPage} from './page-objects/topic-details.po';
+import {
+  TopicDetailsConfigurationTab,
+  TopicDetailsPage,
+  TopicDetailsAffiliationTab
+} from './page-objects/topic-details.po';
 import {Spinner} from './page-elements/spinner';
 import {ToastContent} from './page-elements/toast';
 
@@ -52,6 +56,88 @@ describe('TopicDetails', () => {
       expect(await tab.form.getFieldValue('nodeID')).toEqual(defaultTopicId);
       expect(await tab.form.getFieldValue('title')).toEqual(titleValue);
     });
+  });
 
+  describe('TopicDetailsAffiliationTab', () => {
+    let tab: TopicDetailsAffiliationTab;
+
+    const testJid = 'juliet@openfire';
+
+    beforeEach(async () => {
+      tab = new TopicDetailsAffiliationTab(defaultTopicId, page);
+      await page.navigateToTab(tab);
+    });
+
+    fit('should list admin', async () => {
+      const affiliation = await tab.firstAffiliation;
+
+      expect(affiliation.jid).toBe('admin@openfire');
+      expect(affiliation.affiliation).toBe('owner');
+    });
+
+    it('should add an affiliation', async () => {
+      const testAffiliation = 'Publisher';
+      await tab.form.setFieldValue('jid', testJid);
+      await tab.form.setFieldValue('affiliation', testAffiliation);
+
+      await tab.formSubmit();
+      await Spinner.waitOnNone();
+
+      const listObjects = await tab.getListObjectsByJid(testJid);
+      expect(listObjects.length).toBe(1);
+
+      const affiliation = listObjects[0];
+      expect(affiliation.jid).toBe(testJid);
+
+      expect(await affiliation.affiliationText).toBe(testAffiliation);
+    });
+
+    it('should change affiliation', async () => {
+      const testAffiliation = 'Publisher';
+
+      // Limit scope of variables, as they are invalid after page reload.
+      await (async () => {
+        await tab.form.setFieldValue('jid', testJid);
+        const affiliations = await tab.getListObjectsByJid(testJid);
+        expect(affiliations.length).toBe(1);
+
+        const affiliation = affiliations[0];
+        expect(affiliation.jid).toBe(testJid);
+        expect(await affiliation.affiliationText).toBe(testAffiliation);
+
+        await affiliation.setAffiliation('Member');
+      })();
+
+      await page.navigateToTab(tab);
+
+      await (async () => {
+        const affiliations = await tab.getListObjectsByJid(testJid);
+        expect(affiliations.length).toBe(1);
+
+        const affiliation = affiliations[0];
+        expect(affiliation.jid).toBe(testJid);
+        expect(await affiliation.affiliationText).toBe('Member');
+      })();
+    });
+
+    it('should remove on delete', async () => {
+      // Limit scope of variables, as they are invalid after page reload.
+      await (async () => {
+        const affiliations = await tab.getListObjectsByJid(testJid);
+        expect(affiliations.length).toBe(1);
+
+        const affiliation = affiliations[0];
+        expect(affiliation.jid).toBe(testJid);
+
+        await affiliation.clickRemoveButton();
+      })();
+
+      await page.navigateToTab(tab);
+
+      await (async () => {
+        const listObjects = await tab.getListObjectsByJid(testJid);
+        expect(listObjects.length).toBe(0);
+      })();
+    });
   });
 });
