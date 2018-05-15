@@ -71,7 +71,7 @@ describe('TopicDetails', () => {
     fit('should list admin', async () => {
       const affiliation = await tab.firstAffiliation;
       expect(affiliation.jid).toBe('admin@openfire');
-      expect(await affiliation.affiliationText).toBe('owner');
+      expect(await affiliation.affiliationText).toBe('Owner');
     });
 
     it('should add an affiliation', async () => {
