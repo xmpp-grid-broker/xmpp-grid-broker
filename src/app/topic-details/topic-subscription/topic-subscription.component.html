@@ -1,3 +1,17 @@
-<p>
-  topic-subscription works!
-</p>
+<xgb-list *ngIf="!errorMessage && isLoaded">
+  <xgb-list-item *ngFor="let subscription of subscriptions">
+    <div class="jid-affiliation">
+      <div class="jid">{{subscription.jid}}</div>
+      <div class="actions">
+        <button xgbActionButton>modify</button>
+        <button xgbActionButton>unsubscribe</button>
+      </div>
+    </div>
+  </xgb-list-item>
+  <div class="empty" *ngIf="subscriptions.length == 0">
+    <p class="empty-title h5">No Subscriptions found</p>
+  </div>
+</xgb-list>
+
+<xgb-spinner *ngIf="!isLoaded"></xgb-spinner>
+<div *ngIf="errorMessage" xgbToast toast-error>{{errorMessage}}</div>

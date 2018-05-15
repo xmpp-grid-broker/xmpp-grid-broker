@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { TopicSubscriptionComponent } from './topic-subscription.component';
+import {TopicSubscriptionComponent} from './topic-subscription.component';
 
 describe('TopicSubscriptionComponent', () => {
   let component: TopicSubscriptionComponent;
@@ -8,7 +8,7 @@ describe('TopicSubscriptionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TopicSubscriptionComponent ]
+      declarations: [TopicSubscriptionComponent]
     });
   }));
 
@@ -18,7 +18,6 @@ describe('TopicSubscriptionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  // TODO: Write tests...
+
 });
