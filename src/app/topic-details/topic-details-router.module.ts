@@ -6,6 +6,7 @@ import {TopicAffiliationsComponent} from './topic-affiliations/topic-affiliation
 import {XmppFeatureGuardService as XmppFeatureGuard} from '../core/xmpp/xmpp-feature-guard.service';
 import {PersistedItemsComponent} from './persisted-items/persisted-items.component';
 import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item.component';
+import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription.component';
 
 
 const routes: Routes = [
@@ -17,6 +18,7 @@ const routes: Routes = [
       {path: '', redirectTo: 'configuration', pathMatch: 'full'},
       {path: 'configuration', component: TopicDetailsConfigComponent},
       {path: 'affiliations', component: TopicAffiliationsComponent},
+      {path: 'subscriptions', component: TopicSubscriptionComponent},
       {path: 'items', component: PersistedItemsComponent},
     ]
   }, {

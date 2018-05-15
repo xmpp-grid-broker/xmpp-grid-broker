@@ -11,6 +11,8 @@ import {TopicAffiliationsComponent} from './topic-affiliations/topic-affiliation
 import {PersistedItemsComponent} from './persisted-items/persisted-items.component';
 import {PersistedItemsService} from './persisted-items.service';
 import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item.component';
+import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription.component';
+
 
 @NgModule({
   imports: [
@@ -26,7 +28,8 @@ import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item
     TopicDetailsConfigComponent,
     TopicAffiliationsComponent,
     PersistedItemsComponent,
-    NewPersistedItemComponent
+    NewPersistedItemComponent,
+    TopicSubscriptionComponent
   ],
   providers: [TopicDetailsService, PersistedItemsService]
 })
