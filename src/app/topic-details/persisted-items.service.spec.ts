@@ -187,4 +187,30 @@ describe('PersistedItemsService', () => {
       }
     });
   });
+
+  describe('when calling publishItem', () => {
+    it('it should call the xmpp service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
+
+      await service.publishItem('test-topic', '<xml/>');
+
+      expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      expect(cmd.pubsub.publish.node).toBe('test-topic');
+      expect(cmd.pubsub.publish.item.rawXML).toBe('<xml/>');
+    });
+
+    it('should reject when executeIqToPubsub fails', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
+        {condition: 'example-error'}
+      ));
+
+      try {
+        await service.publishItem('test-topic', '<xml/>');
+        fail(`expected an error`);
+      } catch (e) {
+        expect(e.condition).toBe('example-error');
+      }
+    });
+  });
 });

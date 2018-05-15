@@ -31,4 +31,9 @@ describe('NavigationService', () => {
     service.goToTopic(new LeafTopic('leafTopic'));
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/details/leafTopic');
   });
+  it('verify goToTopic by topic works', () => {
+    service.goToPersistedItems(new LeafTopic('leaf@?!Topic'));
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/details/leaf%40%3F!Topic/items');
+  });
+
 });

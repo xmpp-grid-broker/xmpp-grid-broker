@@ -7,6 +7,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
 import {NotificationService} from '../../core/notifications/notification.service';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('PersistedItemsComponent', () => {
   let component: PersistedItemsComponent;
@@ -36,7 +37,7 @@ describe('PersistedItemsComponent', () => {
     notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
     TestBed.configureTestingModule({
       declarations: [PersistedItemsComponent],
-      imports: [SharedModule],
+      imports: [RouterTestingModule, SharedModule],
       providers: [
         {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
         {provide: PersistedItemsService, useValue: persistedItemsService},
