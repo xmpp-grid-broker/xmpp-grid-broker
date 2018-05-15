@@ -17,12 +17,25 @@ describe('TopicSubscriptionService', () => {
     it('it should call the xmpp service', async () => {
       xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsubOwner: {subscriptions: {list: []}}}));
 
-      await service.loadSubscriptions('test-topic');
+      const subscriptions = await service.loadSubscriptions('test-topic');
+      expect(subscriptions.length).toBe(0);
 
       await expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
       const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
       await expect(cmd.pubsubOwner.subscriptions.node).toBe('test-topic');
     });
+
+    it('it can handle unset subscriptions list', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsubOwner: {subscriptions: {}}}));
+
+      const subscriptions = await service.loadSubscriptions('test-topic');
+
+      expect(subscriptions.length).toBe(0);
+      await expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      await expect(cmd.pubsubOwner.subscriptions.node).toBe('test-topic');
+    });
+
 
     it('it map the results to subscription objects', async () => {
       const rawSubscriptions = [

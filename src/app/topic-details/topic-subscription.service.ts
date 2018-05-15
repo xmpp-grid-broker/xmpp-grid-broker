@@ -21,9 +21,10 @@ export class TopicSubscriptionService {
       }
     };
     return this.xmppService.executeIqToPubsub(cmd)
-      .then((response) =>
-        response.pubsubOwner.subscriptions.list
-          .map((entry) => new Subscription(entry.jid.full, entry.subid, entry.expiry, entry.subscription))
+      .then((response) => {
+          const subscriptions = response.pubsubOwner.subscriptions.list || [];
+          return subscriptions.map((entry) => new Subscription(entry.jid.full, entry.subid, entry.expiry, entry.subscription));
+        }
       );
   }
 }
