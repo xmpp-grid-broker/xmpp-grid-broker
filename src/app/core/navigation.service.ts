@@ -18,7 +18,10 @@ export class NavigationService {
     this.goToUrl('/topics/new/collection');
   }
 
-
+  goToSubscriptions(nodeId: string) {
+    // TODO: use stuff from PR#36
+    this.goToUrl('/topics/details/oWkU4nCZrzTzTaM/subscriptions');
+  }
   public goToTopic(topic: string | Topic): void {
     this.goToUrl(NavigationService.topicUrl(topic));
   }
@@ -43,4 +46,6 @@ export class NavigationService {
 
   constructor(private router: Router) {
   }
+
+
 }

@@ -39,7 +39,7 @@ describe('TopicSubscriptionService', () => {
 
     it('it map the results to subscription objects', async () => {
       const rawSubscriptions = [
-        {jid: new JID('foo@openfire'), subscription: 'subscribed', expiry: '2006-02-28T23:59:59Z', subid: '123-123-123'},
+        {jid: new JID('foo@openfire'), type: 'subscribed', expiry: '2006-02-28T23:59:59Z', subid: '123-123-123'},
         {jid: new JID('baa@openfire')}
       ];
       xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsubOwner: {subscriptions: {list: rawSubscriptions}}}));

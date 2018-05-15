@@ -23,8 +23,23 @@ export class TopicSubscriptionService {
     return this.xmppService.executeIqToPubsub(cmd)
       .then((response) => {
           const subscriptions = response.pubsubOwner.subscriptions.list || [];
-          return subscriptions.map((entry) => new Subscription(entry.jid.full, entry.subid, entry.expiry, entry.subscription));
+          return subscriptions.map((entry) => new Subscription(entry.jid.full, entry.subid, entry.expiry, entry.type));
         }
       );
+  }
+
+  // TODO: WRITE DOCS & TESTS
+  subscribe(topicIdentifier: string, jid: string): Promise<void> {
+    const cmd = {
+      type: IqType.Get,
+      pubsub: {
+        subscribe: {
+          node: topicIdentifier,
+          jid: jid
+        }
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd).then((response) => {
+    });
   }
 }

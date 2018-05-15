@@ -7,6 +7,7 @@ import {XmppFeatureGuardService as XmppFeatureGuard} from '../core/xmpp/xmpp-fea
 import {PersistedItemsComponent} from './persisted-items/persisted-items.component';
 import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item.component';
 import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription.component';
+import {NewTopicSubscriptionComponent} from './new-topic-subscription/new-topic-subscription.component';
 
 
 const routes: Routes = [
@@ -25,6 +26,10 @@ const routes: Routes = [
     path: 'topics/details/:id/items/new',
     canActivate: [XmppFeatureGuard],
     component: NewPersistedItemComponent,
+  }, {
+    path: 'topics/details/:id/subscriptions/new',
+    canActivate: [XmppFeatureGuard],
+    component: NewTopicSubscriptionComponent,
   }
 ];
 
