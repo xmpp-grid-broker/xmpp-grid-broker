@@ -1,9 +1,14 @@
-import {by, ElementArrayFinder} from 'protractor';
+import {by, ElementArrayFinder, ElementFinder} from 'protractor';
+import {Locatable} from './locatable';
 
-export class List {
-  private get listElements(): ElementArrayFinder {
-    const listElement = this.parentElement.element(by.tagName('xgb-list'));
-    return listElement.all(by.tagName('xgb-list-item'));
+export class List implements Locatable {
+
+  get locator(): ElementFinder {
+    return this.parentElement.locator.element(by.tagName('xgb-list'));
+  }
+
+  get listElements(): ElementArrayFinder {
+    return this.locator.all(by.tagName('xgb-list-item'));
   }
 
   async listContent(): Promise<string[]> {
@@ -16,6 +21,6 @@ export class List {
     return list.length;
   }
 
-  constructor(readonly parentElement) {
+  constructor(readonly parentElement: Locatable) {
   }
 }
