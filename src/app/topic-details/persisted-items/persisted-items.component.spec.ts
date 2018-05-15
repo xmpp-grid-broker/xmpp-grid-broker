@@ -6,11 +6,13 @@ import {PersistedItem, PersistedItemsService} from '../persisted-items.service';
 import {SharedModule} from '../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
+import {NotificationService} from '../../core/notifications/notification.service';
 
 describe('PersistedItemsComponent', () => {
   let component: PersistedItemsComponent;
   let fixture: ComponentFixture<PersistedItemsComponent>;
-  let service: jasmine.SpyObj<PersistedItemsService>;
+  let persistedItemsService: jasmine.SpyObj<PersistedItemsService>;
+  let notificationService: jasmine.SpyObj<NotificationService>;
   let de: DebugElement;
 
   const errorMap = [
@@ -26,12 +28,19 @@ describe('PersistedItemsComponent', () => {
   ];
 
   beforeEach(async(() => {
-    service = jasmine.createSpyObj('PersistedItemsService', ['persistedItems', 'loadPersistedItemContent']);
+    persistedItemsService = jasmine.createSpyObj('PersistedItemsService', [
+      'persistedItems',
+      'loadPersistedItemContent',
+      'deletePersistedItem']);
+    notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
     TestBed.configureTestingModule({
       declarations: [PersistedItemsComponent],
       imports: [SharedModule],
-      providers: [{provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
-        {provide: PersistedItemsService, useValue: service}]
+      providers: [
+        {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
+        {provide: PersistedItemsService, useValue: persistedItemsService},
+        {provide: NotificationService, useValue: notificationService},
+      ]
     });
   }));
 
@@ -45,13 +54,13 @@ describe('PersistedItemsComponent', () => {
     fixture.detectChanges();
     tick();
 
-    expect(service.persistedItems).toHaveBeenCalledTimes(1);
-    expect(service.persistedItems).toHaveBeenCalledWith('testing');
+    expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(1);
+    expect(persistedItemsService.persistedItems).toHaveBeenCalledWith('testing');
   }));
 
   it('should render spinner while loading', fakeAsync(() => {
     // return empty data from server
-    service.persistedItems.and.callFake(function* () {
+    persistedItemsService.persistedItems.and.callFake(function* () {
     });
 
     // on init
@@ -70,7 +79,7 @@ describe('PersistedItemsComponent', () => {
 
   it('should render list state when no elements are returned', fakeAsync(() => {
     // return empty data from server
-    service.persistedItems.and.callFake(function* () {
+    persistedItemsService.persistedItems.and.callFake(function* () {
     });
 
     // on init
@@ -93,7 +102,7 @@ describe('PersistedItemsComponent', () => {
 
     it(`should render an error when an error occurs while loading (${condition})`, fakeAsync(() => {
       // return error from server
-      service.persistedItems.and.callFake(function* () {
+      persistedItemsService.persistedItems.and.callFake(function* () {
         throw {condition};
       });
 
@@ -112,7 +121,7 @@ describe('PersistedItemsComponent', () => {
   // TODO: test what happens when the button is clicked!
   it('should render purge all button when some items are loaded', fakeAsync(() => {
     // return some persisted items
-    service.persistedItems.and.callFake(function* () {
+    persistedItemsService.persistedItems.and.callFake(function* () {
       yield new PersistedItem('001');
       yield new PersistedItem('002');
       yield new PersistedItem('003');
@@ -135,7 +144,7 @@ describe('PersistedItemsComponent', () => {
 
   it('should render a list of persisted items with remove buttons', fakeAsync(() => {
     // return some persisted items
-    service.persistedItems.and.callFake(function* () {
+    persistedItemsService.persistedItems.and.callFake(function* () {
       yield new PersistedItem('001');
       yield new PersistedItem('002');
       yield new PersistedItem('003');
@@ -168,12 +177,12 @@ describe('PersistedItemsComponent', () => {
 
   it('should lazy load item content when title is clicked', fakeAsync(() => {
     // return some persisted items
-    service.persistedItems.and.callFake(function* () {
+    persistedItemsService.persistedItems.and.callFake(function* () {
       yield new PersistedItem('001');
       yield new PersistedItem('002');
       yield new PersistedItem('003');
     });
-    service.loadPersistedItemContent.and.callFake((node: string, item: PersistedItem) => {
+    persistedItemsService.loadPersistedItemContent.and.callFake((node: string, item: PersistedItem) => {
       return Promise.resolve().then(() => {
         item.rawXML = `<example-xml>${item.id}</example-xml>`;
       });
@@ -212,12 +221,12 @@ describe('PersistedItemsComponent', () => {
   errorMap.forEach(({condition, message}) => {
     it(`should show an error when lazy loading fails (${condition})`, fakeAsync(() => {
       // return some persisted items
-      service.persistedItems.and.callFake(function* () {
+      persistedItemsService.persistedItems.and.callFake(function* () {
         yield new PersistedItem('001');
         yield new PersistedItem('002');
         yield new PersistedItem('003');
       });
-      service.loadPersistedItemContent.and.callFake((node: string, item: PersistedItem) => {
+      persistedItemsService.loadPersistedItemContent.and.callFake((node: string, item: PersistedItem) => {
         return Promise.reject({condition});
       });
 
@@ -254,7 +263,7 @@ describe('PersistedItemsComponent', () => {
 
   it('should show an error when lazy loading fails', fakeAsync(() => {
     // yield 25 items
-    service.persistedItems.and.callFake(function* () {
+    persistedItemsService.persistedItems.and.callFake(function* () {
       for (let i = 0; i < 25; i++) {
         yield new PersistedItem(`${i}`);
       }
@@ -297,6 +306,83 @@ describe('PersistedItemsComponent', () => {
     expect(loadMoreButton).toBeNull();
 
   }));
-  // TODO: ensure delete button on item works
+
+  describe('when deleting an item', () => {
+
+    const clickRemoveAndWaitForRefresh = fakeAsync(() => {
+      // yield some
+      persistedItemsService.persistedItems.and.callFake(function* () {
+        for (let i = 1; i <= 10; i++) {
+          yield new PersistedItem(`item #${i}`);
+        }
+      });
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      // get 8th item & click it
+      const itemToDelete = de.queryAll(By.css('xgb-list-item .item-title'))[7];
+      expect(itemToDelete.nativeElement.innerHTML).toBe('item #8');
+      const removeButton = de.queryAll(By.css('xgb-list-item [xgbActionButton]'))[7];
+      removeButton.nativeElement.click();
+      fixture.detectChanges();
+      tick();
+    });
+
+    it('should call delete on the service when confirmed', () => {
+      notificationService.confirm.and.returnValue(true);
+      clickRemoveAndWaitForRefresh();
+
+      expect(notificationService.confirm).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(2);
+      expect(persistedItemsService.deletePersistedItem).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.deletePersistedItem.calls.mostRecent().args[0]).toBe('testing');
+      expect(persistedItemsService.deletePersistedItem.calls.mostRecent().args[1].id).toBe('item #8');
+
+    });
+
+
+    it('should show an error when deletion fails', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(true);
+      persistedItemsService.persistedItems.and.callFake(function* () {
+        yield new PersistedItem('item #1');
+      });
+      persistedItemsService.deletePersistedItem.and.callFake(() => Promise.reject({condition: 'unknown'}));
+
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      const removeButton = de.query(By.css('xgb-list-item [xgbActionButton]'));
+      removeButton.nativeElement.click();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('An unknown error occurred: {"condition":"unknown"}!');
+
+      expect(notificationService.confirm).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(2);
+      expect(persistedItemsService.deletePersistedItem).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.deletePersistedItem.calls.mostRecent().args[0]).toBe('testing');
+      expect(persistedItemsService.deletePersistedItem.calls.mostRecent().args[1].id).toBe('item #1');
+
+    }));
+
+
+    it('should not refresh and not call delete on the service when not confirmed', () => {
+      notificationService.confirm.and.returnValue(false);
+      clickRemoveAndWaitForRefresh();
+
+      expect(notificationService.confirm).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.deletePersistedItem).toHaveBeenCalledTimes(0);
+    });
+
+  });
+
   // TODO: don't show this tab for collections...
 });

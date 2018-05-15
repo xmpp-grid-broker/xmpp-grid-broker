@@ -95,4 +95,21 @@ export class PersistedItemsService {
     } while (hasMore);
 
   }
+
+  /**
+   * Deletes the given persisted item from the given node.
+   */
+  deletePersistedItem(topicIdentifier: string, item: PersistedItem): Promise<void> {
+    const detailedCmd = {
+      type: IqType.Get,
+      pubsub: {
+        retract: {
+          node: topicIdentifier,
+          id: item.id
+        },
+      }
+    };
+
+    return this.xmppService.executeIqToPubsub(detailedCmd);
+  }
 }
