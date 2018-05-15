@@ -11,7 +11,7 @@ import {IteratorListPager} from '../../shared/list/iterator-list-pager';
 export class PersistedItemsComponent implements OnInit {
 
   // Map used to keep track which items are "uncollapsed"
-  toggleMap = {};
+  toggleMap: { [ key: number ]: boolean; } = {};
 
   persistedItemsList = new IteratorListPager<PersistedItem>();
 
