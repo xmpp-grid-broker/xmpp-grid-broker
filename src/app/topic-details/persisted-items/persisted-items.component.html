@@ -1,3 +1,30 @@
-<p>
-  persisted-items works!
-</p>
+<div *ngIf="persistedItemsList.hasError" xgbToast toast-error>{{persistedItemsList.errorMessage}}</div>
+<ng-container>
+  <xgb-action-bar>
+    <button xgbActionButton danger *ngIf="persistedItemsList.items.length > 0">Purge persisted items</button>
+  </xgb-action-bar>
+  <xgb-list>
+    <xgb-list-item *ngFor="let item of persistedItemsList.items">
+      <div class="item-header">
+        <div class="item-title" (click)="itemClicked(item)">{{item.id}}</div>
+        <button xgbActionButton >remove</button>
+      </div>
+      <div *ngIf="toggleMap[item.id]">
+        <div *ngIf="item.rawXML; else itemSpinner">
+          <pre class="code">{{item.rawXML}}</pre>
+        </div>
+        <ng-template #itemSpinner>
+          <xgb-spinner></xgb-spinner>
+        </ng-template>
+      </div>
+    </xgb-list-item>
+    <div class="empty" *ngIf="persistedItemsList.isLoaded && persistedItemsList.items.length == 0">
+      <p class="empty-title h5">No Persisted Items found</p>
+    </div>
+  </xgb-list>
+  <xgb-spinner *ngIf="!persistedItemsList.hasError && !persistedItemsList.isLoaded"></xgb-spinner>
+  <div *ngIf="persistedItemsList.hasMore" class="has-more">
+    <button xgbActionButton (click)="persistedItemsList.loadMore()">load more</button>
+  </div>
+</ng-container>
+

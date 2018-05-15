@@ -30,6 +30,9 @@ class FakeClient {
   sendIq(cmd, cb) {
     cb(undefined, {});
   }
+
+  use() {
+  }
 }
 
 class FakeConfigService {

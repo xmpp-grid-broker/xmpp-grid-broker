@@ -77,8 +77,7 @@ export class TopicCreationComponent implements OnInit {
           this.formProcessing.done({errorMessage: 'Service does not support instant nodes'});
           break;
         default:
-          console.log(error);
-          this.formProcessing.done({errorMessage: `Failed to create new topic: (${error.type}: ${error.condition})`});
+          this.formProcessing.done({errorMessage: `Failed to create new topic: ${JSON.stringify(error)}`});
       }
     });
     return false;

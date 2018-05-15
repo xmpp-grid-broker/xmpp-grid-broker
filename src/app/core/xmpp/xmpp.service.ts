@@ -3,8 +3,8 @@ import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
 import {ConfigService} from '../config.service';
 import {XmppConfig} from '../models/config';
-import {Namespace as NS} from 'xmpp-constants';
 import {NotificationService} from '../notifications/notification.service';
+import {RawXmlStanzaAddon} from './raw-xml-stanza';
 
 enum ConnectionState {
   Down = 0,
@@ -125,7 +125,7 @@ export class XmppService {
    */
   private _getClientInstance(config: XmppConfig): any {
     const client = this.xmppClientFactory.createClient(config);
-
+    client.use(RawXmlStanzaAddon);
     client.on('session:started', () => this._state = ConnectionState.Up);
     client.on('disconnected', () => {
       this._state = ConnectionState.Down;

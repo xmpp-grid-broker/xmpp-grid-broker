@@ -8,9 +8,9 @@ import {JID} from 'xmpp-jid';
 describe('TopicDetailsService', () => {
 
   let service: TopicDetailsService;
-  let client, xmppService: XmppService;
+  let xmppService: jasmine.SpyObj<XmppService>;
   beforeEach(() => {
-    xmppService = {getClient: null, executeIqToPubsub: null} as XmppService;
+    xmppService = jasmine.createSpyObj('XmppService', ['getClient', 'executeIqToPubsub']);
     service = new TopicDetailsService(xmppService);
   });
 
@@ -21,19 +21,13 @@ describe('TopicDetailsService', () => {
 
   describe('concerning the topic configuration', () => {
     beforeEach(() => {
-      client = {
-        sendIq: (cmd, cb) => {
-          cb(undefined, {'pubsubOwner': {'config': {'form': {fields: []}}}});
-        }
-      };
-      spyOn(xmppService, 'getClient').and.returnValue(Promise.resolve(client));
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({'pubsubOwner': {'config': {'form': {fields: []}}}}));
     });
 
     it('should execute an iq to fetch the form', (done) => {
-      spyOn(client, 'sendIq').and.callThrough();
       service.loadConfigurationForm('testing').then(() => {
-        expect(client.sendIq).toHaveBeenCalled();
-        const cmd = client.sendIq.calls.mostRecent().args[0];
+        expect(xmppService.executeIqToPubsub).toHaveBeenCalled();
+        const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
         expect(cmd.type).toBe('get');
         expect(cmd.pubsubOwner.config.node).toBe('testing');
         done();
@@ -41,9 +35,9 @@ describe('TopicDetailsService', () => {
     });
 
     it('should reject the promise if sendIq fails', (done) => {
-      spyOn(client, 'sendIq').and.callFake((cmd, cb) => {
-        cb({error: {condition: LoadConfigurationFormErrorCodes.Forbidden}}, undefined);
-      });
+      xmppService.executeIqToPubsub.and.returnValue(
+        Promise.reject({condition: LoadConfigurationFormErrorCodes.Forbidden})
+      );
       service.loadConfigurationForm('testing')
         .then(() => {
           fail('Expected an error instead of a successful result!');
@@ -56,7 +50,6 @@ describe('TopicDetailsService', () => {
 
 
     it('should execute an 2 iqs to submit the form', (done) => {
-      spyOn(client, 'sendIq').and.callThrough();
       const form = new XmppDataForm([
         new XmppDataFormField(
           XmppDataFormFieldType.hidden,
@@ -71,9 +64,9 @@ describe('TopicDetailsService', () => {
       ]);
 
       service.updateTopicConfiguration('testing', form).then(() => {
-        expect(client.sendIq).toHaveBeenCalledTimes(2);
+        expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(2);
 
-        const cmd = client.sendIq.calls.first().args[0];
+        const cmd = xmppService.executeIqToPubsub.calls.first().args[0];
         const fields = cmd.pubsubOwner.config.form.fields;
         expect(cmd.type).toBe('set');
         expect(cmd.pubsubOwner.config.node).toBe('testing');
@@ -89,25 +82,24 @@ describe('TopicDetailsService', () => {
 
   describe('concerning loading affiliations', () => {
 
-    let spy: jasmine.Spy;
     beforeEach(() => {
-      spy = spyOn(xmppService, 'executeIqToPubsub')
+      xmppService.executeIqToPubsub
         .and.returnValue(Promise.resolve({
-          'pubsubOwner': {
-            'affiliations': {
-              list: [
-                {type: Affiliation.Owner, jid: new JID('hamlet@denmark.lit')},
-                {type: Affiliation.Publisher, jid: new JID('bard@shakespeare.lit')}
-              ]
-            }
+        'pubsubOwner': {
+          'affiliations': {
+            list: [
+              {type: Affiliation.Owner, jid: new JID('hamlet@denmark.lit')},
+              {type: Affiliation.Publisher, jid: new JID('bard@shakespeare.lit')}
+            ]
           }
-        }));
+        }
+      }));
     });
 
     it('should execute an iq to load the affiliations', (done) => {
       service.loadJidAffiliations('testing').then(() => {
-        expect(spy).toHaveBeenCalledTimes(1);
-        const cmd = spy.calls.mostRecent().args[0];
+        expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+        const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
         expect(cmd.type).toBe(IqType.Get);
         expect(cmd.pubsubOwner.affiliations.node).toBe('testing');
         done();
@@ -126,10 +118,8 @@ describe('TopicDetailsService', () => {
     });
   });
   describe('concerning loading affiliations', () => {
-    let spy: jasmine.Spy;
     beforeEach(() => {
-      spy = spyOn(xmppService, 'executeIqToPubsub')
-        .and.returnValue(Promise.resolve({}));
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
     });
     it('should resolve when successful', (done) => {
       service.modifyJidAffiliation(
@@ -145,8 +135,8 @@ describe('TopicDetailsService', () => {
         'testing',
         new JidAffiliation('bard@shakespeare.lit', Affiliation.Publisher)
       ).then(() => {
-        expect(spy).toHaveBeenCalledTimes(1);
-        const cmd = spy.calls.mostRecent().args[0];
+        expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+        const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
         expect(cmd.type).toBe(IqType.Set);
         expect(cmd.pubsubOwner.affiliations.node).toBe('testing');
         expect(cmd.pubsubOwner.affiliations.affiliation.type).toBe(Affiliation.Publisher);
@@ -157,10 +147,8 @@ describe('TopicDetailsService', () => {
   });
 
   describe('concerning the deletion of a topic', () => {
-    let spy: jasmine.Spy;
     beforeEach(() => {
-      spy = spyOn(xmppService, 'executeIqToPubsub')
-        .and.returnValue(Promise.resolve({}));
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
     });
     it('should resolve when successful', (done) => {
       service.deleteTopic(
@@ -174,8 +162,8 @@ describe('TopicDetailsService', () => {
       service.deleteTopic(
         'testing'
       ).then(() => {
-        expect(spy).toHaveBeenCalledTimes(1);
-        const cmd = spy.calls.mostRecent().args[0];
+        expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+        const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
         expect(cmd.type).toBe(IqType.Set);
         expect(cmd.pubsubOwner.del).toBe('testing');
         done();

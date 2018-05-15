@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {XmppDataForm} from '../core/models/FormModels';
 import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {JID} from 'xmpp-jid';
 import {JidAffiliation} from '../core/models/Affiliation';
 
 export enum LoadConfigurationFormErrorCodes {
@@ -31,13 +30,34 @@ export class TopicDetailsService {
   }
 
   public loadConfigurationForm(topicIdentifier: string): Promise<XmppDataForm> {
-    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
-      .then(([client, pubSubJid]) => this._loadFormFromClient(client, pubSubJid, topicIdentifier));
+    const cmd = {
+      type: IqType.Get,
+      pubsubOwner: {
+        config: {
+          node: topicIdentifier,
+        }
+      }
+    };
+
+    return this.xmppService.executeIqToPubsub(cmd).then((result) =>
+      XmppDataForm.fromJSON(result.pubsubOwner.config.form)
+    );
   }
 
-  public updateTopicConfiguration(topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<XmppDataForm> {
-    return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
-      .then(([client, pubSubJid]) => this._submitForm(client, pubSubJid, topicIdentifier, xmppDataForm))
+  public async updateTopicConfiguration(topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<XmppDataForm> {
+    const form = xmppDataForm.toJSON();
+
+    const cmd = {
+      type: IqType.Set,
+      pubsubOwner: {
+        config: {
+          node: topicIdentifier,
+          form: form
+        }
+      }
+    };
+
+    return this.xmppService.executeIqToPubsub(cmd)
       .then(() => this.loadConfigurationForm(topicIdentifier));
   }
 
@@ -94,53 +114,5 @@ export class TopicDetailsService {
     return this.xmppService.executeIqToPubsub(cmd);
   }
 
-  private _loadFormFromClient(client: any, pubSubJid: JID, topicIdentifier: string): Promise<XmppDataForm> {
-    const cmd = {
-      type: 'get',
-      to: pubSubJid,
-      pubsubOwner: {
-        config: {
-          node: topicIdentifier,
-        }
-      }
-    };
 
-    return new Promise<XmppDataForm>((resolve, reject) => {
-      client.sendIq(cmd, (err, result) => {
-          if (err) {
-            reject(err.error);
-          } else {
-            resolve(XmppDataForm.fromJSON(result.pubsubOwner.config.form));
-          }
-        }
-      )
-      ;
-    });
-  }
-
-  private _submitForm(client: any, pubSubJid: JID, topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<void> {
-    const form = xmppDataForm.toJSON();
-
-    const cmd = {
-      type: 'set',
-      to: pubSubJid,
-      pubsubOwner: {
-        config: {
-          node: topicIdentifier,
-          form: form
-        }
-      }
-    };
-
-    return new Promise<void>((resolve, reject) => {
-      client.sendIq(cmd, (err) => {
-          if (err) {
-            reject(err.error);
-          } else {
-            resolve();
-          }
-        }
-      );
-    });
-  }
 }

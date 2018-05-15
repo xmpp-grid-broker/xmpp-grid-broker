@@ -9,6 +9,7 @@ import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
 import { TopicDetailsComponent } from './topic-details/topic-details.component';
 import { TopicAffiliationsComponent } from './topic-affiliations/topic-affiliations.component';
 import { PersistedItemsComponent } from './persisted-items/persisted-items.component';
+import { PersistedItemsService } from './persisted-items.service';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { PersistedItemsComponent } from './persisted-items/persisted-items.compo
     ReactiveFormsModule,
   ],
   declarations: [TopicDetailsComponent, TopicDetailsConfigComponent, TopicAffiliationsComponent, PersistedItemsComponent],
-  providers: [TopicDetailsService]
+  providers: [TopicDetailsService, PersistedItemsService]
 })
 export class TopicDetailsModule {
 }

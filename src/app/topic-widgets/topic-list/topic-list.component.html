@@ -2,8 +2,8 @@
 
 <ng-container>
   <xgb-list>
-    <xgb-list-item *ngFor="let node of topicList.topics" (click)="topicClick(node)">{{node.title}}</xgb-list-item>
-    <div class="empty" *ngIf="topicList.isLoaded && topicList.topics.length == 0">
+    <xgb-list-item *ngFor="let node of topicList.items" (click)="topicClick(node)">{{node.title}}</xgb-list-item>
+    <div class="empty" *ngIf="topicList.isLoaded && topicList.items.length == 0">
       <p class="empty-title h5">No Topics found</p>
     </div>
   </xgb-list>

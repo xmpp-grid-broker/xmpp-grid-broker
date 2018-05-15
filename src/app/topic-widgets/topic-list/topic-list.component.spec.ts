@@ -1,8 +1,9 @@
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
-import {TopicList, TopicListComponent} from './topic-list.component';
+import {TopicListComponent} from './topic-list.component';
 import {SharedModule} from '../../shared/shared.module';
 import {LeafTopic, Topic} from '../../core/models/topic';
+import {IteratorListPager} from '../../shared/list/iterator-list-pager';
 
 
 describe('TopicListComponent', () => {
@@ -30,7 +31,7 @@ describe('TopicListComponent', () => {
   };
 
   it('should show loading spinner when uninitialized', fakeAsync(() => {
-    component.topicList = new TopicList();
+    component.topicList = new IteratorListPager<Topic>();
 
     waitUntilLoaded();
 
@@ -39,7 +40,7 @@ describe('TopicListComponent', () => {
   }));
 
   it('should hide loading spinner when initialized', fakeAsync(() => {
-    component.topicList = new TopicList();
+    component.topicList = new IteratorListPager<Topic>();
     component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
     }());
 
@@ -49,7 +50,7 @@ describe('TopicListComponent', () => {
 
 
   it('should show empty screen when no topics are present', fakeAsync(() => {
-    component.topicList = new TopicList();
+    component.topicList = new IteratorListPager<Topic>();
     component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
     }());
 
@@ -60,7 +61,7 @@ describe('TopicListComponent', () => {
   }));
 
   it('should show error screen when failed to load topics', fakeAsync(() => {
-    component.topicList = new TopicList();
+    component.topicList = new IteratorListPager<Topic>();
     component.topicList.useErrorMapper((err) => `${err}`);
     component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
       throw new Error('a problem');
@@ -74,7 +75,7 @@ describe('TopicListComponent', () => {
   }));
 
   it('should list topics when topics are provided', fakeAsync(() => {
-    component.topicList = new TopicList();
+    component.topicList = new IteratorListPager<Topic>();
     component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
       yield new LeafTopic('Topic #1');
       yield new LeafTopic('Topic #2');
@@ -86,7 +87,7 @@ describe('TopicListComponent', () => {
   }));
 
   it('should show topic name when topics are provided', fakeAsync(() => {
-    component.topicList = new TopicList();
+    component.topicList = new IteratorListPager<Topic>();
     component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
       yield new LeafTopic('Topic #1');
       yield new LeafTopic('Topic #2');

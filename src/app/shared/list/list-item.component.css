@@ -2,7 +2,6 @@
   display: block;
   border-bottom: .05rem solid #e7e9ed;
   padding: .6rem .4rem;
-  cursor: pointer;
 }
 
 :host:nth-child(2n+1) {

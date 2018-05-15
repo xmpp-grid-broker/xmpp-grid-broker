@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {TopicList} from '../../topic-widgets/topic-list/topic-list.component';
 import {ActivatedRoute} from '@angular/router';
 import 'rxjs/add/operator/filter';
 import {NavigationService} from '../../core/navigation.service';
 import {TopicOverviewService} from '../topic-overview-service/topic-overview.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 import {Topic} from '../../core/models/topic';
+import {IteratorListPager} from '../../shared/list/iterator-list-pager';
 
 
 @Component({
@@ -14,7 +14,7 @@ import {Topic} from '../../core/models/topic';
 })
 export class TopicOverviewComponent implements OnInit {
 
-  topicList: TopicList = new TopicList();
+  topicList: IteratorListPager<Topic> = new IteratorListPager();
 
   serverTitle: string;
 
@@ -35,12 +35,12 @@ export class TopicOverviewComponent implements OnInit {
       case 'root':
         iterator = this.topicOverviewService.rootTopics();
         break;
-    case 'all':
-      iterator = this.topicOverviewService.allTopics();
-      break;
-    case 'collections':
-      iterator = this.topicOverviewService.allCollections();
-      break;
+      case 'all':
+        iterator = this.topicOverviewService.allTopics();
+        break;
+      case 'collections':
+        iterator = this.topicOverviewService.allCollections();
+        break;
     }
     this.topicList.useErrorMapper(this.mapErrors.bind(this));
     this.topicList.useIterator(iterator);

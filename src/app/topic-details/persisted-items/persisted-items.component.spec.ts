@@ -1,25 +1,302 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
-import { PersistedItemsComponent } from './persisted-items.component';
+import {PersistedItemsComponent} from './persisted-items.component';
+import {ActivatedRoute} from '@angular/router';
+import {PersistedItem, PersistedItemsService} from '../persisted-items.service';
+import {SharedModule} from '../../shared/shared.module';
+import {By} from '@angular/platform-browser';
+import {DebugElement} from '@angular/core';
 
 describe('PersistedItemsComponent', () => {
   let component: PersistedItemsComponent;
   let fixture: ComponentFixture<PersistedItemsComponent>;
+  let service: jasmine.SpyObj<PersistedItemsService>;
+  let de: DebugElement;
+
+  const errorMap = [
+    {condition: 'feature-not-implemented', message: 'The XMPP server does not support persisted items or persisted items retrieval'},
+    {
+      condition: 'not-authorized', message: 'You are not authorized to fetch the persited items. ' +
+      'Check your subscription and the access model of this node'
+    },
+    {condition: 'payment-required', message: 'Payment is required to retrieve items'},
+    {condition: 'forbidden', message: 'You are blocked from retrieving persisted items'},
+    {condition: 'item-not-found', message: 'Node or one of it\'s associated persisted persisted item does not exist'},
+    {condition: 'other', message: 'An unknown error occurred: {"condition":"other"}!'}
+  ];
 
   beforeEach(async(() => {
+    service = jasmine.createSpyObj('PersistedItemsService', ['persistedItems', 'loadPersistedItemContent']);
     TestBed.configureTestingModule({
-      declarations: [ PersistedItemsComponent ]
-    })
-    .compileComponents();
+      declarations: [PersistedItemsComponent],
+      imports: [SharedModule],
+      providers: [{provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
+        {provide: PersistedItemsService, useValue: service}]
+    });
   }));
 
-  beforeEach(() => {
+  beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(PersistedItemsComponent);
     component = fixture.componentInstance;
+    de = fixture.debugElement;
+  }));
+
+  it('should call persistedItems on init', fakeAsync(() => {
     fixture.detectChanges();
+    tick();
+
+    expect(service.persistedItems).toHaveBeenCalledTimes(1);
+    expect(service.persistedItems).toHaveBeenCalledWith('testing');
+  }));
+
+  it('should render spinner while loading', fakeAsync(() => {
+    // return empty data from server
+    service.persistedItems.and.callFake(function* () {
+    });
+
+    // on init
+    fixture.detectChanges();
+    tick();
+
+    // Spinner should be visible
+    expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+
+    fixture.detectChanges();
+    tick();
+
+    // Spinner should be gone
+    expect(de.queryAll(By.css('xgb-spinner')).length).toBe(0);
+  }));
+
+  it('should render list state when no elements are returned', fakeAsync(() => {
+    // return empty data from server
+    service.persistedItems.and.callFake(function* () {
+    });
+
+    // on init
+    fixture.detectChanges();
+    tick();
+
+    // Loading complete
+    fixture.detectChanges();
+    tick();
+
+    // check Empty state
+    expect(de.query(By.css('.empty-title')).nativeElement.innerHTML).toBe('No Persisted Items found');
+    // No items shall be rendered
+    expect(de.queryAll(By.css('xgb-list-item')).length).toBe(0);
+    // Purge persisted items button is not visible
+    expect(de.queryAll(By.css('button[danger]')).length).toBe(0);
+  }));
+
+  errorMap.forEach(({condition, message}) => {
+
+    it(`should render an error when an error occurs while loading (${condition})`, fakeAsync(() => {
+      // return error from server
+      service.persistedItems.and.callFake(function* () {
+        throw {condition};
+      });
+
+      // on init
+      fixture.detectChanges();
+      tick();
+
+      // Loading complete
+      fixture.detectChanges();
+      tick();
+
+      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe(message);
+    }));
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  // TODO: test what happens when the button is clicked!
+  it('should render purge all button when some items are loaded', fakeAsync(() => {
+    // return some persisted items
+    service.persistedItems.and.callFake(function* () {
+      yield new PersistedItem('001');
+      yield new PersistedItem('002');
+      yield new PersistedItem('003');
+    });
+
+    // on init
+    fixture.detectChanges();
+    tick();
+
+    // while loading, the button is not yet visible
+    expect(de.queryAll(By.css('button[danger]')).length).toBe(0);
+
+    // Loading complete
+    fixture.detectChanges();
+    tick();
+
+    expect(de.query(By.css('button[danger]')).nativeElement).toBeDefined();
+  }));
+
+
+  it('should render a list of persisted items with remove buttons', fakeAsync(() => {
+    // return some persisted items
+    service.persistedItems.and.callFake(function* () {
+      yield new PersistedItem('001');
+      yield new PersistedItem('002');
+      yield new PersistedItem('003');
+    });
+
+    // on init
+    fixture.detectChanges();
+    tick();
+
+    // while loading, the list is empty
+    expect(de.queryAll(By.css('xgb-list-item')).length).toBe(0);
+
+    // Loading complete
+    fixture.detectChanges();
+    tick();
+
+    // List of 3 elements
+    expect(de.queryAll(By.css('xgb-list-item')).length).toBe(3);
+    const titleElements = de.queryAll(By.css('xgb-list-item .item-title'));
+    expect(titleElements[0].nativeElement.innerHTML).toBe('001');
+    expect(titleElements[1].nativeElement.innerHTML).toBe('002');
+    expect(titleElements[2].nativeElement.innerHTML).toBe('003');
+    const removeButtons = de.queryAll(By.css('xgb-list-item [xgbActionButton]'));
+    expect(removeButtons.length).toBe(3);
+    removeButtons.forEach(btn => {
+      expect(btn.nativeElement.innerHTML).toBe('remove');
+    });
+  }));
+
+
+  it('should lazy load item content when title is clicked', fakeAsync(() => {
+    // return some persisted items
+    service.persistedItems.and.callFake(function* () {
+      yield new PersistedItem('001');
+      yield new PersistedItem('002');
+      yield new PersistedItem('003');
+    });
+    service.loadPersistedItemContent.and.callFake((node: string, item: PersistedItem) => {
+      return Promise.resolve().then(() => {
+        item.rawXML = `<example-xml>${item.id}</example-xml>`;
+      });
+    });
+
+    // on init
+    fixture.detectChanges();
+    tick();
+
+    // Loading complete
+    fixture.detectChanges();
+    tick();
+
+    // Click on the second header element
+    const secondElementTitle = de.queryAll(By.css('xgb-list-item .item-title'))[1];
+    secondElementTitle.nativeElement.click();
+    fixture.detectChanges();
+    tick();
+
+    // Spinner should be visible
+    expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+
+    fixture.detectChanges();
+    tick();
+
+    // Spinner should be gone
+    expect(de.queryAll(By.css('xgb-spinner')).length).toBe(0);
+
+    // Only one code element is toggled
+    const codeElements = de.queryAll(By.css('xgb-list-item .code'));
+    expect(codeElements.length).toBe(1);
+    expect(codeElements[0].nativeElement.innerHTML).toBe('&lt;example-xml&gt;002&lt;/example-xml&gt;');
+
+  }));
+
+  errorMap.forEach(({condition, message}) => {
+    it(`should show an error when lazy loading fails (${condition})`, fakeAsync(() => {
+      // return some persisted items
+      service.persistedItems.and.callFake(function* () {
+        yield new PersistedItem('001');
+        yield new PersistedItem('002');
+        yield new PersistedItem('003');
+      });
+      service.loadPersistedItemContent.and.callFake((node: string, item: PersistedItem) => {
+        return Promise.reject({condition});
+      });
+
+      // on init
+      fixture.detectChanges();
+      tick();
+
+      // Loading complete
+      fixture.detectChanges();
+      tick();
+
+      // Click on the third header element
+      const secondElementTitle = de.queryAll(By.css('xgb-list-item .item-title'))[2];
+      secondElementTitle.nativeElement.click();
+      fixture.detectChanges();
+      tick();
+
+      // Spinner should be visible
+      expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+
+      fixture.detectChanges();
+      tick();
+
+      // Spinner should be gone
+      expect(de.queryAll(By.css('xgb-spinner')).length).toBe(0);
+
+      // Error should be visible - but no code element
+      const codeElements = de.queryAll(By.css('xgb-list-item .code'));
+      expect(codeElements.length).toBe(0);
+      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe(message);
+
+    }));
   });
+
+  it('should show an error when lazy loading fails', fakeAsync(() => {
+    // yield 25 items
+    service.persistedItems.and.callFake(function* () {
+      for (let i = 0; i < 25; i++) {
+        yield new PersistedItem(`${i}`);
+      }
+    });
+    // Load the first 10 items
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
+
+    expect(de.queryAll(By.css('xgb-list-item')).length).toBe(10);
+
+    // Load the next 10 items using the load more button
+    let loadMoreButton = de.query(By.css('.has-more [xgbActionButton]')).nativeElement;
+    expect(loadMoreButton).toBeDefined();
+    loadMoreButton.click();
+
+    // items 11-20 are loaded now
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
+
+    // Load the next 5 items using the load more button
+    expect(de.queryAll(By.css('xgb-list-item')).length).toBe(20);
+    loadMoreButton = de.query(By.css('.has-more [xgbActionButton]')).nativeElement;
+    expect(loadMoreButton).toBeDefined();
+    loadMoreButton.click();
+    loadMoreButton.click();
+
+    // items 21-25 are loaded now
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
+    expect(de.queryAll(By.css('xgb-list-item')).length).toBe(25);
+
+    // load more button is no longer visible
+    loadMoreButton = de.query(By.css('.has-more [xgbActionButton]'));
+    expect(loadMoreButton).toBeNull();
+
+  }));
+  // TODO: ensure delete button on item works
+  // TODO: don't show this tab for collections...
 });
