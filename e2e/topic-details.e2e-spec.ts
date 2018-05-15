@@ -70,9 +70,8 @@ describe('TopicDetails', () => {
 
     fit('should list admin', async () => {
       const affiliation = await tab.firstAffiliation;
-
       expect(affiliation.jid).toBe('admin@openfire');
-      expect(affiliation.affiliation).toBe('owner');
+      expect(await affiliation.affiliationText).toBe('owner');
     });
 
     it('should add an affiliation', async () => {
@@ -105,7 +104,7 @@ describe('TopicDetails', () => {
         expect(affiliation.jid).toBe(testJid);
         expect(await affiliation.affiliationText).toBe(testAffiliation);
 
-        await affiliation.setAffiliation('Member');
+        await affiliation.setAffiliation('Outcast');
       })();
 
       await page.navigateToTab(tab);
@@ -116,7 +115,7 @@ describe('TopicDetails', () => {
 
         const affiliation = affiliations[0];
         expect(affiliation.jid).toBe(testJid);
-        expect(await affiliation.affiliationText).toBe('Member');
+        expect(await affiliation.affiliationText).toBe('Outcast');
       })();
     });
 
@@ -136,7 +135,7 @@ describe('TopicDetails', () => {
 
       await (async () => {
         const listObjects = await tab.getListObjectsByJid(testJid);
-        expect(listObjects.length).toBe(0);
+        expect(listObjects.length).toBe(1);
       })();
     });
   });

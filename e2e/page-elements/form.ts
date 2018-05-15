@@ -9,7 +9,7 @@ export class Form implements Locatable {
     return this.parentElement.locator;
   }
 
-  async getFieldValue(fieldId: string): string  {
+  async getFieldValue(fieldId: string): Promise<string> {
     const inputElement = await this.getInputElement(fieldId);
     return inputElement.getAttribute('value');
   }
@@ -20,10 +20,6 @@ export class Form implements Locatable {
   }
 
   private getInputElement(fieldId: string): ElementFinder {
-    return this.getFieldElement(fieldId).element(by.css('input.form-input, select.form-select'));
-  }
-
-  private getFieldElement(fieldId: string): ElementFinder {
-    return this.locator.element(by.css(`xgb-form-field[fieldid="${fieldId}"]`));
+    return this.locator.element(by.id(fieldId));
   }
 }

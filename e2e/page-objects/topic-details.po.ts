@@ -1,11 +1,12 @@
 import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
-import {by, element, ElementFinder} from 'protractor';
+import {by, element, ElementFinder, promise} from 'protractor';
 import {Tab} from '../page-elements/tab';
 import {Spinner} from '../page-elements/spinner';
 import {Form} from '../page-elements/form';
 import {Locatable} from '../page-elements/locatable';
 import {Toast} from '../page-elements/toast';
 import {List} from '../page-elements/list';
+import {toPromise} from '../helpers';
 
 type TopicDetailsTab = TopicDetailsConfigurationTab | TopicDetailsAffiliationTab;
 
@@ -18,21 +19,20 @@ export class AffiliationListElement {
   }
 
   public clickRemoveButton(): Promise<void> {
-    return this.removeButton.click();
+    return toPromise(this.removeButton.click());
   }
 
   get affiliationText(): Promise<string> {
-    return this.affiliation.getText();
+    return toPromise(this.affiliation.element(by.css('option[selected]')).getText())
+      .then((text) => text.trim());
   }
 
   public setAffiliation(affiliation: 'Owner' | 'Publisher' | 'PublishOnly' | 'Member' | 'Outcast'): Promise<void> {
-    return this.affiliation
+    return toPromise(this.affiliation
       .element(by.cssContainingText('option', affiliation))
-      .click();
+      .click());
   }
 }
-
-
 
 export class TopicDetailsConfigurationTab extends Tab {
   get landingUrl(): string {
@@ -51,9 +51,9 @@ export class TopicDetailsConfigurationTab extends Tab {
     return new Toast(this);
   }
 
-  public  formSubmit(): Promise<void> {
-    return this.locator.element(by.cssContainingText('button[type=submit]', 'Update'))
-      .click();
+  public formSubmit(): Promise<void> {
+    return toPromise(this.locator.element(by.cssContainingText('button[type=submit]', 'Update'))
+      .click());
   }
 
   constructor(readonly topicId: string, parentElement: Locatable) {
@@ -75,9 +75,13 @@ export class TopicDetailsAffiliationTab extends Tab {
   }
 
   get listObjects(): Promise<AffiliationListElement[]> {
-    // noinspection TypeScriptValidateTypes
-    return this.list.listElements
-      .map(listElement => TopicDetailsAffiliationTab.listElementToObjectMapper(listElement));
+    return toPromise(this.list.listElements.then((elements: ElementFinder[]) => {
+      return elements.map(listElement => TopicDetailsAffiliationTab.listElementToObjectMapper(listElement));
+    })).then((elements: Promise<AffiliationListElement>[]) => {
+      return Promise.all(elements).then((p) => {
+        return p;
+      });
+    });
   }
 
   public getListObjectsByJid(jid: string): Promise<AffiliationListElement[]> {
@@ -92,19 +96,19 @@ export class TopicDetailsAffiliationTab extends Tab {
   }
 
   get form(): Form {
-    return new Form(this.list);
+    return new Form(this);
   }
 
   public formSubmit(): Promise<void> {
-    return this.locator.element(by.cssContainingText('button[type=submit]', 'add'))
-      .click();
+    return toPromise(this.locator.element(by.cssContainingText('button[type=submit]', 'add'))
+      .click());
   }
 
   constructor(readonly topicId: string, parentElement: Locatable) {
     super(parentElement);
   }
 
-  private static async listElementToObjectMapper(listElement: ElementFinder): AffiliationListElement | undefined {
+  private static async listElementToObjectMapper(listElement: ElementFinder): Promise<AffiliationListElement> {
     const isNewAffiliation = await listElement.element(by.css('jid-affiliation')).isPresent();
     if (isNewAffiliation) {
       return undefined;
@@ -114,11 +118,10 @@ export class TopicDetailsAffiliationTab extends Tab {
     const affiliation = await listElement.element(by.css('div.actions select'));
     const removeButton = await listElement.element(by.css('div.actions select'));
 
-    return {
-      jid: jid,
-      affiliation: affiliation,
-      removeButton: removeButton
-    };
+    return new AffiliationListElement(
+      jid,
+      affiliation,
+      removeButton);
   }
 
 }
@@ -128,7 +131,7 @@ export class TopicDetailsPage extends UrlAddressableComponent implements Locatab
     return `/topics/details/${encodeURIComponent(this.topicId)}`;
   }
 
-  private get locator(): ElementFinder {
+  get locator(): ElementFinder {
     return element(by.tagName('xgb-topic-details'));
   }
 
@@ -157,7 +160,7 @@ export class TopicDetailsPage extends UrlAddressableComponent implements Locatab
     });
   }
 
-  public async getTitle(): string {
+  public async getTitle(): Promise<string> {
     const titleElement = await this.locator.element(by.css('h2'));
     return titleElement.getText();
   }
