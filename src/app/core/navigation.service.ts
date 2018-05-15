@@ -20,11 +20,19 @@ export class NavigationService {
 
 
   public goToTopic(topic: string | Topic): void {
+    this.goToUrl(NavigationService.topicUrl(topic));
+  }
+
+  public goToPersistedItems(topic: string | Topic): void {
+    this.goToUrl(`${NavigationService.topicUrl(topic)}/items`);
+  }
+
+  private static topicUrl(topic: string | Topic): string {
     // The topic title might contain a "/" character, so prior URI encoding is required.
     if (topic instanceof Topic) {
-      this.goToUrl(`/topics/details/${encodeURIComponent(topic.title)}`);
+      return `/topics/details/${encodeURIComponent(topic.title)}`;
     } else {
-      this.goToUrl(`/topics/details/${encodeURIComponent(topic)}`);
+      return `/topics/details/${encodeURIComponent(topic)}`;
     }
   }
 

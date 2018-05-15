@@ -19,6 +19,14 @@ export enum LoadPersistedItemsErrors {
   ItemNotFound = 'item-not-found',
 }
 
+export enum PublishItemErrors {
+  Forbidden = 'forbidden',
+  FeatureNotImplemented = 'feature-not-implemented',
+  ItemNotFound = 'item-not-found',
+  NotAcceptable = 'not-acceptable',
+  BadRequest = 'bad-request'
+}
+
 @Injectable()
 export class PersistedItemsService {
   /**
@@ -125,5 +133,21 @@ export class PersistedItemsService {
     };
 
     return this.xmppService.executeIqToPubsub(detailedCmd);
+  }
+
+  public publishItem(topicIdentifier: string, rawXML: string): Promise<void> {
+    const cmd = {
+      type: IqType.Get,
+      pubsub: {
+        publish: {
+          node: topicIdentifier,
+          item: {
+            rawXML: rawXML
+          },
+        }
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd).then(() => {
+    });
   }
 }

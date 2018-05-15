@@ -6,10 +6,11 @@ import {TopicDetailsConfigComponent} from './topic-details-config/topic-details-
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicDetailsService} from './topic-details.service';
 import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
-import { TopicDetailsComponent } from './topic-details/topic-details.component';
-import { TopicAffiliationsComponent } from './topic-affiliations/topic-affiliations.component';
-import { PersistedItemsComponent } from './persisted-items/persisted-items.component';
-import { PersistedItemsService } from './persisted-items.service';
+import {TopicDetailsComponent} from './topic-details/topic-details.component';
+import {TopicAffiliationsComponent} from './topic-affiliations/topic-affiliations.component';
+import {PersistedItemsComponent} from './persisted-items/persisted-items.component';
+import {PersistedItemsService} from './persisted-items.service';
+import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,13 @@ import { PersistedItemsService } from './persisted-items.service';
     FormsModule,
     ReactiveFormsModule,
   ],
-  declarations: [TopicDetailsComponent, TopicDetailsConfigComponent, TopicAffiliationsComponent, PersistedItemsComponent],
+  declarations: [
+    TopicDetailsComponent,
+    TopicDetailsConfigComponent,
+    TopicAffiliationsComponent,
+    PersistedItemsComponent,
+    NewPersistedItemComponent
+  ],
   providers: [TopicDetailsService, PersistedItemsService]
 })
 export class TopicDetailsModule {
