@@ -12,6 +12,7 @@ import {PersistedItemsComponent} from './persisted-items/persisted-items.compone
 import {PersistedItemsService} from './persisted-items.service';
 import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item.component';
 import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription.component';
+import { TopicSubscriptionService } from './topic-subscription.service';
 
 
 @NgModule({
@@ -31,7 +32,7 @@ import {TopicSubscriptionComponent} from './topic-subscription/topic-subscriptio
     NewPersistedItemComponent,
     TopicSubscriptionComponent
   ],
-  providers: [TopicDetailsService, PersistedItemsService]
+  providers: [TopicDetailsService, PersistedItemsService, TopicSubscriptionService]
 })
 export class TopicDetailsModule {
 }
