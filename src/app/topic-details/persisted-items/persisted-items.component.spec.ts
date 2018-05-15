@@ -31,7 +31,8 @@ describe('PersistedItemsComponent', () => {
     persistedItemsService = jasmine.createSpyObj('PersistedItemsService', [
       'persistedItems',
       'loadPersistedItemContent',
-      'deletePersistedItem']);
+      'deletePersistedItem',
+      'purgePersistedItem']);
     notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
     TestBed.configureTestingModule({
       declarations: [PersistedItemsComponent],
@@ -118,7 +119,6 @@ describe('PersistedItemsComponent', () => {
     }));
   });
 
-  // TODO: test what happens when the button is clicked!
   it('should render purge all button when some items are loaded', fakeAsync(() => {
     // return some persisted items
     persistedItemsService.persistedItems.and.callFake(function* () {
@@ -309,7 +309,7 @@ describe('PersistedItemsComponent', () => {
 
   describe('when deleting an item', () => {
 
-    const clickRemoveAndWaitForRefresh = fakeAsync(() => {
+    const clickRemoveAndWaitForRefresh = () => {
       // yield some
       persistedItemsService.persistedItems.and.callFake(function* () {
         for (let i = 1; i <= 10; i++) {
@@ -328,9 +328,9 @@ describe('PersistedItemsComponent', () => {
       removeButton.nativeElement.click();
       fixture.detectChanges();
       tick();
-    });
+    };
 
-    it('should call delete on the service when confirmed', () => {
+    it('should call delete on the service when confirmed', fakeAsync(() => {
       notificationService.confirm.and.returnValue(true);
       clickRemoveAndWaitForRefresh();
 
@@ -340,7 +340,7 @@ describe('PersistedItemsComponent', () => {
       expect(persistedItemsService.deletePersistedItem.calls.mostRecent().args[0]).toBe('testing');
       expect(persistedItemsService.deletePersistedItem.calls.mostRecent().args[1].id).toBe('item #8');
 
-    });
+    }));
 
 
     it('should show an error when deletion fails', fakeAsync(() => {
@@ -373,15 +373,72 @@ describe('PersistedItemsComponent', () => {
     }));
 
 
-    it('should not refresh and not call delete on the service when not confirmed', () => {
+    it('should not refresh and not call delete on the service when not confirmed', fakeAsync(() => {
       notificationService.confirm.and.returnValue(false);
       clickRemoveAndWaitForRefresh();
 
       expect(notificationService.confirm).toHaveBeenCalledTimes(1);
       expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(1);
       expect(persistedItemsService.deletePersistedItem).toHaveBeenCalledTimes(0);
-    });
+    }));
 
+  });
+
+  describe('when purging all items', () => {
+    const clickPurge = () => {
+      persistedItemsService.persistedItems.and.callFake(function* () {
+        yield new PersistedItem('item #1');
+      });
+
+      // wait until it's loaded
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      de.query(By.css('button[danger]')).nativeElement.click();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+    };
+    it('should call purge on the service when confirmed', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(true);
+      clickPurge();
+
+      expect(notificationService.confirm).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(2);
+      expect(persistedItemsService.purgePersistedItem).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.purgePersistedItem.calls.mostRecent().args[0]).toBe('testing');
+    }));
+
+
+    it('should show an error when purge fails', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(true);
+      persistedItemsService.purgePersistedItem.and.callFake(() => Promise.reject({condition: 'unknown'}));
+
+      clickPurge();
+
+      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('An unknown error occurred: {"condition":"unknown"}!');
+
+      expect(notificationService.confirm).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(2);
+      expect(persistedItemsService.purgePersistedItem).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.purgePersistedItem.calls.mostRecent().args[0]).toBe('testing');
+
+    }));
+
+
+    it('should not refresh and not call purge on the service when not confirmed', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(false);
+
+      clickPurge();
+
+      expect(notificationService.confirm).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(1);
+      expect(persistedItemsService.purgePersistedItem).toHaveBeenCalledTimes(0);
+    }));
   });
 
   // TODO: don't show this tab for collections...

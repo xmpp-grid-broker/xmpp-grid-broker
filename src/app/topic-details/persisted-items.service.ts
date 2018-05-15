@@ -99,7 +99,7 @@ export class PersistedItemsService {
   /**
    * Deletes the given persisted item from the given node.
    */
-  deletePersistedItem(topicIdentifier: string, item: PersistedItem): Promise<void> {
+  public deletePersistedItem(topicIdentifier: string, item: PersistedItem): Promise<void> {
     const detailedCmd = {
       type: IqType.Get,
       pubsub: {
@@ -107,6 +107,20 @@ export class PersistedItemsService {
           node: topicIdentifier,
           id: item.id
         },
+      }
+    };
+
+    return this.xmppService.executeIqToPubsub(detailedCmd);
+  }
+
+  /**
+   * Purge all persisted items on the given topic.
+   */
+  public purgePersistedItem(topicIdentifier: string): Promise<void> {
+    const detailedCmd = {
+      type: IqType.Get,
+      pubsubOwner: {
+        purge: topicIdentifier
       }
     };
 

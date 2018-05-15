@@ -161,6 +161,30 @@ describe('PersistedItemsService', () => {
         expect(e.condition).toBe('example-error');
       }
     });
+  });
 
+  describe('when calling purgePersistedItem', () => {
+    it('it should call the xmpp service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
+
+      await service.purgePersistedItem('test-topic');
+
+      expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      expect(cmd.pubsubOwner.purge).toBe('test-topic');
+    });
+
+    it('should reject when executeIqToPubsub fails', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
+        {condition: 'example-error'}
+      ));
+
+      try {
+        await service.purgePersistedItem('test-topic');
+        fail(`expected an error`);
+      } catch (e) {
+        expect(e.condition).toBe('example-error');
+      }
+    });
   });
 });
