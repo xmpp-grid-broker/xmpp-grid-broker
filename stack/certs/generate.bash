@@ -17,7 +17,7 @@ fi
 getserial() {
     if [ -f "$SERIAL_FILE" ]; then
         SERIAL=$((`cat ${SERIAL_FILE}`+1))
-    else 
+    else
         SERIAL=0
     fi
     echo -n ${SERIAL} > "${SERIAL_FILE}"
@@ -54,13 +54,13 @@ find ${CONF}/host/ -mindepth 1 -maxdepth 1 -type d -printf '%P\n' | while read H
 
     openssl req -sha256 -new \
         -config "${HOST_CONF}csr.conf" \
-        -nodes \
+        -nodes -days 11147 \
         -key "${HOST_KEYS}privkey.pem" \
         -out "${HOST_KEYS}csr.pem"
 
 
     openssl x509 -sha256 -CA "$CA_CRT" -CAkey "$CA_KEY" \
-        -set_serial  `getserial` -req \
+        -set_serial  `getserial` -days 11147 -req \
         -in "${HOST_KEYS}csr.pem" -out "${HOST_KEYS}fullchain.pem" \
         -extfile "${HOST_CONF}crt.conf"
 
@@ -79,13 +79,13 @@ find ${CONF}/client/ -mindepth 1 -maxdepth 1 -type d -printf '%P\n' | while read
 
     openssl req -sha256 -new \
         -config "${CLIENT_CONF}csr.conf" \
-        -nodes \
+        -nodes -days 11147 \
         -key "${CLIENT_KEYS}privkey.pem" \
         -out "${CLIENT_KEYS}csr.pem"
 
 
     openssl x509 -sha256 -CA "$CA_CRT" -CAkey "$CA_KEY" \
-        -set_serial `getserial` -req \
+        -set_serial `getserial` -days 11147 -req \
         -in "${CLIENT_KEYS}csr.pem" -out "${CLIENT_KEYS}fullchain.pem"
 
     openssl pkcs12 -export -nodes -password 'pass:'\
