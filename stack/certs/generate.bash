@@ -7,6 +7,7 @@ set -e
 CONF="conf/"
 KEYS="keys/"
 SERIAL_FILE="${KEYS}serial"
+KEY_VALIDITY=11147 #days ~30years
 if [ -d "${KEYS}" ]; then
     read -p "The KEYS output directory named '${KEYS}' already exists. Continue and OVERWRITE any existing files)? [ENTER]"
 else
@@ -17,7 +18,7 @@ fi
 getserial() {
     if [ -f "$SERIAL_FILE" ]; then
         SERIAL=$((`cat ${SERIAL_FILE}`+1))
-    else 
+    else
         SERIAL=0
     fi
     echo -n ${SERIAL} > "${SERIAL_FILE}"
@@ -37,8 +38,7 @@ header "Generate Certificate Authority"
 CA_KEY="${KEYS}ca-privkey.pem"
 CA_CRT="${KEYS}ca-fullchain.pem"
 openssl genrsa -out "$CA_KEY" 3744
-# 11147days ~ 30years
-openssl req -x509 -set_serial `getserial` -new -days 11147 -sha256 \
+openssl req -x509 -set_serial `getserial` -new -days ${KEY_VALIDITY} -sha256 \
     -config "${CONF}ca-crt.conf" \
     -key "$CA_KEY" -out "$CA_CRT"
 
@@ -54,13 +54,13 @@ find ${CONF}/host/ -mindepth 1 -maxdepth 1 -type d -printf '%P\n' | while read H
 
     openssl req -sha256 -new \
         -config "${HOST_CONF}csr.conf" \
-        -nodes \
+        -nodes -days ${KEY_VALIDITY} \
         -key "${HOST_KEYS}privkey.pem" \
         -out "${HOST_KEYS}csr.pem"
 
 
     openssl x509 -sha256 -CA "$CA_CRT" -CAkey "$CA_KEY" \
-        -set_serial  `getserial` -req \
+        -set_serial  `getserial` -days ${KEY_VALIDITY} -req \
         -in "${HOST_KEYS}csr.pem" -out "${HOST_KEYS}fullchain.pem" \
         -extfile "${HOST_CONF}crt.conf"
 
@@ -79,13 +79,13 @@ find ${CONF}/client/ -mindepth 1 -maxdepth 1 -type d -printf '%P\n' | while read
 
     openssl req -sha256 -new \
         -config "${CLIENT_CONF}csr.conf" \
-        -nodes \
+        -nodes -days ${KEY_VALIDITY} \
         -key "${CLIENT_KEYS}privkey.pem" \
         -out "${CLIENT_KEYS}csr.pem"
 
 
     openssl x509 -sha256 -CA "$CA_CRT" -CAkey "$CA_KEY" \
-        -set_serial `getserial` -req \
+        -set_serial `getserial` -days ${KEY_VALIDITY} -req \
         -in "${CLIENT_KEYS}csr.pem" -out "${CLIENT_KEYS}fullchain.pem"
 
     openssl pkcs12 -export -nodes -password 'pass:'\
