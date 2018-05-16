@@ -50,14 +50,14 @@ export class XmppService {
               private notificationService: NotificationService) {
     this._config = this.configService.getConfig().then(config => config.xmpp);
     this._client = this._config.then(config => this._getClientInstance(config));
-    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.jid.domain}`));
+    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.server}`));
   }
 
   /**
    * Returns the title of the configured server.
    */
   public getServerTitle(): Promise<string> {
-    return this._config.then(config => config.jid.domain);
+    return this._config.then(config => config.server);
   }
 
   /**
@@ -66,7 +66,7 @@ export class XmppService {
    * (meaning the user who is connected to the xmpp server)
    */
   public isJidCurrentUser(bareJid: string): Promise<boolean> {
-    return this._config.then(config => config.jid.bare === bareJid);
+    return this._client.then((client) => client.jid.bare === bareJid);
   }
 
   /**
