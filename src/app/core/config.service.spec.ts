@@ -1,6 +1,4 @@
 import {Observable} from 'rxjs/Observable';
-import {of} from 'rxjs/observable/of';
-import {JID} from 'xmpp-jid';
 import {ConfigService} from './config.service';
 import {Config, XmppConfig, XmppTransport} from './models/config';
 
@@ -28,7 +26,7 @@ describe('ConfigService', () => {
 
   const JSON_CONFIG = {
     xmpp: {
-      jid: 'admin@openfire',
+      server: 'openfire',
       transport: 'bosh',
       boshURL: 'localhost',
       useStreamManagement: false
@@ -36,7 +34,7 @@ describe('ConfigService', () => {
   };
 
   const REFERENCE_CONFIG = new Config(new XmppConfig(
-    new JID('admin@openfire'),
+    'openfire',
     XmppTransport.Bosh,
     undefined,
     'localhost',
@@ -65,7 +63,7 @@ describe('ConfigService', () => {
         expect(config.xmpp[name]).toBe(REFERENCE_CONFIG.xmpp[name]);
       }
 
-      expect(config.xmpp.jid.full).toBe(REFERENCE_CONFIG.xmpp.jid.full);
+      expect(config.xmpp.server).toBe(REFERENCE_CONFIG.xmpp.server);
       expect(config.xmpp.sasl[0]).toBe(REFERENCE_CONFIG.xmpp.sasl[0]);
       done();
     });

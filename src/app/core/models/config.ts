@@ -1,5 +1,3 @@
-import {JID} from 'xmpp-jid';
-
 export enum XmppTransport {
   Bosh = 'bosh',
   WebSocket = 'websocket'

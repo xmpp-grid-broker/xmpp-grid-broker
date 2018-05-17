@@ -37,7 +37,7 @@ class FakeClient {
 
 class FakeConfigService {
   public getConfig(): Promise<Config> {
-    const xmppConfig = new XmppConfig(new JID('admin@openfire'), XmppTransport.Bosh, undefined, 'localhost');
+    const xmppConfig = new XmppConfig('openfire', XmppTransport.Bosh, undefined, 'localhost');
     const config = new Config(xmppConfig);
     return Promise.resolve(config);
   }
