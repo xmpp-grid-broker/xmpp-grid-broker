@@ -8,18 +8,16 @@
   </xgb-action-bar>
   <xgb-list>
     <xgb-list-item *ngFor="let item of persistedItemsList.items">
-      <div class="item-header">
-        <div class="item-title" (click)="itemClicked(item)">{{item.id}}</div>
-        <button xgbActionButton (click)="removeItem(item)">remove</button>
-      </div>
-      <div *ngIf="toggleMap[item.id]">
+      <div class="item-title" (click)="itemClicked(item)">{{item.id}}</div>
+      <xgb-list-action><button xgbActionButton (click)="removeItem(item)">remove</button></xgb-list-action>
+      <xgb-list-body *ngIf="toggleMap[item.id]">
         <div *ngIf="item.rawXML; else itemSpinner">
           <pre class="code">{{item.rawXML}}</pre>
         </div>
         <ng-template #itemSpinner>
           <xgb-spinner></xgb-spinner>
         </ng-template>
-      </div>
+      </xgb-list-body>
     </xgb-list-item>
     <div class="empty" *ngIf="persistedItemsList.isLoaded && persistedItemsList.items.length == 0">
       <p class="empty-title h5">No Persisted Items found</p>

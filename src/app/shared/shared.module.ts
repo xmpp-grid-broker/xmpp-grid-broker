@@ -15,10 +15,14 @@ import {SpinnerComponent} from './spinner/spinner.component';
 import {CollapsibleComponent} from './collapsible/collapsible.component';
 import {ToastDirective} from './toast.directive';
 import {NoDuplicatesAllowedDirective} from './form/no-duplicates-allowed.directive';
+import {ListActionComponent} from './list/list-action.component';
+import {ListBodyComponent} from './list/list-body.component';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,
   ListItemComponent,
+  ListActionComponent,
+  ListBodyComponent,
   TabsComponent,
   TabComponent,
   ActionButtonDirective,

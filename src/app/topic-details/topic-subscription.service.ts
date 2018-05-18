@@ -31,7 +31,7 @@ export class TopicSubscriptionService {
   // TODO: WRITE DOCS & TESTS
   subscribe(topicIdentifier: string, jid: string): Promise<void> {
     const cmd = {
-      type: IqType.Get,
+      type: IqType.Set,
       pubsub: {
         subscribe: {
           node: topicIdentifier,
