@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {Subscription} from '../core/models/Subscription';
+import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
+import {Subscription} from '../../core/models/Subscription';
 
 @Injectable()
 export class TopicSubscriptionService {

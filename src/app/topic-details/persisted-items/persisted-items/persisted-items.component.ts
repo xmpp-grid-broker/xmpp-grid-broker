@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {LoadPersistedItemsErrors, PersistedItem, PersistedItemsService} from '../persisted-items.service';
 import {ActivatedRoute} from '@angular/router';
-import {IteratorListPager} from '../../shared/list/iterator-list-pager';
-import {NotificationService} from '../../core/notifications/notification.service';
+import {IteratorListPager} from '../../../shared/list/iterator-list-pager';
+import {NotificationService} from '../../../core/notifications/notification.service';
 
 @Component({
   selector: 'xgb-persisted-items',

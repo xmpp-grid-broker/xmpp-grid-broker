@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Subscription} from '../../core/models/Subscription';
+import {Subscription} from '../../../core/models/Subscription';
 import {ActivatedRoute} from '@angular/router';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 

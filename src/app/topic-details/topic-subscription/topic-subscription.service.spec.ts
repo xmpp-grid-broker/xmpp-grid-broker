@@ -1,7 +1,7 @@
 import {TopicSubscriptionService} from './topic-subscription.service';
-import {XmppService} from '../core/xmpp/xmpp.service';
+import {XmppService} from '../../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
-import {SubscriptionState} from '../core/models/Subscription';
+import {SubscriptionState} from '../../core/models/Subscription';
 
 describe('TopicSubscriptionService', () => {
   let service: TopicSubscriptionService;

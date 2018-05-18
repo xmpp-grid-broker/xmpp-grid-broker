@@ -1,5 +1,5 @@
 import {PersistedItem, PersistedItemsService} from './persisted-items.service';
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
+import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
 
 describe('PersistedItemsService', () => {
   let service: PersistedItemsService;
