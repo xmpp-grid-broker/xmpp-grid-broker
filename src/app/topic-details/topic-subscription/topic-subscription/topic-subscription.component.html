@@ -1,6 +1,6 @@
 <ng-container *ngIf="!errorMessage && isLoaded">
   <xgb-action-bar>
-    <button xgbActionButton [routerLink]="['new']">New Subscription</button>
+    <button xgbActionButton  (click)="newSubscription()">New Subscription</button>
   </xgb-action-bar>
   <xgb-list>
     <xgb-list-item *ngFor="let subscription of subscriptions">
@@ -8,7 +8,7 @@
       <i *ngIf="subscription.state == 'pending'" class="state icon icon-time" title="pending"></i>
       <i *ngIf="subscription.state == 'unconfigured'" class="state icon icon-cross" title="unconfigured"></i>
       <xgb-list-action>
-        <button xgbActionButton>modify</button>
+        <button xgbActionButton (click)="modify(subscription)">modify</button>
         <button xgbActionButton (click)="unsubscribe(subscription)">unsubscribe</button>
       </xgb-list-action>
     </xgb-list-item>

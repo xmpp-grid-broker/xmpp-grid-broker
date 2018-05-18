@@ -4,23 +4,26 @@ import {TopicSubscriptionComponent} from './topic-subscription.component';
 import {ActivatedRoute} from '@angular/router';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 import {SharedModule} from '../../../shared/shared.module';
-import {RouterTestingModule} from '@angular/router/testing';
 import {Subscription, SubscriptionState} from '../../../core/models/Subscription';
 import {XmppError} from '../../../core/errors';
+import {NavigationService} from '../../../core/navigation.service';
 
 describe('TopicSubscriptionComponent', () => {
   let component: TopicSubscriptionComponent;
   let fixture: ComponentFixture<TopicSubscriptionComponent>;
   let el: HTMLElement;
   let service: jasmine.SpyObj<TopicSubscriptionService>;
+  let navigationService: jasmine.SpyObj<NavigationService>;
 
   beforeEach(async(() => {
     service = jasmine.createSpyObj('TopicSubscriptionService', ['loadSubscriptions', 'unsubscribe']);
+    navigationService = jasmine.createSpyObj('NavigationService', ['goToSubscription', 'goToNewSubscription']);
     TestBed.configureTestingModule({
       declarations: [TopicSubscriptionComponent],
-      imports: [RouterTestingModule, SharedModule],
+      imports: [SharedModule],
       providers: [
         {provide: TopicSubscriptionService, useValue: service},
+        {provide: NavigationService, useValue: navigationService},
         {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}}
       ]
     });

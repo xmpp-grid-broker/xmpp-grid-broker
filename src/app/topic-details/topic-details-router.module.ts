@@ -8,6 +8,7 @@ import {PersistedItemsComponent} from './persisted-items/persisted-items/persist
 import {NewPersistedItemComponent} from './persisted-items/new-persisted-item/new-persisted-item.component';
 import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription/topic-subscription.component';
 import {NewTopicSubscriptionComponent} from './topic-subscription/new-topic-subscription/new-topic-subscription.component';
+import {ModifySubscriptionComponent} from './topic-subscription/modify-subscription/modify-subscription.component';
 
 
 const routes: Routes = [
@@ -22,14 +23,26 @@ const routes: Routes = [
       {path: 'subscriptions', component: TopicSubscriptionComponent},
       {path: 'items', component: PersistedItemsComponent},
     ]
-  }, {
-    path: 'topics/details/:id/items/new',
+  },
+  {
+    path: 'topics/details/:id',
     canActivate: [XmppFeatureGuard],
-    component: NewPersistedItemComponent,
-  }, {
-    path: 'topics/details/:id/subscriptions/new',
-    canActivate: [XmppFeatureGuard],
-    component: NewTopicSubscriptionComponent,
+    children: [
+      {
+        path: 'items/new',
+        canActivate: [XmppFeatureGuard],
+        component: NewPersistedItemComponent,
+      }, {
+        path: 'subscriptions/new',
+        canActivate: [XmppFeatureGuard],
+        component: NewTopicSubscriptionComponent,
+      },
+      {
+        path: 'subscriptions/:subId',
+        canActivate: [XmppFeatureGuard],
+        component: ModifySubscriptionComponent,
+      }
+    ]
   }
 ];
 

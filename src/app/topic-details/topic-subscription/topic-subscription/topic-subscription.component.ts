@@ -3,6 +3,7 @@ import {Subscription} from '../../../core/models/Subscription';
 import {ActivatedRoute} from '@angular/router';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 import {ErrorToString} from '../../../core/errors';
+import {NavigationService} from '../../../core/navigation.service';
 
 @Component({
   selector: 'xgb-topic-subscription',
@@ -35,7 +36,8 @@ export class TopicSubscriptionComponent implements OnInit {
   private nodeId: string;
 
   constructor(private route: ActivatedRoute,
-              private topicSubscriptionService: TopicSubscriptionService) {
+              private topicSubscriptionService: TopicSubscriptionService,
+              private navigationService: NavigationService) {
   }
 
   ngOnInit() {
@@ -52,6 +54,14 @@ export class TopicSubscriptionComponent implements OnInit {
         this.isLoaded = true;
         this.errorMessage = ErrorToString(error);
       });
+  }
+
+  modify(subscription: Subscription) {
+    this.navigationService.goToSubscription(this.nodeId, subscription.subid);
+  }
+
+  newSubscription() {
+    this.navigationService.goToNewSubscription(this.nodeId);
   }
 
   private refresh() {

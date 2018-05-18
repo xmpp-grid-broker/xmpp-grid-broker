@@ -21,6 +21,21 @@ export class NavigationService {
   public goToSubscriptions(topic: string | Topic) {
     this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions`);
   }
+
+  /**
+   * Subscription as subscription object or the subid!
+   */
+  public goToSubscription(topic: string | Topic, subid: string) {
+    this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions/${encodeURIComponent(subid)}`);
+  }
+
+  /**
+   * Subscription as subscription object or the subid!
+   */
+  public goToNewSubscription(topic: string | Topic) {
+    this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions/new`);
+  }
+
   public goToTopic(topic: string | Topic): void {
     this.goToUrl(NavigationService.topicUrl(topic));
   }
