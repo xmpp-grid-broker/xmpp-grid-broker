@@ -1,9 +1,8 @@
 <ng-container *ngIf="!errorMessage && isLoaded">
   <xgb-list>
     <xgb-list-item *ngFor="let jidAffiliation of jidAffiliations">
-      <div class="jid-affiliation">
-        <div class="jid">{{jidAffiliation.jid}}</div>
-        <div class="actions">
+        <span class="jid">{{jidAffiliation.jid}}</span>
+        <xgb-list-action>
           <select xgbFormInput (change)="changeAffiliation(jidAffiliation, select.value,select)" #select>
             <option *ngFor="let affiliation of affiliations;"
                     [value]="affiliation.value"
@@ -11,8 +10,7 @@
             </option>
           </select>
           <button xgbActionButton (click)="removeAffiliation(jidAffiliation)">remove</button>
-        </div>
-      </div>
+        </xgb-list-action>
     </xgb-list-item>
     <div class="empty" *ngIf="jidAffiliations.length == 0">
       <p class="empty-title h5">No Affiliations found</p>

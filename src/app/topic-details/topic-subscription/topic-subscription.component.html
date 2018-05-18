@@ -1,17 +1,16 @@
 <ng-container *ngIf="!errorMessage && isLoaded">
   <xgb-action-bar>
-     <button xgbActionButton [routerLink]="['new']">New Subscription</button>
+    <button xgbActionButton [routerLink]="['new']">New Subscription</button>
   </xgb-action-bar>
   <xgb-list>
     <xgb-list-item *ngFor="let subscription of subscriptions">
-      <div class="jid-affiliation">
-        <div class="jid">{{subscription.jid}}</div>
-        <div class="state"><i class="icon icon-time" title="pending"></i><i class="icon icon-cross" title="unconfigured"></i></div>
-        <div class="actions">
-          <button xgbActionButton>modify</button>
-          <button xgbActionButton>unsubscribe</button>
-        </div>
-      </div>
+      <span class="jid">{{subscription.jid}}</span>
+      <i class="state icon icon-time" title="pending"></i>
+      <i class="state icon icon-cross" title="unconfigured"></i>
+      <xgb-list-action>
+        <button xgbActionButton>modify</button>
+        <button xgbActionButton>unsubscribe</button>
+      </xgb-list-action>
     </xgb-list-item>
     <div class="empty" *ngIf="subscriptions.length == 0">
       <p class="empty-title h5">No Subscriptions found</p>

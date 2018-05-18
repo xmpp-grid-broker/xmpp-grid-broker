@@ -1,4 +1,13 @@
-.jid-affiliation, .new-jid {
+xgb-list-action {
+  margin-left: 2rem;
+}
+
+xgb-list-action select {
+  width: auto;
+}
+
+/* new jid */
+.new-jid {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -7,10 +16,6 @@
 .jid {
   flex-grow: 1;
   margin-right: 2rem;
-}
-
-.actions {
-  flex-grow: 0;
 }
 
 .actions select {

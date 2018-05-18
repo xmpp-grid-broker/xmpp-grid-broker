@@ -58,7 +58,7 @@ describe('TopicDetails', () => {
     });
   });
 
-  describe('TopicDetailsAffiliationTab', () => {
+  fdescribe('TopicDetailsAffiliationTab', () => {
     let tab: TopicDetailsAffiliationTab;
 
     const testJid = 'juliet@openfire';
@@ -135,7 +135,7 @@ describe('TopicDetails', () => {
 
       await (async () => {
         const listObjects = await tab.getListObjectsByJid(testJid);
-        expect(listObjects.length).toBe(1);
+        expect(listObjects.length).toBe(0);
       })();
     });
   });
