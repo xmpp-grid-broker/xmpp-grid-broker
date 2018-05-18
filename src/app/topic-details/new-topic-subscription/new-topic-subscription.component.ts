@@ -26,6 +26,8 @@ export class NewTopicSubscriptionComponent implements OnInit {
 
   submit(formRef: NgForm) {
     formRef.form.disable();
+    // TODO: document and change admin "premium user" in the config
+    // TODO: adapt affiliation warnings
     const jid = formRef.form.get('jid').value;
     this.topicSubscriptionService.subscribe(this.nodeId, jid)
       .then(() => this.navigationService.goToSubscriptions(this.nodeId))
