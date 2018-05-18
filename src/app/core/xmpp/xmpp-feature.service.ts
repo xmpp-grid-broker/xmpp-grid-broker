@@ -75,7 +75,7 @@ export class XmppFeatureService {
       .then(config => {
         const cmd = {
           type: IqType.Get,
-          to: config.xmpp.jid.domain,
+          to: config.xmpp.server,
           discoInfo: {}
         };
 
