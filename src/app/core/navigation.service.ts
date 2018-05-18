@@ -18,7 +18,7 @@ export class NavigationService {
     this.goToUrl('/topics/new/collection');
   }
 
-  goToSubscriptions(topic: string | Topic) {
+  public goToSubscriptions(topic: string | Topic) {
     this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions`);
   }
   public goToTopic(topic: string | Topic): void {
