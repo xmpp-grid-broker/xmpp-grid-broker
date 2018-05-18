@@ -2,6 +2,7 @@ import {TopicSubscriptionService} from './topic-subscription.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
 import {SubscriptionState} from '../../core/models/Subscription';
+import {XmppErrorCondition} from '../../core/errors';
 
 describe('TopicSubscriptionService', () => {
   let service: TopicSubscriptionService;
@@ -60,14 +61,14 @@ describe('TopicSubscriptionService', () => {
 
     it('should reject when executeIqToPubsub fails', async () => {
       xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
-        {condition: 'example-error'}
+        {condition: XmppErrorCondition.FeatureNotImplemented}
       ));
 
       try {
         await service.loadSubscriptions('test-topic');
         fail(`expected an error`);
       } catch (e) {
-        await expect(e.condition).toBe('example-error');
+        await expect(e.message).toBe('Node or service does not support subscription management');
       }
     });
   });

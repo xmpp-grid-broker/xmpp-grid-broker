@@ -5,8 +5,8 @@
   <xgb-list>
     <xgb-list-item *ngFor="let subscription of subscriptions">
       <span class="jid">{{subscription.jid}}</span>
-      <i class="state icon icon-time" title="pending"></i>
-      <i class="state icon icon-cross" title="unconfigured"></i>
+      <i *ngIf="subscription.state == 'pending'" class="state icon icon-time" title="pending"></i>
+      <i *ngIf="subscription.state == 'unconfigured'" class="state icon icon-cross" title="unconfigured"></i>
       <xgb-list-action>
         <button xgbActionButton>modify</button>
         <button xgbActionButton>unsubscribe</button>
