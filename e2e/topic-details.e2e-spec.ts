@@ -58,7 +58,7 @@ describe('TopicDetails', () => {
     });
   });
 
-  fdescribe('TopicDetailsAffiliationTab', () => {
+  describe('TopicDetailsAffiliationTab', () => {
     let tab: TopicDetailsAffiliationTab;
 
     const testJid = 'juliet@openfire';
