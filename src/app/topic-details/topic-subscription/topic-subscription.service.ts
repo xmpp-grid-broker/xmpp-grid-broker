@@ -43,7 +43,7 @@ export class TopicSubscriptionService {
    * If the promise resolves, the subscription was (according to the
    * server) successful.
    */
-  subscribe(topicIdentifier: string, jid: string): Promise<void> {
+  public subscribe(topicIdentifier: string, jid: string): Promise<void> {
     const cmd = {
       type: IqType.Set,
       pubsub: {

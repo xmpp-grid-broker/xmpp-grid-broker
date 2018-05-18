@@ -72,5 +72,30 @@ describe('TopicSubscriptionService', () => {
       }
     });
   });
+  describe('when calling subscribe', () => {
+    it('it should call the xmpp service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
 
+      await service.subscribe('test-topic', 'test-jid');
+
+      await expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      await expect(cmd.pubsub.subscribe.node).toBe('test-topic');
+      await expect(cmd.pubsub.subscribe.jid).toBe('test-jid');
+
+    });
+
+    it('should reject when executeIqToPubsub fails', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
+        {condition: XmppErrorCondition.FeatureNotImplemented}
+      ));
+
+      try {
+        await service.subscribe('test-topic', 'test-jid');
+        fail(`expected an error`);
+      } catch (e) {
+        await expect(e.message).toBe('Topic test-topic does not support subscriptions.');
+      }
+    });
+  });
 });
