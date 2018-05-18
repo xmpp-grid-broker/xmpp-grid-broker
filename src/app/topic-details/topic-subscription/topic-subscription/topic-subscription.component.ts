@@ -43,6 +43,17 @@ export class TopicSubscriptionComponent implements OnInit {
     this.refresh();
   }
 
+  unsubscribe(subscription: Subscription) {
+    this.topicSubscriptionService.unsubscribe(this.nodeId, subscription)
+      .then(() => {
+        this.refresh();
+      })
+      .catch((error) => {
+        this.isLoaded = true;
+        this.errorMessage = ErrorToString(error);
+      });
+  }
+
   private refresh() {
     this.isLoaded = false;
     this.topicSubscriptionService.loadSubscriptions(this.nodeId)

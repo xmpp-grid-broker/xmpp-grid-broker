@@ -29,7 +29,7 @@ export class TopicSubscriptionService {
         }
       ).catch((err) => {
         throw JxtErrorToXmppError(err, {
-            [XmppErrorCondition.FeatureNotImplemented]: `Node or service does not support subscription management`,
+            [XmppErrorCondition.FeatureNotImplemented]: `Topic or service does not support subscription management`,
             [XmppErrorCondition.Forbidden]: `You don't have sufficient privileges to manage subscriptions`,
             [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`
           }
@@ -64,7 +64,38 @@ export class TopicSubscriptionService {
             [XmppErrorCondition.Forbidden]: `${jid} is blocked from subscribing`,
             [XmppErrorCondition.PolicyViolation]: 'Too many subscriptions',
             [XmppErrorCondition.FeatureNotImplemented]: `Topic ${topicIdentifier} does not support subscriptions.`,
-            [XmppErrorCondition.Gone]: `Node ${topicIdentifier} has been moved`,
+            [XmppErrorCondition.Gone]: `Topic ${topicIdentifier} has been moved`,
+            [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`
+          }
+        );
+      });
+  }
+
+  /**
+   * Removes the given subscription.
+   *
+   * If the promise resolves, unsubscribe was (according to the
+   * server) successful.
+   */
+  public unsubscribe(topicIdentifier: string, subscription: Subscription): Promise<void> {
+    const cmd = {
+      type: IqType.Set,
+      pubsub: {
+        unsubscribe: {
+          node: topicIdentifier,
+          jid: subscription.jid,
+          subid: subscription.subid
+        }
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd)
+      .then((response) => {
+      }).catch((err) => {
+        throw JxtErrorToXmppError(err, {
+            [XmppErrorCondition.BadRequest]: `The subscription id ${subscription.subid} is invalid!`,
+            [XmppErrorCondition.NotAcceptable]: `The subscription id ${subscription.subid} is invalid!`,
+            [XmppErrorCondition.UnexpectedRequest]: `${subscription.jid} is not subscribed on ${topicIdentifier}`,
+            [XmppErrorCondition.Forbidden]: `You have insufficient privileges to unsubscribe ${subscription.jid}`,
             [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`
           }
         );

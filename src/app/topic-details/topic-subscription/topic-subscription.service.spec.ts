@@ -1,7 +1,7 @@
 import {TopicSubscriptionService} from './topic-subscription.service';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
-import {SubscriptionState} from '../../core/models/Subscription';
+import {Subscription, SubscriptionState} from '../../core/models/Subscription';
 import {XmppErrorCondition} from '../../core/errors';
 
 describe('TopicSubscriptionService', () => {
@@ -68,7 +68,7 @@ describe('TopicSubscriptionService', () => {
         await service.loadSubscriptions('test-topic');
         fail(`expected an error`);
       } catch (e) {
-        await expect(e.message).toBe('Node or service does not support subscription management');
+        await expect(e.message).toBe('Topic or service does not support subscription management');
       }
     });
   });
@@ -95,6 +95,34 @@ describe('TopicSubscriptionService', () => {
         fail(`expected an error`);
       } catch (e) {
         await expect(e.message).toBe('Topic test-topic does not support subscriptions.');
+      }
+    });
+  });
+
+  describe('when calling subscribe', () => {
+    it('it should call the xmpp service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
+
+      await service.unsubscribe('test-topic', new Subscription('test-jid', 'test-subid'));
+
+      await expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      await expect(cmd.pubsub.unsubscribe.node).toBe('test-topic');
+      await expect(cmd.pubsub.unsubscribe.jid).toBe('test-jid');
+      await expect(cmd.pubsub.unsubscribe.subid).toBe('test-subid');
+
+    });
+
+    it('should reject when executeIqToPubsub fails', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
+        {condition: XmppErrorCondition.Forbidden}
+      ));
+
+      try {
+        await service.unsubscribe('test-topic', new Subscription('test-jid', 'test-subid'));
+        fail(`expected an error`);
+      } catch (e) {
+        await expect(e.message).toBe('You have insufficient privileges to unsubscribe test-jid');
       }
     });
   });

@@ -9,7 +9,7 @@
       <i *ngIf="subscription.state == 'unconfigured'" class="state icon icon-cross" title="unconfigured"></i>
       <xgb-list-action>
         <button xgbActionButton>modify</button>
-        <button xgbActionButton>unsubscribe</button>
+        <button xgbActionButton (click)="unsubscribe(subscription)">unsubscribe</button>
       </xgb-list-action>
     </xgb-list-item>
     <div class="empty" *ngIf="subscriptions.length == 0">

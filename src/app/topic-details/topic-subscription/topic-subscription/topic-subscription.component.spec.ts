@@ -15,7 +15,7 @@ describe('TopicSubscriptionComponent', () => {
   let service: jasmine.SpyObj<TopicSubscriptionService>;
 
   beforeEach(async(() => {
-    service = jasmine.createSpyObj('TopicSubscriptionService', ['loadSubscriptions']);
+    service = jasmine.createSpyObj('TopicSubscriptionService', ['loadSubscriptions', 'unsubscribe']);
     TestBed.configureTestingModule({
       declarations: [TopicSubscriptionComponent],
       imports: [RouterTestingModule, SharedModule],
@@ -141,5 +141,77 @@ describe('TopicSubscriptionComponent', () => {
     expect(listElements[1].querySelector('.icon')).toBeNull();
 
   }));
+
+  describe('concerning the removal of a subscription', () => {
+
+
+    const getRemoveButtons = () => {
+      return el.querySelectorAll('xgb-list-action :nth-child(2)');
+    };
+
+    beforeEach(fakeAsync(() => {
+      service.loadSubscriptions.and.returnValue(Promise.resolve([
+        new Subscription('test1@example', undefined, undefined, SubscriptionState.Unconfigured),
+        new Subscription('test2@example', undefined, undefined, SubscriptionState.Subscribed),
+      ]));
+
+      waitUntilLoaded();
+
+
+    }));
+
+    it('render the remove buttons', fakeAsync(() => {
+      const removeButtons = getRemoveButtons();
+      expect(removeButtons.length).toBe(2);
+      expect(removeButtons[0].innerHTML).toBe('unsubscribe');
+      expect(removeButtons[1].innerHTML).toBe('unsubscribe');
+    }));
+
+    it('render show a spinner while loading', fakeAsync(() => {
+      service.unsubscribe.and.returnValue(Promise.resolve());
+      (getRemoveButtons()[0] as HTMLButtonElement).click();
+
+      fixture.detectChanges();
+      tick();
+
+      expect(el.querySelector('xgb-spinner')).toBeDefined();
+
+      // it's loaded now
+      fixture.detectChanges();
+      tick();
+
+      expect(el.querySelector('xgb-spinner')).toBeDefined();
+    }));
+
+    it('render call unsubscribe on the service', fakeAsync(() => {
+      service.unsubscribe.and.returnValue(Promise.resolve());
+      (getRemoveButtons()[0] as HTMLButtonElement).click();
+
+      // Wait until it's loaded
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      expect(service.unsubscribe).toHaveBeenCalledTimes(1);
+      expect(service.unsubscribe).toHaveBeenCalledWith(
+        'testing',
+        new Subscription('test1@example', undefined, undefined, SubscriptionState.Unconfigured)
+      );
+    }));
+    it('render render an error if unsubscribe fails', fakeAsync(() => {
+      service.unsubscribe.and.returnValue(Promise.reject(new XmppError('Sth went wrong!', 'any')));
+      (getRemoveButtons()[0] as HTMLButtonElement).click();
+
+      // Wait until it's loaded
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      expect(el.querySelector('[toast-error').innerHTML).toBe('Sth went wrong!');
+    }));
+
+  });
 
 });

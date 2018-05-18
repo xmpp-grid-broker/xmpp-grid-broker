@@ -16,6 +16,7 @@ export enum XmppErrorCondition {
   PaymentRequired = 'payment-required',
   PolicyViolation = 'policy-violation',
   Timeout = 'timeout',
+  UnexpectedRequest = 'unexpected-request',
   Unsupported = 'unsupported',
 }
 
@@ -36,7 +37,7 @@ export class XmppError extends Error {
 /**
  * Maps the given error object into an XmppError.
  * You must only provide error message mappings for the conditions that can occur during the xmpp request.
- * Generic errors such as timeout are handled by this method.
+ * Generic errors such as timeout and internal server errors are handled by this method.
  *
  * @param error the error as returned by stanza.io or the xmpp service.
  * @param {{[p: string]: string}} Specific error handling. Use {@link XmppErrorCondition} as keys!
@@ -47,6 +48,8 @@ export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key:
       return new XmppError(conditionToErrorMapping[error.condition], error.condition);
     } else if (error.condition === XmppErrorCondition.Timeout) {
       return new XmppError('Connection has timed out', error.condition);
+    } else if (error.condition === XmppErrorCondition.InternalServerError) {
+      return new XmppError('Internal Server Error', error.condition);
     }
   }
   if (error instanceof Error) {

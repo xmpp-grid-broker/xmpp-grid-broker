@@ -116,4 +116,15 @@ describe('JxtErrorToXmppError', () => {
     await expect(mappedError.message).toBe('Connection has timed out');
     await expect(mappedError.condition).toBe(XmppErrorCondition.Timeout);
   });
+  it('should map internal server error', async () => {
+    const error = {
+      condition: 'internal-server-error'
+    };
+    const errorMapping = {};
+
+    const mappedError = JxtErrorToXmppError(error, errorMapping);
+
+    await expect(mappedError.message).toBe('Internal Server Error');
+    await expect(mappedError.condition).toBe(XmppErrorCondition.InternalServerError);
+  });
 });
