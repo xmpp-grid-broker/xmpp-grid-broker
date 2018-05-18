@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Subscription} from '../../../core/models/Subscription';
 import {ActivatedRoute} from '@angular/router';
 import {TopicSubscriptionService} from '../topic-subscription.service';
+import {ErrorToString} from '../../../core/errors';
 
 @Component({
   selector: 'xgb-topic-subscription',
@@ -51,22 +52,8 @@ export class TopicSubscriptionComponent implements OnInit {
       })
       .catch((error) => {
         this.isLoaded = true;
-        this.handleFailedSubscriptionAction(error);
+        this.errorMessage = ErrorToString(error);
       });
   }
 
-  private handleFailedSubscriptionAction(error) {
-    if (error && error.condition) {
-      switch (error.condition) {
-        // TODO
-        default:
-          this.errorMessage = `Unknown error "${error.condition}": ${JSON.stringify(error)}`;
-      }
-    } else {
-      console.log(error);
-
-      this.errorMessage = `Unknown error: ${JSON.stringify(error)}`;
-    }
-
-  }
 }
