@@ -55,13 +55,13 @@ describe('NewTopicSubscriptionComponent', () => {
     expect(el.querySelector('h2').innerHTML).toBe('New Subscription for testing');
   }));
 
-  fit('should render input filed', fakeAsync(() => {
+  it('should render input filed', fakeAsync(() => {
     expect(inputField).toBeDefined();
     expect(inputField.placeholder).toBe('Enter Subscription JID');
   }));
 
 
-  fit('should render disabled submit button', fakeAsync(() => {
+  it('should render disabled submit button', fakeAsync(() => {
     expect(submitButton).toBeDefined();
     expect(submitButton.disabled).toBeTruthy();
   }));
@@ -74,11 +74,11 @@ describe('NewTopicSubscriptionComponent', () => {
       tick();
     }));
 
-    fit('the submit button shoud be enabled', fakeAsync(() => {
+    it('the submit button shoud be enabled', fakeAsync(() => {
       expect(submitButton.disabled).toBeFalsy();
     }));
 
-    fit('should disable the form while submitting the form', fakeAsync(() => {
+    it('should disable the form while submitting the form', fakeAsync(() => {
       service.subscribe.and.returnValue(Promise.resolve());
       submitButton.click();
 
@@ -89,7 +89,7 @@ describe('NewTopicSubscriptionComponent', () => {
       expect(inputField.disabled).toBeTruthy();
     }));
 
-    fit('should render error message when subscription fails', fakeAsync(() => {
+    it('should render error message when subscription fails', fakeAsync(() => {
       service.subscribe.and.returnValue(Promise.reject(new XmppError('timeout', XmppErrorCondition.Timeout)));
       submitButton.click();
 
@@ -105,7 +105,7 @@ describe('NewTopicSubscriptionComponent', () => {
       expect(inputField.disabled).toBeFalsy();
     }));
 
-    fit('should render redirect when subscription succeeds', fakeAsync(() => {
+    it('should render redirect when subscription succeeds', fakeAsync(() => {
       service.subscribe.and.returnValue(Promise.resolve());
       submitButton.click();
 
