@@ -22,16 +22,10 @@ export class NavigationService {
     this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions`);
   }
 
-  /**
-   * Subscription as subscription object or the subid!
-   */
-  public goToSubscription(topic: string | Topic, subid: string) {
-    this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions/${encodeURIComponent(subid)}`);
+  public goToSubscription(topic: string | Topic, jid: string, subid: string) {
+    this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions/${encodeURIComponent(jid)}/${encodeURIComponent(subid)}`);
   }
 
-  /**
-   * Subscription as subscription object or the subid!
-   */
   public goToNewSubscription(topic: string | Topic) {
     this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions/new`);
   }

@@ -38,7 +38,7 @@ const routes: Routes = [
         component: NewTopicSubscriptionComponent,
       },
       {
-        path: 'subscriptions/:subId',
+        path: 'subscriptions/:jid/:subId',
         canActivate: [XmppFeatureGuard],
         component: ModifySubscriptionComponent,
       }

@@ -57,7 +57,7 @@ export class TopicSubscriptionComponent implements OnInit {
   }
 
   modify(subscription: Subscription) {
-    this.navigationService.goToSubscription(this.nodeId, subscription.subid);
+    this.navigationService.goToSubscription(this.nodeId, subscription.jid, subscription.subid);
   }
 
   newSubscription() {
