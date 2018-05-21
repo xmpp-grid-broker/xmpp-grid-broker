@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from '../config.service';
 import {IqType, XmppService} from './xmpp.service';
+import {ErrorLogService} from '../errors/error-log.service';
 
 @Injectable()
 export class XmppFeatureService {
@@ -12,7 +13,7 @@ export class XmppFeatureService {
   ];
   private _protocolFeatures: Map<string, Promise<string[]>> = new Map();
 
-  constructor(private xmppService: XmppService, private configService: ConfigService) {
+  constructor(private xmppService: XmppService, private configService: ConfigService, private errorLogService: ErrorLogService) {
   }
 
   /**
@@ -26,7 +27,7 @@ export class XmppFeatureService {
 
   /**
    * Queries the XMPP server for the support of a specific feature.
-   * Unsupported features are logged to the console.
+   * Unsupported features are logged.
    */
   public checkFeature(protocol: string, feature: string = ''): Promise<boolean> {
     return this._getProtocolFeatures(protocol)
@@ -34,7 +35,7 @@ export class XmppFeatureService {
         const supported = features.includes(feature);
 
         if (!supported) {
-          console.warn(`XMPP feature ${feature} of protocol ${protocol} is not supported.`);
+          this.errorLogService.warn(`XMPP feature ${feature} of protocol ${protocol} is not supported.`);
         }
         return supported;
       });

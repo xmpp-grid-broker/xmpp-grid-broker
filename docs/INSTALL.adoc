@@ -91,4 +91,4 @@ To create the build:
 * Add your Client-TLS CA to _Server → TLS/SSL Certificates → Client Connections → Trust Store_
 * Following property should be set under _Server -> Server Manager -> System Properties_:
 ** `httpbind.client.cert.policy` = `needed`; to enforce client certificate authentication for BOSH.
-
+* To allow administrators to subscribe other users than just themselves to a node, add the administrator user(s) to the list of `System Administrators` under _Server → PubSub → System Administrators_ (Don't forget to click `update` afterwards).

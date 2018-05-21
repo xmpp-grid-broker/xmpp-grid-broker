@@ -1,3 +1,5 @@
+import {FormGroup} from '@angular/forms';
+
 export enum XmppDataFormFieldType {
   hidden = 'hidden',
   boolean = 'boolean',
@@ -76,6 +78,31 @@ export class XmppDataForm {
     return new XmppDataForm(jsonForm.fields.map((field) => {
       return XmppDataFormField.fromJSON(field);
     }));
+  }
+
+  /**
+   * Creates a new form group based on the given xmpp data form
+   * but only containing the fields which values differ from
+   * the original form.
+   */
+  static fromFormGroup(formGroup: FormGroup, form: XmppDataForm): XmppDataForm {
+    if (!form || !formGroup) {
+      return null;
+    }
+
+    const fields = [];
+
+    form.fields.forEach((field: XmppDataFormField) => {
+        const newValue = formGroup.get(field.name).value;
+        if (field.name !== 'FORM_TYPE' && newValue === field.value) {
+          return;
+        }
+        fields.push(field.cloneWithNewValue(newValue));
+      }
+    );
+
+    return new XmppDataForm(fields);
+
   }
 
   toJSON(type = 'submit'): object {

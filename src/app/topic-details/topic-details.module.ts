@@ -6,11 +6,16 @@ import {TopicDetailsConfigComponent} from './topic-details-config/topic-details-
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicDetailsService} from './topic-details.service';
 import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
-import {TopicDetailsComponent} from './topic-details/topic-details.component';
+import {TopicDetailsComponent} from './topic-details.component';
 import {TopicAffiliationsComponent} from './topic-affiliations/topic-affiliations.component';
-import {PersistedItemsComponent} from './persisted-items/persisted-items.component';
-import {PersistedItemsService} from './persisted-items.service';
-import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item.component';
+import {PersistedItemsComponent} from './persisted-items/persisted-items/persisted-items.component';
+import {PersistedItemsService} from './persisted-items/persisted-items.service';
+import {NewPersistedItemComponent} from './persisted-items/new-persisted-item/new-persisted-item.component';
+import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription/topic-subscription.component';
+import {TopicSubscriptionService} from './topic-subscription/topic-subscription.service';
+import {NewTopicSubscriptionComponent} from './topic-subscription/new-topic-subscription/new-topic-subscription.component';
+import { ModifySubscriptionComponent } from './topic-subscription/modify-subscription/modify-subscription.component';
+
 
 @NgModule({
   imports: [
@@ -26,9 +31,12 @@ import {NewPersistedItemComponent} from './new-persisted-item/new-persisted-item
     TopicDetailsConfigComponent,
     TopicAffiliationsComponent,
     PersistedItemsComponent,
-    NewPersistedItemComponent
+    NewPersistedItemComponent,
+    TopicSubscriptionComponent,
+    NewTopicSubscriptionComponent,
+    ModifySubscriptionComponent
   ],
-  providers: [TopicDetailsService, PersistedItemsService]
+  providers: [TopicDetailsService, PersistedItemsService, TopicSubscriptionService]
 })
 export class TopicDetailsModule {
 }

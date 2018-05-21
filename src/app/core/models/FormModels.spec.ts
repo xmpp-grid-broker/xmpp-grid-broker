@@ -1,4 +1,5 @@
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './FormModels';
+import {FormControl, FormGroup} from '@angular/forms';
 
 describe('XmppDataFormField', () => {
   describe('when calling toJSON', () => {
@@ -122,6 +123,54 @@ describe('XmppDataForm', () => {
       expect(XmppDataFormField.fromJSON).toHaveBeenCalledTimes(2);
       expect(result.fields[0]).toBeDefined();
       expect(result.fields[1]).toBeDefined();
+    });
+  });
+
+  describe('when calling fromFormGroup', () => {
+    it('should return null for undefined XmppForm', () => {
+      const result = XmppDataForm.fromFormGroup(new FormGroup({}), undefined);
+      expect(result).toBeNull();
+    });
+    it('should return null for null XmppForm', () => {
+      const result = XmppDataForm.fromFormGroup(new FormGroup({}), null);
+      expect(result).toBeNull();
+    });
+    it('should return null forundefined FormGroup', () => {
+      const result = XmppDataForm.fromFormGroup(undefined, new XmppDataForm([]));
+      expect(result).toBeNull();
+    });
+    it('should return null for null FormGroup', () => {
+      const result = XmppDataForm.fromFormGroup(null, new XmppDataForm([]));
+      expect(result).toBeNull();
+    });
+    it('should always add FORM_TYPE', () => {
+      const xmppForm = new XmppDataForm([new XmppDataFormField(XmppDataFormFieldType.hidden, 'FORM_TYPE', '...')]);
+      const formGroup = new FormGroup({'FORM_TYPE': new FormControl('', [])});
+
+      const result = XmppDataForm.fromFormGroup(formGroup, xmppForm);
+
+      expect(result.fields.length).toBe(1);
+      expect(result.fields[0].name).toBe('FORM_TYPE');
+    });
+
+    it('should always add changed field', () => {
+      const xmppForm = new XmppDataForm([new XmppDataFormField(XmppDataFormFieldType.textSingle, 'prefix#digest_frequency', '2')]);
+      const formGroup = new FormGroup({'prefix#digest_frequency': new FormControl('5', [])});
+
+      const result = XmppDataForm.fromFormGroup(formGroup, xmppForm);
+
+      expect(result.fields.length).toBe(1);
+      expect(result.fields[0].name).toBe('prefix#digest_frequency');
+      expect(result.fields[0].value).toBe('5');
+    });
+
+    it('should not add unchanged field', () => {
+      const xmppForm = new XmppDataForm([new XmppDataFormField(XmppDataFormFieldType.textSingle, 'prefix#digest_frequency', '2')]);
+      const formGroup = new FormGroup({'prefix#digest_frequency': new FormControl('2', [])});
+
+      const result = XmppDataForm.fromFormGroup(formGroup, xmppForm);
+
+      expect(result.fields.length).toBe(0);
     });
   });
 });

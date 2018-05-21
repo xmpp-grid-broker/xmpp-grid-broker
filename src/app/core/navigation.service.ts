@@ -18,6 +18,17 @@ export class NavigationService {
     this.goToUrl('/topics/new/collection');
   }
 
+  public goToSubscriptions(topic: string | Topic) {
+    this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions`);
+  }
+
+  public goToSubscription(topic: string | Topic, jid: string, subid: string) {
+    this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions/${encodeURIComponent(jid)}/${encodeURIComponent(subid)}`);
+  }
+
+  public goToNewSubscription(topic: string | Topic) {
+    this.goToUrl(`${NavigationService.topicUrl(topic)}/subscriptions/new`);
+  }
 
   public goToTopic(topic: string | Topic): void {
     this.goToUrl(NavigationService.topicUrl(topic));
@@ -43,4 +54,6 @@ export class NavigationService {
 
   constructor(private router: Router) {
   }
+
+
 }

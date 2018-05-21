@@ -2,10 +2,10 @@ import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/t
 
 import {NewPersistedItemComponent} from './new-persisted-item.component';
 import {FormsModule} from '@angular/forms';
-import {SharedModule} from '../../shared/shared.module';
+import {SharedModule} from '../../../shared/shared.module';
 import {PersistedItemsService} from '../persisted-items.service';
 import {ActivatedRoute} from '@angular/router';
-import {NavigationService} from '../../core/navigation.service';
+import {NavigationService} from '../../../core/navigation.service';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 

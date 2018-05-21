@@ -4,7 +4,10 @@
  * `ng build --env=prod` then `environment.prod.ts` will be used instead.
  * The list of which env maps to which file can be found in `.angular-cli.json`.
  */
+import {LogLevel} from '../app/core/errors/log-level';
+
 export const environment = {
   production: false,
-  config_url: './configuration.json'
+  config_url: './configuration.json',
+  log_level: LogLevel.Debug,
 };

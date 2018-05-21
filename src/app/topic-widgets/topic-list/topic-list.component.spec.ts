@@ -95,7 +95,7 @@ describe('TopicListComponent', () => {
 
     waitUntilLoaded();
 
-    const topics = de.querySelectorAll('xgb-list > xgb-list-item');
+    const topics = de.querySelectorAll('xgb-list xgb-list-item .list-item-title');
     expect(topics[0].textContent).toBe('Topic #1');
     expect(topics[1].textContent).toBe('Topic #2');
   }));

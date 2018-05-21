@@ -3,10 +3,10 @@ import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/t
 import {PersistedItemsComponent} from './persisted-items.component';
 import {ActivatedRoute} from '@angular/router';
 import {PersistedItem, PersistedItemsService} from '../persisted-items.service';
-import {SharedModule} from '../../shared/shared.module';
+import {SharedModule} from '../../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
-import {NotificationService} from '../../core/notifications/notification.service';
+import {NotificationService} from '../../../core/notifications/notification.service';
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe('PersistedItemsComponent', () => {

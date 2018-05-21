@@ -89,21 +89,7 @@ export class TopicConfigComponent implements DoCheck {
   }
 
   public createFormToSubmit(): XmppDataForm {
-    if (!this._xmppDataForm) {
-      return null;
-    }
-    const fields = [];
-
-    this._xmppDataForm.fields.forEach((field: XmppDataFormField) => {
-        const newValue = this.formGroup.get(field.name).value;
-        if (field.name !== 'FORM_TYPE' && newValue === field.value) {
-          return;
-        }
-        fields.push(field.cloneWithNewValue(newValue));
-      }
-    );
-
-    return new XmppDataForm(fields);
+    return XmppDataForm.fromFormGroup(this.formGroup, this._xmppDataForm);
   }
 
 

@@ -91,7 +91,7 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       // The list is now loaded
-      const listItems = de.nativeElement.querySelectorAll('.jid-affiliation .jid');
+      const listItems = de.nativeElement.querySelectorAll('xgb-list-item .jid');
       expect(listItems.length).toBe(2);
       expect(listItems[0].innerText).toBe('bard@shakespeare.lit');
       expect(listItems[1].innerText).toBe('hamlet@denmark.lit');
@@ -103,7 +103,7 @@ describe('TopicAffiliationsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      const select = de.nativeElement.querySelectorAll('.jid-affiliation .actions select');
+      const select = de.nativeElement.querySelectorAll('xgb-list-item select');
       expect(select.length).toBe(2);
       expect(select[0].children.length).toBe(5);
       expect(select[0].children.length).toBe(5);
@@ -115,7 +115,7 @@ describe('TopicAffiliationsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button');
+      const removeButton = de.nativeElement.querySelectorAll('xgb-list-item button');
       expect(removeButton.length).toBe(2);
       expect(removeButton[0].innerText).toBe('remove');
       expect(removeButton[0].innerText).toBe('remove');
@@ -243,7 +243,7 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       // Change the value of the select box
-      const selectBox = de.nativeElement.querySelectorAll('.jid-affiliation .actions select')[0];
+      const selectBox = de.nativeElement.querySelectorAll('xgb-list-item select')[0];
       selectBox.value = Affiliation.Member;
       selectBox.dispatchEvent(new Event('change'));
       fixture.detectChanges();
@@ -269,7 +269,7 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       // Change the value of the select box
-      const selectBox = de.nativeElement.querySelectorAll('.jid-affiliation .actions select')[0];
+      const selectBox = de.nativeElement.querySelectorAll('xgb-list-item select')[0];
       selectBox.value = Affiliation.Member;
       selectBox.dispatchEvent(new Event('change'));
       fixture.detectChanges();
@@ -302,7 +302,7 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       // Click the remove button
-      const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button')[0];
+      const removeButton = de.nativeElement.querySelectorAll('xgb-list-item button')[0];
       removeButton.click();
       fixture.detectChanges();
       tick();
@@ -327,7 +327,7 @@ describe('TopicAffiliationsComponent', () => {
       tick();
 
       // Click the remove button
-      const removeButton = de.nativeElement.querySelectorAll('.jid-affiliation .actions button')[0];
+      const removeButton = de.nativeElement.querySelectorAll('xgb-list-item button')[0];
       removeButton.click();
       fixture.detectChanges();
       tick();

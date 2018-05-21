@@ -7,12 +7,6 @@
   text-align: center;
 }
 
-.item-header{
-  width: 100%;
-  display: flex;
-}
-
 .item-title {
   cursor: pointer;
-  flex-grow: 1;
 }

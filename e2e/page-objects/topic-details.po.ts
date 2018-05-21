@@ -1,5 +1,5 @@
 import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
-import {by, element, ElementFinder, promise} from 'protractor';
+import {by, element, ElementFinder} from 'protractor';
 import {Tab} from '../page-elements/tab';
 import {Spinner} from '../page-elements/spinner';
 import {Form} from '../page-elements/form';
@@ -75,13 +75,13 @@ export class TopicDetailsAffiliationTab extends Tab {
   }
 
   get listObjects(): Promise<AffiliationListElement[]> {
-    return toPromise(this.list.listElements.then((elements: ElementFinder[]) => {
-      return elements.map(listElement => TopicDetailsAffiliationTab.listElementToObjectMapper(listElement));
-    })).then((elements: Promise<AffiliationListElement>[]) => {
-      return Promise.all(elements).then((p) => {
-        return p;
-      });
-    });
+    return toPromise(
+      this.list.listElements.then((elements: ElementFinder[]) => elements
+        .map(listElement => TopicDetailsAffiliationTab.listElementToObjectMapper(listElement))
+      )
+    ).then(
+      (elements: Promise<AffiliationListElement>[]) => Promise.all(elements)
+    );
   }
 
   public getListObjectsByJid(jid: string): Promise<AffiliationListElement[]> {
@@ -109,14 +109,9 @@ export class TopicDetailsAffiliationTab extends Tab {
   }
 
   private static async listElementToObjectMapper(listElement: ElementFinder): Promise<AffiliationListElement> {
-    const isNewAffiliation = await listElement.element(by.css('jid-affiliation')).isPresent();
-    if (isNewAffiliation) {
-      return undefined;
-    }
-
-    const jid = await listElement.element(by.css('div.jid')).getText();
-    const affiliation = await listElement.element(by.css('div.actions select'));
-    const removeButton = await listElement.element(by.css('div.actions select'));
+    const jid = await listElement.element(by.css('.jid')).getText();
+    const affiliation = await listElement.element(by.css('select'));
+    const removeButton = await listElement.element(by.css('button'));
 
     return new AffiliationListElement(
       jid,

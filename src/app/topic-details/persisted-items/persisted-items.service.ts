@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
+import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
 
 export class PersistedItem {
   /**
@@ -72,7 +72,7 @@ export class PersistedItemsService {
    * Use the corresponding service method on {@link PersistedItemsService#loadPersistedItemContent} instead.
    */
   public async* persistedItems(topicIdentifier: string): AsyncIterableIterator<PersistedItem> {
-    let loadAfter;
+    let loadAfter: number | undefined;
     let hasMore = true;
 
     do {

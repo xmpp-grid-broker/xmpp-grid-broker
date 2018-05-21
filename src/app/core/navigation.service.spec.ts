@@ -31,9 +31,25 @@ describe('NavigationService', () => {
     service.goToTopic(new LeafTopic('leafTopic'));
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/details/leafTopic');
   });
-  it('verify goToTopic by topic works', () => {
+  it('verify goToPersistedItems by topic works', () => {
     service.goToPersistedItems(new LeafTopic('leaf@?!Topic'));
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/details/leaf%40%3F!Topic/items');
   });
+
+  it('verify goToSubscription', () => {
+    service.goToSubscription('l@a!fTo}ic/', 'ex@__pl/jx', '0101-23|');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/details/l%40a!fTo%7Dic%2F/subscriptions/ex%40__pl%2Fjx/0101-23%7C');
+  });
+
+  it('verify goToNewSubscription', () => {
+    service.goToNewSubscription('l@a!fTo}ic/');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/details/l%40a!fTo%7Dic%2F/subscriptions/new');
+  });
+
+  it('verify goToSubscriptions', () => {
+    service.goToSubscriptions('l@a!fTo}ic/');
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/topics/details/l%40a!fTo%7Dic%2F/subscriptions');
+  });
+
 
 });
