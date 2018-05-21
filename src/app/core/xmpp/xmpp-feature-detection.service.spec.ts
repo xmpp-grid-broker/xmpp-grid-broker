@@ -1,4 +1,5 @@
 import {XmppFeatureService} from './xmpp-feature.service';
+import {ErrorLogService} from '../errors/error-log.service';
 
 class FakeXmppService {
 
@@ -17,7 +18,7 @@ class FakeConfigService {
 }
 
 describe('XmppFeatureService', () => {
-  let service: XmppFeatureService, xmppSpy;
+  let service: XmppFeatureService, xmppSpy, logSpy: jasmine.SpyObj<ErrorLogService>;
 
   const PUBSUB_IQ_DISCOVERY_RESULT = {
     discoInfo: {
@@ -32,7 +33,8 @@ describe('XmppFeatureService', () => {
 
   beforeEach(() => {
     xmppSpy = spyOn(xmppService, 'executeIq');
-    service = new XmppFeatureService(xmppService, configService);
+    logSpy = jasmine.createSpyObj('ErrorLog', ['warn']);
+    service = new XmppFeatureService(xmppService, configService, logSpy);
   });
 
   it('should detect a supported feature', done => {
@@ -55,19 +57,25 @@ describe('XmppFeatureService', () => {
 
   it('should detect an unsupported feature', done => {
     xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
-    service.checkFeature('pubsub', 'do-magic').then(result => {
+    const protocol = 'pubsub';
+    const feature = 'do-magic';
+    service.checkFeature(protocol, feature).then(result => {
       expect(xmppSpy).toHaveBeenCalled();
       expect(result).toBe(false);
+      expect(logSpy.warn).toHaveBeenCalledWith(`XMPP feature ${feature} of protocol ${protocol} is not supported.`);
       done();
     });
   });
 
   it('should detect if one of multiple features is unsupported', done => {
     xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
-    service.checkFeatures('pubsub', ['do-magic', 'subscribe']).then(result => {
+    const protocol = 'pubsub';
+    const feature = 'do-magic';
+    service.checkFeatures(protocol, [feature, 'subscribe']).then(result => {
       expect(xmppSpy).toHaveBeenCalled();
       expect(result.length).toBe(1);
       expect(result).toContain('do-magic(pubsub)');
+      expect(logSpy.warn).toHaveBeenCalledWith(`XMPP feature ${feature} of protocol ${protocol} is not supported.`);
       done();
     });
   });

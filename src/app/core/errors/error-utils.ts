@@ -68,10 +68,8 @@ export function ErrorToString(error: any): string {
   if (error instanceof XmppError) {
     return error.message;
   } else if (error instanceof Error) {
-    console.error(error); // Report error in the console
     return `An unknown error has occurred: ${error.message}`;
   } else {
-    console.error('Unknown error object:', error); // Report error in the console
     return `An unknown error has occurred: ${JSON.stringify(error)}`;
   }
 }

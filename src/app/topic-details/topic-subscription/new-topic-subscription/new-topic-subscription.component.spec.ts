@@ -7,6 +7,7 @@ import {NewTopicSubscriptionComponent} from './new-topic-subscription.component'
 import {FormsModule} from '@angular/forms';
 import {NavigationService} from '../../../core/navigation.service';
 import {XmppError, XmppErrorCondition} from '../../../core/errors';
+import {ErrorLogService} from '../../../core/errors/error-log.service';
 
 describe('NewTopicSubscriptionComponent', () => {
   let component: NewTopicSubscriptionComponent;
@@ -14,17 +15,21 @@ describe('NewTopicSubscriptionComponent', () => {
   let el: HTMLElement;
   let service: jasmine.SpyObj<TopicSubscriptionService>;
   let navigationService: jasmine.SpyObj<NavigationService>;
+  let errorLogService: jasmine.SpyObj<ErrorLogService>;
 
   beforeEach(async(() => {
     service = jasmine.createSpyObj('TopicSubscriptionService', ['subscribe']);
     navigationService = jasmine.createSpyObj('NavigationService', ['goToSubscriptions']);
+    errorLogService = jasmine.createSpyObj('ErrorLogService', ['error']);
+
     TestBed.configureTestingModule({
       declarations: [NewTopicSubscriptionComponent],
       imports: [FormsModule, SharedModule],
       providers: [
         {provide: TopicSubscriptionService, useValue: service},
         {provide: NavigationService, useValue: navigationService},
-        {provide: ActivatedRoute, useValue: {snapshot: {params: {id: 'testing'}}}}
+        {provide: ActivatedRoute, useValue: {snapshot: {params: {id: 'testing'}}}},
+        {provide: ErrorLogService, useValue: errorLogService}
       ]
     });
   }));
@@ -90,7 +95,8 @@ describe('NewTopicSubscriptionComponent', () => {
     }));
 
     it('should render error message when subscription fails', fakeAsync(() => {
-      service.subscribe.and.returnValue(Promise.reject(new XmppError('timeout', XmppErrorCondition.Timeout)));
+      const error = new XmppError('timeout', XmppErrorCondition.Timeout);
+      service.subscribe.and.returnValue(Promise.reject(error));
       submitButton.click();
 
       // submit
@@ -103,6 +109,7 @@ describe('NewTopicSubscriptionComponent', () => {
       expect(el.querySelector('[toast-error]').innerHTML).toBe('timeout');
       expect(submitButton.disabled).toBeFalsy();
       expect(inputField.disabled).toBeFalsy();
+      expect(errorLogService.error).toHaveBeenCalledWith(error.message, error);
     }));
 
     it('should render redirect when subscription succeeds', fakeAsync(() => {

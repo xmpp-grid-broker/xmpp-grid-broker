@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 import {ErrorToString} from '../../../core/errors';
 import {NavigationService} from '../../../core/navigation.service';
+import {ErrorLogService} from '../../../core/errors/error-log.service';
 
 @Component({
   selector: 'xgb-topic-subscription',
@@ -37,7 +38,8 @@ export class TopicSubscriptionComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private topicSubscriptionService: TopicSubscriptionService,
-              private navigationService: NavigationService) {
+              private navigationService: NavigationService,
+              private errorLogService: ErrorLogService) {
   }
 
   ngOnInit() {
@@ -53,6 +55,7 @@ export class TopicSubscriptionComponent implements OnInit {
       .catch((error) => {
         this.isLoaded = true;
         this.errorMessage = ErrorToString(error);
+        this.errorLogService.error(this.errorMessage, error);
       });
   }
 
@@ -74,6 +77,7 @@ export class TopicSubscriptionComponent implements OnInit {
       .catch((error) => {
         this.isLoaded = true;
         this.errorMessage = ErrorToString(error);
+        this.errorLogService.error(this.errorMessage, error);
       });
   }
 

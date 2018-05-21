@@ -13,6 +13,7 @@ import {ConfigService} from './config.service';
 import {XmppFeatureGuardService} from './xmpp/xmpp-feature-guard.service';
 import {ConfirmNotificationComponent} from './notifications/confirm-notification/confirm-notification.component';
 import {AlertNotificationComponent} from './notifications/alert-notification/alert-notification.component';
+import {ErrorLogService} from './errors/error-log.service';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import {AlertNotificationComponent} from './notifications/alert-notification/ale
   entryComponents: [AlertNotificationComponent, ConfirmNotificationComponent],
   providers: [
     {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
-    NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService, ConfigService]
+    NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService,
+    ConfigService, ErrorLogService]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

@@ -4,6 +4,7 @@ import {NgForm} from '@angular/forms';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 import {NavigationService} from '../../../core/navigation.service';
 import {ErrorToString} from '../../../core/errors';
+import {ErrorLogService} from '../../../core/errors/error-log.service';
 
 @Component({
   selector: 'xgb-new-topic-subscription',
@@ -17,7 +18,8 @@ export class NewTopicSubscriptionComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private navigationService: NavigationService,
-              private topicSubscriptionService: TopicSubscriptionService) {
+              private topicSubscriptionService: TopicSubscriptionService,
+              private errorLogService: ErrorLogService) {
   }
 
   ngOnInit() {
@@ -33,6 +35,7 @@ export class NewTopicSubscriptionComponent implements OnInit {
       .catch((err) => {
         formRef.form.enable();
         this.errorMessage = ErrorToString(err);
+        this.errorLogService.error(this.errorMessage, err);
       });
   }
 }

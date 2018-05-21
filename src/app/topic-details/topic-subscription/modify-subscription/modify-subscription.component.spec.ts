@@ -9,6 +9,7 @@ import {ModifySubscriptionComponent} from './modify-subscription.component';
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../../core/models/FormModels';
 import {ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../../topic-widgets/topic-widgets.module';
+import {ErrorLogService} from '../../../core/errors/error-log.service';
 
 describe('ModifySubscriptionComponent', () => {
   let component: ModifySubscriptionComponent;
@@ -16,10 +17,12 @@ describe('ModifySubscriptionComponent', () => {
   let el: HTMLElement;
   let service: jasmine.SpyObj<TopicSubscriptionService>;
   let navigationService: jasmine.SpyObj<NavigationService>;
+  let errorLogService: jasmine.SpyObj<ErrorLogService>;
 
   beforeEach(async(() => {
     service = jasmine.createSpyObj('TopicSubscriptionService', ['loadConfiguration', 'updateConfiguration']);
     navigationService = jasmine.createSpyObj('NavigationService', ['goToSubscriptions']);
+    errorLogService = jasmine.createSpyObj('ErrorLogService', ['error']);
 
     TestBed.configureTestingModule({
       declarations: [ModifySubscriptionComponent],
@@ -32,7 +35,8 @@ describe('ModifySubscriptionComponent', () => {
             snapshot: {params: {subId: 'testsub', jid: 'eva@example'}},
             parent: {snapshot: {params: {id: 'testing'}}}
           }
-        }
+        },
+        {provide: ErrorLogService, useValue: errorLogService}
       ]
     });
   }));
@@ -70,12 +74,13 @@ describe('ModifySubscriptionComponent', () => {
   }));
 
   it('should show error when loading fails', fakeAsync(() => {
-    service.loadConfiguration.and.returnValue(Promise.reject(new XmppError('Sth went wrong!', 'any')));
+    const error = new XmppError('Sth went wrong!', 'any');
+    service.loadConfiguration.and.returnValue(Promise.reject(error));
 
     waitUntilLoaded();
 
-    expect(el.querySelector('[toast-error]').innerHTML).toBe('Sth went wrong!');
-
+    expect(el.querySelector('[toast-error]').innerHTML).toBe(error.message);
+    expect(errorLogService.error).toHaveBeenCalledWith(error.message, error);
   }));
 
   it('should render node in title', fakeAsync(() => {
@@ -158,8 +163,9 @@ describe('ModifySubscriptionComponent', () => {
   }));
 
   it('should render an error when update was unsuccessful', fakeAsync(() => {
+    const error = 'err';
     service.loadConfiguration.and.returnValue(Promise.resolve(new XmppDataForm([])));
-    service.updateConfiguration.and.callFake(() => Promise.reject('err'));
+    service.updateConfiguration.and.callFake(() => Promise.reject(error));
 
     waitUntilLoaded();
 
@@ -171,8 +177,9 @@ describe('ModifySubscriptionComponent', () => {
     fixture.detectChanges();
     tick();
 
+    const expectedErrorMessage = 'An unknown error has occurred: "err"';
     expect(navigationService.goToSubscriptions).toHaveBeenCalledTimes(0);
-    expect(el.querySelector('[toast-error]').innerHTML).toBe('An unknown error has occurred: "err"');
-
+    expect(el.querySelector('[toast-error]').innerHTML).toBe(expectedErrorMessage);
+    expect(errorLogService.error).toHaveBeenCalledWith(expectedErrorMessage, error);
   }));
 });

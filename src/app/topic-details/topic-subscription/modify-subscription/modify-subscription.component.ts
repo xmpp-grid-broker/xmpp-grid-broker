@@ -5,6 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {FormGroup} from '@angular/forms';
 import {XmppDataForm} from '../../../core/models/FormModels';
 import {ErrorToString} from '../../../core/errors';
+import {ErrorLogService} from '../../../core/errors/error-log.service';
 
 @Component({
   selector: 'xgb-modify-subscription',
@@ -51,7 +52,8 @@ export class ModifySubscriptionComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private topicSubscriptionService: TopicSubscriptionService,
-              private navigationService: NavigationService) {
+              private navigationService: NavigationService,
+              private errorLogService: ErrorLogService) {
   }
 
   ngOnInit() {
@@ -73,6 +75,7 @@ export class ModifySubscriptionComponent implements OnInit {
     }).catch((err) => {
       this.loading = false;
       this.errorMessage = ErrorToString(err);
+      this.errorLogService.error(this.errorMessage, err);
     });
 
   }
@@ -91,6 +94,7 @@ export class ModifySubscriptionComponent implements OnInit {
       .catch((err) => {
         this.loading = false;
         this.errorMessage = ErrorToString(err);
+        this.errorLogService.error(this.errorMessage, err);
       });
 
     return false;

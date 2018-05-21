@@ -7,6 +7,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {Subscription, SubscriptionState} from '../../../core/models/Subscription';
 import {XmppError} from '../../../core/errors';
 import {NavigationService} from '../../../core/navigation.service';
+import {ErrorLogService} from '../../../core/errors/error-log.service';
 
 describe('TopicSubscriptionComponent', () => {
   let component: TopicSubscriptionComponent;
@@ -14,17 +15,20 @@ describe('TopicSubscriptionComponent', () => {
   let el: HTMLElement;
   let service: jasmine.SpyObj<TopicSubscriptionService>;
   let navigationService: jasmine.SpyObj<NavigationService>;
+  let errorLogService: jasmine.SpyObj<ErrorLogService>;
 
   beforeEach(async(() => {
     service = jasmine.createSpyObj('TopicSubscriptionService', ['loadSubscriptions', 'unsubscribe']);
     navigationService = jasmine.createSpyObj('NavigationService', ['goToSubscription', 'goToNewSubscription']);
+    errorLogService = jasmine.createSpyObj('ErrorLogService', ['error']);
     TestBed.configureTestingModule({
       declarations: [TopicSubscriptionComponent],
       imports: [SharedModule],
       providers: [
         {provide: TopicSubscriptionService, useValue: service},
         {provide: NavigationService, useValue: navigationService},
-        {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}}
+        {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
+        {provide: ErrorLogService, useValue: errorLogService}
       ]
     });
   }));
@@ -62,12 +66,14 @@ describe('TopicSubscriptionComponent', () => {
   }));
 
   it('should show error when loading fails', fakeAsync(() => {
-    service.loadSubscriptions.and.returnValue(Promise.reject(new XmppError('Sth went wrong!', 'any')));
+    const errorMessage = 'Sth went wrong!';
+    const error = new XmppError(errorMessage, 'any');
+    service.loadSubscriptions.and.returnValue(Promise.reject(error));
 
     waitUntilLoaded();
 
-    expect(el.querySelector('[toast-error').innerHTML).toBe('Sth went wrong!');
-
+    expect(el.querySelector('[toast-error').innerHTML).toBe(errorMessage);
+    expect(errorLogService.error).toHaveBeenCalledWith(errorMessage, error);
   }));
 
   it('should show empty message if no subscriptions exist', fakeAsync(() => {
@@ -203,7 +209,9 @@ describe('TopicSubscriptionComponent', () => {
       );
     }));
     it('render render an error if unsubscribe fails', fakeAsync(() => {
-      service.unsubscribe.and.returnValue(Promise.reject(new XmppError('Sth went wrong!', 'any')));
+      const errorMessage = 'Sth went wrong!';
+      const error = new XmppError(errorMessage, 'any');
+      service.unsubscribe.and.returnValue(Promise.reject(error));
       (getRemoveButtons()[0] as HTMLButtonElement).click();
 
       // Wait until it's loaded
@@ -212,7 +220,8 @@ describe('TopicSubscriptionComponent', () => {
       fixture.detectChanges();
       tick();
 
-      expect(el.querySelector('[toast-error').innerHTML).toBe('Sth went wrong!');
+      expect(el.querySelector('[toast-error').innerHTML).toBe(errorMessage);
+      expect(errorLogService.error).toHaveBeenCalledWith(errorMessage, error);
     }));
 
   });
