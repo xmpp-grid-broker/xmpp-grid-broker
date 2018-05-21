@@ -1,5 +1,4 @@
 import {ErrorLogService} from './error-log.service';
-import {LogLevel} from './log-level';
 
 describe('ErrorLogService', () => {
   let errorLog: ErrorLogService;
@@ -7,17 +6,8 @@ describe('ErrorLogService', () => {
 
 
   beforeEach(() => {
-    errorLog = new ErrorLogService(LogLevel.Debug);
+    errorLog = new ErrorLogService();
   });
-
-  it('should not log error messages on None log level', () => {
-    errorLog = new ErrorLogService(LogLevel.None);
-    spyOn(console, 'error');
-
-    errorLog.error(message);
-    expect(console.error).not.toHaveBeenCalled();
-  });
-
 
   it('should log error to error console', () => {
     spyOn(console, 'error');

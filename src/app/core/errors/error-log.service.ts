@@ -1,10 +1,13 @@
-import {Injectable, Optional} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {LogLevel} from './log-level';
 
 @Injectable()
 export class ErrorLogService {
-  constructor(@Optional() readonly logLevel: LogLevel = environment.log_level) {
+  readonly logLevel: LogLevel;
+
+  constructor() {
+    this.logLevel = environment.log_level;
   }
 
   /**
