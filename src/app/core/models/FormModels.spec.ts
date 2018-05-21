@@ -126,7 +126,7 @@ describe('XmppDataForm', () => {
     });
   });
 
-  fdescribe('when calling fromFormGroup', () => {
+  describe('when calling fromFormGroup', () => {
     it('should return null for undefined XmppForm', () => {
       const result = XmppDataForm.fromFormGroup(new FormGroup({}), undefined);
       expect(result).toBeNull();

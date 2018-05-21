@@ -124,6 +124,7 @@ describe('ModifySubscriptionComponent', () => {
 
   it('should call the service on update', fakeAsync(() => {
     service.loadConfiguration.and.returnValue(Promise.resolve(new XmppDataForm([])));
+    service.updateConfiguration.and.returnValue(Promise.resolve());
 
     waitUntilLoaded();
 
