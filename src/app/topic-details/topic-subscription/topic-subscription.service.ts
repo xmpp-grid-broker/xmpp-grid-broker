@@ -55,8 +55,8 @@ export class TopicSubscriptionService {
       }
     };
     return this.xmppService.executeIqToPubsub(cmd)
-      .then((response) => {
-      }).catch((err) => {
+      .then(() => {})
+      .catch((err) => {
         throw JxtErrorToXmppError(err, {
             [XmppErrorCondition.BadRequest]: `You are not allowed to subscribe ${jid} to ${topicIdentifier}`,
             [XmppErrorCondition.NotAuthorized]: `Either you or ${jid} are not authorized to subscribe on ${jid}. `
@@ -90,8 +90,8 @@ export class TopicSubscriptionService {
       }
     };
     return this.xmppService.executeIqToPubsub(cmd)
-      .then((response) => {
-      }).catch((err) => {
+      .then(() => {})
+      .catch((err) => {
         throw JxtErrorToXmppError(err, {
             [XmppErrorCondition.BadRequest]: `The subscription id ${subscription.subid} is invalid!`,
             [XmppErrorCondition.NotAcceptable]: `The subscription id ${subscription.subid} is invalid!`,

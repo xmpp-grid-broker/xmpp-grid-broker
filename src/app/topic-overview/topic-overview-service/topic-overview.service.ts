@@ -30,7 +30,7 @@ export class TopicOverviewService {
    */
   private async* createTopicsIterator(recursive: boolean): AsyncIterableIterator<Topic> {
 
-    const topicsForWhichTheChildsShallBeLoaded = [undefined]; // undefinded = root
+const topicsForWhichTheChildsShallBeLoaded: Array<string | undefined> = [undefined]; // undefinded = root
     const visitedTopics = []; // To prevent duplicates...
     while (topicsForWhichTheChildsShallBeLoaded.length > 0) {
       const topicName = topicsForWhichTheChildsShallBeLoaded.pop();
@@ -59,7 +59,7 @@ export class TopicOverviewService {
    * of the given topic identifier.
    */
   private async* createTopicChildrenIterator(topicIdentifier: string): AsyncIterableIterator<Topic> {
-    let loadAfter;
+    let loadAfter: number | undefined;
     let hasMore = true;
     do {
       const cmd = {

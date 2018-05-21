@@ -21,7 +21,7 @@ export enum XmppErrorCondition {
 }
 
 /**
- * An XMPP specific error object that contains the condition in additon to a user friendly message.
+ * An XMPP specific error object that contains the condition in addition to a user friendly message.
  */
 export class XmppError extends Error {
 
@@ -40,7 +40,7 @@ export class XmppError extends Error {
  * Generic errors such as timeout and internal server errors are handled by this method.
  *
  * @param error the error as returned by stanza.io or the xmpp service.
- * @param {{[p: string]: string}} Specific error handling. Use {@link XmppErrorCondition} as keys!
+ * @param conditionToErrorMapping {{[key: string]: string}} Specific error handling. Use {@link XmppErrorCondition} as keys!
  */
 export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key: string]: string }): XmppError {
   if (error && error.condition) {

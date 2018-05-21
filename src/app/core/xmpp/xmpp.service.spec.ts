@@ -1,4 +1,3 @@
-import {JID} from 'xmpp-jid';
 import {IqType, XmppService} from './xmpp.service';
 import {Config, XmppConfig, XmppTransport} from '../models/config';
 import {NotificationService} from '../notifications/notification.service';

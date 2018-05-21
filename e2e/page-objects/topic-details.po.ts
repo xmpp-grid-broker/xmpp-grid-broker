@@ -1,5 +1,5 @@
 import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
-import {by, element, ElementFinder, promise} from 'protractor';
+import {by, element, ElementFinder} from 'protractor';
 import {Tab} from '../page-elements/tab';
 import {Spinner} from '../page-elements/spinner';
 import {Form} from '../page-elements/form';
