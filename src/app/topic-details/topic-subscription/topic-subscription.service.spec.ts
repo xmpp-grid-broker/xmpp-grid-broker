@@ -3,6 +3,7 @@ import {XmppService} from '../../core/xmpp/xmpp.service';
 import {JID} from 'xmpp-jid';
 import {Subscription, SubscriptionState} from '../../core/models/Subscription';
 import {XmppErrorCondition} from '../../core/errors';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 
 describe('TopicSubscriptionService', () => {
   let service: TopicSubscriptionService;
@@ -99,7 +100,7 @@ describe('TopicSubscriptionService', () => {
     });
   });
 
-  describe('when calling subscribe', () => {
+  describe('when calling unsubscribe', () => {
     it('it should call the xmpp service', async () => {
       xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
 
@@ -126,4 +127,90 @@ describe('TopicSubscriptionService', () => {
       }
     });
   });
+
+  describe('when calling loadConfiguration', () => {
+    it('it should call the xmpp service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsub: {subscriptionOptions: {form: {fields: []}}}}));
+
+      await service.loadConfiguration('test-topic', 'test-jid', 'test-subid');
+
+      await expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      await expect(cmd.pubsub.subscriptionOptions.node).toBe('test-topic');
+      await expect(cmd.pubsub.subscriptionOptions.jid).toBe('test-jid');
+      await expect(cmd.pubsub.subscriptionOptions.subid).toBe('test-subid');
+
+    });
+
+    it('it should map the form into an XmppDataForm object', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({
+        pubsub: {
+          subscriptionOptions: {
+            form: {
+              fields: [
+                {type: 'hidden', name: 'example'},
+                {type: 'boolean', name: 'foo'}
+              ]
+            }
+          }
+        }
+      }));
+
+      const result = await service.loadConfiguration('test-topic', 'test-jid', 'test-subid');
+
+      expect(result.fields.length).toBe(2);
+      expect(result.fields[0].name).toBe('example');
+      expect(result.fields[1].name).toBe('foo');
+
+    });
+
+    it('should reject when executeIqToPubsub fails', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
+        {condition: XmppErrorCondition.Forbidden}
+      ));
+
+      try {
+        await service.loadConfiguration('test-topic', 'test-jid', 'test-subid');
+        fail(`expected an error`);
+      } catch (e) {
+        await expect(e.message).toBe('You have insufficient privileges to modify this subscription options');
+      }
+    });
+  });
+
+  describe('when calling updateConfiguration', () => {
+    it('it should call the xmpp service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
+
+      await service.updateConfiguration('test-topic', 'test-jid', 'test-subid', new XmppDataForm([
+        new XmppDataFormField(XmppDataFormFieldType.boolean, 'name', 'val'),
+        new XmppDataFormField(XmppDataFormFieldType.boolean, 'example', 'foo'),
+      ]));
+
+      await expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      await expect(cmd.pubsub.subscriptionOptions.node).toBe('test-topic');
+      await expect(cmd.pubsub.subscriptionOptions.jid).toBe('test-jid');
+      await expect(cmd.pubsub.subscriptionOptions.subid).toBe('test-subid');
+      await expect(cmd.pubsub.subscriptionOptions.form.type).toBe('submit');
+      await expect(cmd.pubsub.subscriptionOptions.form.fields.length).toBe(2);
+      await expect(cmd.pubsub.subscriptionOptions.form.fields[0].name).toBe('name');
+      await expect(cmd.pubsub.subscriptionOptions.form.fields[0].value).toBe('val');
+
+    });
+
+    it('should reject when executeIqToPubsub fails', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
+        {condition: XmppErrorCondition.BadRequest}
+      ));
+
+      try {
+        await service.updateConfiguration('test-topic', 'test-jid', 'test-subid', new XmppDataForm([]));
+        fail(`expected an error`);
+      } catch (e) {
+        await expect(e.message).toBe('Invalid group of options');
+      }
+    });
+  });
+
 });

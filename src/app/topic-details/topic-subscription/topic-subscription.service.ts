@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
 import {Subscription} from '../../core/models/Subscription';
 import {JxtErrorToXmppError, XmppErrorCondition} from '../../core/errors';
+import {XmppDataForm} from '../../core/models/FormModels';
 
 
 @Injectable()
@@ -97,6 +98,57 @@ export class TopicSubscriptionService {
             [XmppErrorCondition.UnexpectedRequest]: `${subscription.jid} is not subscribed on ${topicIdentifier}`,
             [XmppErrorCondition.Forbidden]: `You have insufficient privileges to unsubscribe ${subscription.jid}`,
             [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`
+          }
+        );
+      });
+  }
+
+  public loadConfiguration(topicIdentifier: string, jid: string, subid: string): Promise<XmppDataForm> {
+    const cmd = {
+      type: IqType.Get,
+      pubsub: {
+        subscriptionOptions: {
+          node: topicIdentifier,
+          jid: jid,
+          subid: subid
+        }
+      }
+    };
+
+    return this.xmppService.executeIqToPubsub(cmd)
+      .then((result) =>
+        XmppDataForm.fromJSON(result.pubsub.subscriptionOptions.form)
+      ).catch((err) => {
+        throw JxtErrorToXmppError(err, {
+            [XmppErrorCondition.BadRequest]: `The jid ${jid} or subscription id ${subid} is invalid!`,
+            [XmppErrorCondition.NotAcceptable]: `The subscription id ${subid} is invalid!`,
+            [XmppErrorCondition.UnexpectedRequest]: `${jid} is not subscribed on ${topicIdentifier}`,
+            [XmppErrorCondition.Forbidden]: 'You have insufficient privileges to modify this subscription options',
+            [XmppErrorCondition.FeatureNotImplemented]: 'Subscription options are not supported by the XMPP Server',
+            [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`
+          }
+        );
+      });
+  }
+
+  public updateConfiguration(topicIdentifier: string, jid: string, subid: string, xmppDataForm: XmppDataForm) {
+    const cmd = {
+      type: IqType.Set,
+      pubsub: {
+        subscriptionOptions: {
+          node: topicIdentifier,
+          jid: jid,
+          subid: subid,
+          form: xmppDataForm.toJSON()
+        }
+      }
+    };
+    return this.xmppService.executeIqToPubsub(cmd)
+      .then((result) => {
+        }
+      ).catch((err) => {
+        throw JxtErrorToXmppError(err, {
+            [XmppErrorCondition.BadRequest]: 'Invalid group of options'
           }
         );
       });
