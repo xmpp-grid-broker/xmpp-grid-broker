@@ -6,7 +6,7 @@ import {TabComponent} from './tab.component';
   template: `
     <ul class="tab tab-block">
       <li *ngFor="let tab of tabs" class="tab-item">
-        <a (click)="tab.click()" routerLinkActive="active">{{tab.tabTitle}}</a>
+        <a [routerLink]="tab.routerLink" routerLinkActive="active">{{tab.tabTitle}}</a>
       </li>
     </ul>
   `
