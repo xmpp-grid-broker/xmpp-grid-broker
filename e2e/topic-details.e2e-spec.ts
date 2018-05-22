@@ -15,6 +15,7 @@ describe('TopicDetails', () => {
   beforeEach(async () => {
     page = new TopicDetailsPage(defaultTopicId);
     await page.navigateTo();
+    await Spinner.waitOnNone(); // wait for the spinner while loading details
   });
 
   it('should go to the default tab on launch', () => {
