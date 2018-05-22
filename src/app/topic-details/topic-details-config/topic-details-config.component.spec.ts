@@ -7,7 +7,11 @@ import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {ToastDirective} from '../../shared/toast.directive';
-import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
+import {
+  LoadConfigurationFormErrorCodes,
+  TopicDeletionErrorCodes,
+  TopicDetailsConfigurationService
+} from './topic-details-configuration.service';
 import {NavigationService} from '../../core/navigation.service';
 import {NotificationService} from '../../core/notifications/notification.service';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
@@ -74,8 +78,8 @@ describe('TopicDetailsConfigComponent', () => {
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicDetailsConfigComponent],
-        providers: [{provide: TopicDetailsService, useValue: mockService},
-          {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
+        providers: [{provide: TopicDetailsConfigurationService, useValue: mockService},
+        {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
           {provide: NavigationService, useValue: navigationService},
           {provide: NotificationService, useValue: notificationService}
         ]

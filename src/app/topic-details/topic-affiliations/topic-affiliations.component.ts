@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {AffiliationManagementErrorCodes, TopicDetailsService} from '../topic-details.service';
+import {AffiliationManagementErrorCodes, TopicAffiliationsService} from './topic-affiliations.service';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {NgForm} from '@angular/forms';
 import {XmppService} from '../../core/xmpp/xmpp.service';
@@ -50,8 +50,8 @@ export class TopicAffiliationsComponent implements OnInit {
   private topic: undefined | Topic;
 
   constructor(private xmppService: XmppService,
+              private topicAffiliationsService: TopicAffiliationsService,
               private detailsService: CurrentTopicDetailService,
-              private topicDetailsService: TopicDetailsService,
               private notificationService: NotificationService) {
   }
 
@@ -68,7 +68,7 @@ export class TopicAffiliationsComponent implements OnInit {
       form.get('affiliation').value);
 
     this.isLoaded = false;
-    this.topicDetailsService.modifyJidAffiliation(this.topic.title, newAffiliation)
+    this.topicAffiliationsService.modifyJidAffiliation(this.topic.title, newAffiliation)
       .then(() => {
         form.reset();
         this.refresh();
@@ -115,7 +115,7 @@ export class TopicAffiliationsComponent implements OnInit {
   private doRemoveAffiliation(affiliation: JidAffiliation) {
     affiliation.affiliation = Affiliation.None;
     this.isLoaded = false;
-    this.topicDetailsService.modifyJidAffiliation(this.topic.title, affiliation)
+    this.topicAffiliationsService.modifyJidAffiliation(this.topic.title, affiliation)
       .then(() => {
         this.refresh();
       })
@@ -125,7 +125,7 @@ export class TopicAffiliationsComponent implements OnInit {
   private doChangeAffiliation(affiliation: JidAffiliation, newAffiliation) {
     this.isLoaded = false;
     affiliation.affiliation = newAffiliation;
-    this.topicDetailsService.modifyJidAffiliation(this.topic.title, affiliation)
+    this.topicAffiliationsService.modifyJidAffiliation(this.topic.title, affiliation)
       .then(() => {
         this.refresh();
       })
@@ -134,7 +134,7 @@ export class TopicAffiliationsComponent implements OnInit {
 
   private refresh() {
     this.isLoaded = false;
-    this.topicDetailsService.loadJidAffiliations(this.topic.title)
+    this.topicAffiliationsService.loadJidAffiliations(this.topic.title)
       .then((loadedAffiliations: JidAffiliation[]) => {
         this.isLoaded = true;
         this.jidAffiliations = loadedAffiliations;
