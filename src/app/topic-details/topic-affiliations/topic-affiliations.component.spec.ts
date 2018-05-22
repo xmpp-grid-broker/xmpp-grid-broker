@@ -5,10 +5,11 @@ import {SharedModule} from '../../shared/shared.module';
 import {AffiliationManagementErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {DebugElement} from '@angular/core';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
-import {ActivatedRoute} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 import {NotificationService} from '../../core/notifications/notification.service';
+import {LeafTopic} from '../../core/models/topic';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
 
 describe('TopicAffiliationsComponent', () => {
   let component: TopicAffiliationsComponent;
@@ -30,6 +31,9 @@ describe('TopicAffiliationsComponent', () => {
       'isJidCurrentUser': isJidCurrentUserResult
     });
     notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
+    const currentTopicDetailService = jasmine.createSpyObj('CurrentTopicDetailService', ['currentTopic']);
+    currentTopicDetailService.currentTopic.and.returnValue(new LeafTopic('testing'));
+
     TestBed.configureTestingModule({
       imports: [SharedModule, FormsModule],
       declarations: [TopicAffiliationsComponent],
@@ -37,7 +41,7 @@ describe('TopicAffiliationsComponent', () => {
         {provide: TopicDetailsService, useValue: mockService},
         {provide: XmppService, useValue: mockXmppService},
         {provide: NotificationService, useValue: notificationService},
-        {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}}
+        {provide: CurrentTopicDetailService, useValue: currentTopicDetailService}
       ]
     });
 
@@ -372,7 +376,6 @@ describe('TopicAffiliationsComponent', () => {
       expect(component.errorMessage).toBeTruthy();
     }));
     [
-      {condition: AffiliationManagementErrorCodes.ItemNotFound, message: 'Node testing does not exist'},
       {condition: AffiliationManagementErrorCodes.Unsupported, message: 'Node or service does not support affiliation management'},
       {
         condition: AffiliationManagementErrorCodes.Forbidden,

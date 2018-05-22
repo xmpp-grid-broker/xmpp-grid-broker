@@ -110,7 +110,6 @@ describe('NewPersistedItemComponent', () => {
     {error: {}, message: 'an unknown error occurred: {}!'},
     {error: {condition: 'forbidden'}, message: 'You have not sufficient privileges to publish to this node'},
     {error: {condition: 'feature-not-implemented'}, message: 'Node testing does not support item publication'},
-    {error: {condition: 'item-not-found'}, message: 'Node testing does not exist'},
     {error: {condition: 'not-acceptable'}, message: 'Payload is too big'},
     {error: {condition: 'bad-request'}, message: 'Bad Payload: The payload is not acceptable with the nodes configuration'},
     {error: {message: 'Incomplete document'}, message: 'The given message is not a valid XML document'},

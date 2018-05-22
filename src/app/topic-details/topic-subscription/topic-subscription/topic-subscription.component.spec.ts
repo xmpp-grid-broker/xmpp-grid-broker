@@ -1,13 +1,14 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {TopicSubscriptionComponent} from './topic-subscription.component';
-import {ActivatedRoute} from '@angular/router';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 import {SharedModule} from '../../../shared/shared.module';
 import {Subscription, SubscriptionState} from '../../../core/models/Subscription';
 import {XmppError} from '../../../core/errors';
 import {NavigationService} from '../../../core/navigation.service';
 import {ErrorLogService} from '../../../core/errors/error-log.service';
+import {CurrentTopicDetailService} from '../../current-topic-detail.service';
+import {LeafTopic} from '../../../core/models/topic';
 
 describe('TopicSubscriptionComponent', () => {
   let component: TopicSubscriptionComponent;
@@ -21,13 +22,15 @@ describe('TopicSubscriptionComponent', () => {
     service = jasmine.createSpyObj('TopicSubscriptionService', ['loadSubscriptions', 'unsubscribe']);
     navigationService = jasmine.createSpyObj('NavigationService', ['goToSubscription', 'goToNewSubscription']);
     errorLogService = jasmine.createSpyObj('ErrorLogService', ['error']);
+    const currentTopicDetailService = jasmine.createSpyObj('CurrentTopicDetailService', ['currentTopic']);
+    currentTopicDetailService.currentTopic.and.returnValue(new LeafTopic('testing'));
     TestBed.configureTestingModule({
       declarations: [TopicSubscriptionComponent],
       imports: [SharedModule],
       providers: [
         {provide: TopicSubscriptionService, useValue: service},
         {provide: NavigationService, useValue: navigationService},
-        {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
+        {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
         {provide: ErrorLogService, useValue: errorLogService}
       ]
     });

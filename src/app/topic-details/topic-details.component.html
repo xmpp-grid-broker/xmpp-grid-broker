@@ -1,8 +1,12 @@
-<h2>{{topic}}</h2>
-<xgb-tabs>
-  <xgb-tab [routerLink]="['configuration']" tabTitle="Configuration"></xgb-tab>
-  <xgb-tab [routerLink]="['affiliations']" tabTitle="Affiliations"></xgb-tab>
-  <xgb-tab [routerLink]="['subscriptions']" tabTitle="Subscriptions"></xgb-tab>
-  <xgb-tab [routerLink]="['items']" tabTitle="Persisted Items"></xgb-tab>
-</xgb-tabs>
-<router-outlet></router-outlet>
+<xgb-spinner *ngIf="!topic && !errorMessage"></xgb-spinner>
+<div *ngIf="errorMessage" xgbToast toast-error>{{errorMessage}}</div>
+<ng-container *ngIf="topic">
+  <h2>{{topic.isCollection()?"Collection" :"Topic" }}: {{topic.title}}</h2>
+  <xgb-tabs>
+    <xgb-tab [routerLink]="['configuration']" tabTitle="Configuration"></xgb-tab>
+    <xgb-tab [routerLink]="['affiliations']" tabTitle="Affiliations"></xgb-tab>
+    <xgb-tab [routerLink]="['subscriptions']" tabTitle="Subscriptions"></xgb-tab>
+    <xgb-tab *ngIf="topic.isLeaf()" [routerLink]="['items']" tabTitle="Persisted Items"></xgb-tab>
+  </xgb-tabs>
+  <router-outlet></router-outlet>
+</ng-container>

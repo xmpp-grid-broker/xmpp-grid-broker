@@ -1,13 +1,14 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {PersistedItemsComponent} from './persisted-items.component';
-import {ActivatedRoute} from '@angular/router';
 import {PersistedItem, PersistedItemsService} from '../persisted-items.service';
 import {SharedModule} from '../../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
 import {NotificationService} from '../../../core/notifications/notification.service';
 import {RouterTestingModule} from '@angular/router/testing';
+import {CurrentTopicDetailService} from '../../current-topic-detail.service';
+import {LeafTopic} from '../../../core/models/topic';
 
 describe('PersistedItemsComponent', () => {
   let component: PersistedItemsComponent;
@@ -35,11 +36,13 @@ describe('PersistedItemsComponent', () => {
       'deletePersistedItem',
       'purgePersistedItem']);
     notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
+    const currentTopicDetailService = jasmine.createSpyObj('CurrentTopicDetailService', ['currentTopic']);
+    currentTopicDetailService.currentTopic.and.returnValue(new LeafTopic('testing'));
     TestBed.configureTestingModule({
       declarations: [PersistedItemsComponent],
       imports: [RouterTestingModule, SharedModule],
       providers: [
-        {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
+        {provide: CurrentTopicDetailService, useValue: currentTopicDetailService },
         {provide: PersistedItemsService, useValue: persistedItemsService},
         {provide: NotificationService, useValue: notificationService},
       ]
@@ -227,7 +230,7 @@ describe('PersistedItemsComponent', () => {
         yield new PersistedItem('002');
         yield new PersistedItem('003');
       });
-      persistedItemsService.loadPersistedItemContent.and.callFake((node: string, item: PersistedItem) => {
+      persistedItemsService.loadPersistedItemContent.and.callFake(() => {
         return Promise.reject({condition});
       });
 
@@ -441,6 +444,4 @@ describe('PersistedItemsComponent', () => {
       expect(persistedItemsService.purgePersistedItem).toHaveBeenCalledTimes(0);
     }));
   });
-
-  // TODO: don't show this tab for collections...
 });

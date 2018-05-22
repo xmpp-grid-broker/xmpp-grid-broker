@@ -4,11 +4,13 @@
 <div *ngIf="formProcessing.success" xgbToast toast-success>{{formProcessing.success}}</div>
 
 <xgb-topic-config *ngIf="initialFormLoaded && !formProcessing.processing"
-                  [nodeId]="nodeId"
+                  [topic]="topic"
                   [xmppDataForm]="loadedForm"
                   submitLabel="Update"
                   (configSubmitted)="submit($event)">
   <xgb-collapsible title="Danger Zone">
-    <button xgbActionButton danger (click)="deleteTopic($event)">Delete Topic {{nodeId}}</button>
+    <button xgbActionButton danger (click)="deleteTopic($event)">
+      Delete {{topic.isCollection()? "Collection": "Topic"}} {{topic.title}}
+    </button>
   </xgb-collapsible>
 </xgb-topic-config>
