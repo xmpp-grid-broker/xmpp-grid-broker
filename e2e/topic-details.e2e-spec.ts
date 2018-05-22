@@ -22,7 +22,7 @@ describe('TopicDetails', () => {
   });
 
   it('should have the topics id as title', async () => {
-    expect(await page.getTitle()).toBe(defaultTopicId);
+    expect(await page.getTitle()).toBe(`Topic: ${defaultTopicId}`);
   });
 
   describe('TopicDetailsConfigurationTab', () => {
