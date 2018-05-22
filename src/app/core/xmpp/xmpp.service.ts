@@ -74,14 +74,30 @@ export class XmppService {
    * Automatically tries to connect if no connection is established.
    */
   public getClient(): Promise<any> {
-    return this._client.then(client => new Promise(resolve => {
+    return this._client.then(client => new Promise((resolve) => {
       if (this._state === ConnectionState.Up) {
         resolve(client);
+      } else if (this._state === ConnectionState.Down) {
+        // Register specific callbacks to see if reconnecting fails.
+        const errCallback = () => {
+          this.notificationService.alert(
+            'Connection lost',
+            'Multiple attempts to connect to the XMPP server have failed. ' +
+            'To retry, reload the page.',
+            false);
+        };
+        const succCallBack = () => {
+          // unsubscribe callbacks
+          client.off('session:started', succCallBack);
+          client.off('disconnected', errCallback);
+          resolve(client);
+        };
+        client.on('session:started', succCallBack);
+        client.on('disconnected', errCallback);
+
+        this.connect();
       } else {
         client.on('session:started', () => resolve(client));
-        if (this._state === ConnectionState.Down) {
-          this.connect();
-        }
       }
     }));
   }
@@ -129,10 +145,6 @@ export class XmppService {
     client.on('session:started', () => this._state = ConnectionState.Up);
     client.on('disconnected', () => {
       this._state = ConnectionState.Down;
-      this.notificationService.alert(
-        'Connection lost',
-        'You have lost connection with the XMPP server. Check your internet connection and reload the page.',
-        false);
     });
     client.on('session:end', () => this._state = ConnectionState.Down);
     client.on('auth:failed', () => {
