@@ -7,9 +7,9 @@ export abstract class Topic {
     const topicType = discoInfo.identities[0]['type'];
 
     if (topicType === 'leaf') {
-      return new LeafTopic(topicTitle);
+      return new LeafTopic(topicTitle); //tslint:disable-line
     } else if (topicType === 'collection') {
-      return new CollectionTopic(topicTitle);
+      return new CollectionTopic(topicTitle); //tslint:disable-line
     } else {
       throw new Error(`XMPP: Unsupported PubSub type "${topicType}"`);
     }
@@ -19,13 +19,13 @@ export abstract class Topic {
    * utility method to simplify template code.
    */
   public isCollection(): boolean {
-    return this instanceof CollectionTopic;
+    return this instanceof CollectionTopic; //tslint:disable-line
   }
   /**
    * utility method to simplify template code.
    */
   public isLeaf(): boolean {
-    return this instanceof LeafTopic;
+    return this instanceof LeafTopic; //tslint:disable-line
   }
 }
 
