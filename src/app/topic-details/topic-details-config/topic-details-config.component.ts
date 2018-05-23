@@ -1,6 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {XmppDataForm} from '../../core/models/FormModels';
-import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
+import {
+  LoadConfigurationFormErrorCodes,
+  TopicDeletionErrorCodes,
+  TopicDetailsConfigurationService
+} from './topic-details-configuration.service';
 import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
 import {NavigationService} from '../../core/navigation.service';
 import {NotificationService} from '../../core/notifications/notification.service';
@@ -35,7 +39,7 @@ export class TopicDetailsConfigComponent implements OnInit {
    */
   initialFormLoaded = false;
 
-  constructor(private topicDetailsService: TopicDetailsService,
+  constructor(private topicDetailsService: TopicDetailsConfigurationService,
               private detailsService: CurrentTopicDetailService,
               private navigationService: NavigationService,
               private notificationService: NotificationService) {

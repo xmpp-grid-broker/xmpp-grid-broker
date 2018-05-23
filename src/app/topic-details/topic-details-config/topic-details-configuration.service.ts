@@ -1,19 +1,12 @@
 import {Injectable} from '@angular/core';
-import {XmppDataForm} from '../core/models/FormModels';
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {JidAffiliation} from '../core/models/Affiliation';
+import {XmppDataForm} from '../../core/models/FormModels';
+import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
 
 export enum LoadConfigurationFormErrorCodes {
   ItemNotFound = 'item-not-found',
   Unsupported = 'unsupported',
   Forbidden = 'forbidden',
   NotAllowed = 'not-allowed'
-}
-
-export enum AffiliationManagementErrorCodes {
-  ItemNotFound = 'item-not-found',
-  Unsupported = 'unsupported',
-  Forbidden = 'forbidden'
 }
 
 
@@ -24,7 +17,7 @@ export enum TopicDeletionErrorCodes {
 }
 
 @Injectable()
-export class TopicDetailsService {
+export class TopicDetailsConfigurationService {
 
   constructor(private xmppService: XmppService) {
   }
@@ -60,46 +53,6 @@ export class TopicDetailsService {
     return this.xmppService.executeIqToPubsub(cmd)
       .then(() => this.loadConfigurationForm(topicIdentifier));
   }
-
-  /**
-   * Loads all jid affiliations of the given node.
-   */
-  public loadJidAffiliations(node: string): Promise<JidAffiliation[]> {
-    const cmd = {
-      type: IqType.Get,
-      pubsubOwner: {
-        affiliations: {
-          node: node
-        }
-      }
-    };
-    return this.xmppService.executeIqToPubsub(cmd).then((response) => {
-      return response.pubsubOwner.affiliations.list
-        .map((entry) => new JidAffiliation(entry.jid.full, entry.type));
-    });
-  }
-
-  /**
-   * Updates/Adds/Deletes the given affiliation on the given node.
-   *
-   * If the affiliation is none, the affiliation will be removed (according to xep-0060).
-   */
-  public modifyJidAffiliation(node: string, affiliation: JidAffiliation): Promise<void> {
-    const cmd = {
-      type: IqType.Set,
-      pubsubOwner: {
-        affiliations: {
-          node: node,
-          affiliation: {
-            jid: affiliation.jid,
-            type: affiliation.affiliation
-          }
-        }
-      }
-    };
-    return this.xmppService.executeIqToPubsub(cmd);
-  }
-
 
   /**
    * Deletes the topic with the given topicIdentifier.

@@ -4,7 +4,7 @@ import {SharedModule} from '../shared/shared.module';
 import {TopicDetailsRouterModule} from './topic-details-router.module';
 import {TopicDetailsConfigComponent} from './topic-details-config/topic-details-config.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicDetailsService} from './topic-details.service';
+import {TopicDetailsConfigurationService} from './topic-details-config/topic-details-configuration.service';
 import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
 import {TopicDetailsComponent} from './topic-details.component';
 import {TopicAffiliationsComponent} from './topic-affiliations/topic-affiliations.component';
@@ -16,7 +16,7 @@ import {TopicSubscriptionService} from './topic-subscription/topic-subscription.
 import {NewTopicSubscriptionComponent} from './topic-subscription/new-topic-subscription/new-topic-subscription.component';
 import { ModifySubscriptionComponent } from './topic-subscription/modify-subscription/modify-subscription.component';
 import {CurrentTopicDetailService} from './current-topic-detail.service';
-
+import {TopicAffiliationsService} from './topic-affiliations/topic-affiliations.service';
 
 @NgModule({
   imports: [
@@ -37,7 +37,12 @@ import {CurrentTopicDetailService} from './current-topic-detail.service';
     NewTopicSubscriptionComponent,
     ModifySubscriptionComponent
   ],
-  providers: [TopicDetailsService, CurrentTopicDetailService, PersistedItemsService, TopicSubscriptionService]
+  providers: [
+    TopicDetailsConfigurationService,
+    CurrentTopicDetailService,
+    TopicAffiliationsService,
+    PersistedItemsService,
+    TopicSubscriptionService]
 })
 export class TopicDetailsModule {
 }

@@ -2,7 +2,6 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 
 import {TopicAffiliationsComponent} from './topic-affiliations.component';
 import {SharedModule} from '../../shared/shared.module';
-import {AffiliationManagementErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {DebugElement} from '@angular/core';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
 import {FormsModule} from '@angular/forms';
@@ -10,6 +9,7 @@ import {XmppService} from '../../core/xmpp/xmpp.service';
 import {NotificationService} from '../../core/notifications/notification.service';
 import {LeafTopic} from '../../core/models/topic';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
+import {AffiliationManagementErrorCodes, TopicAffiliationsService} from './topic-affiliations.service';
 
 describe('TopicAffiliationsComponent', () => {
   let component: TopicAffiliationsComponent;
@@ -23,7 +23,7 @@ describe('TopicAffiliationsComponent', () => {
   let isJidCurrentUserResult: Promise<boolean>;
 
   const setup = () => {
-    mockService = jasmine.createSpyObj('TopicDetailsService', {
+    mockService = jasmine.createSpyObj('TopicAffiliationsService', {
       'loadJidAffiliations': loadJidAffiliationsResult,
       'modifyJidAffiliation': modifyJidAffiliationResult
     });
@@ -38,7 +38,7 @@ describe('TopicAffiliationsComponent', () => {
       imports: [SharedModule, FormsModule],
       declarations: [TopicAffiliationsComponent],
       providers: [
-        {provide: TopicDetailsService, useValue: mockService},
+        {provide: TopicAffiliationsService, useValue: mockService},
         {provide: XmppService, useValue: mockXmppService},
         {provide: NotificationService, useValue: notificationService},
         {provide: CurrentTopicDetailService, useValue: currentTopicDetailService}
