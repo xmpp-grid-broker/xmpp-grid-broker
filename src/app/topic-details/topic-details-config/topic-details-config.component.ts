@@ -40,8 +40,8 @@ export class TopicDetailsConfigComponent implements OnInit {
   initialFormLoaded = false;
 
   constructor(private topicDetailsService: TopicDetailsConfigurationService,
+              private detailsService: CurrentTopicDetailService,
               private navigationService: NavigationService,
-  private detailsService: CurrentTopicDetailService,
               private notificationService: NotificationService) {
   }
 
