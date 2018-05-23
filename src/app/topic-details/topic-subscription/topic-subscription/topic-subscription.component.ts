@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Subscription} from '../../../core/models/Subscription';
-import {ActivatedRoute} from '@angular/router';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 import {ErrorToString} from '../../../core/errors';
 import {NavigationService} from '../../../core/navigation.service';
 import {ErrorLogService} from '../../../core/errors/error-log.service';
+import {Topic} from '../../../core/models/topic';
+import {CurrentTopicDetailService} from '../../current-topic-detail.service';
 
 @Component({
   selector: 'xgb-topic-subscription',
@@ -32,23 +33,23 @@ export class TopicSubscriptionComponent implements OnInit {
   subscriptions: Subscription[];
 
   /**
-   * The node on which the subscriptions are managed.
+   * The topic on which the subscriptions are managed.
    */
-  private nodeId: string;
+  private topic: Topic | undefined;
 
-  constructor(private route: ActivatedRoute,
-              private topicSubscriptionService: TopicSubscriptionService,
+  constructor(private topicSubscriptionService: TopicSubscriptionService,
+              private detailsService: CurrentTopicDetailService,
               private navigationService: NavigationService,
               private errorLogService: ErrorLogService) {
   }
 
   ngOnInit() {
-    this.nodeId = this.route.parent.snapshot.params.id;
+    this.topic = this.detailsService.currentTopic();
     this.refresh();
   }
 
   unsubscribe(subscription: Subscription) {
-    this.topicSubscriptionService.unsubscribe(this.nodeId, subscription)
+    this.topicSubscriptionService.unsubscribe(this.topic.title, subscription)
       .then(() => {
         this.refresh();
       })
@@ -60,16 +61,16 @@ export class TopicSubscriptionComponent implements OnInit {
   }
 
   modify(subscription: Subscription) {
-    this.navigationService.goToSubscription(this.nodeId, subscription.jid, subscription.subid);
+    this.navigationService.goToSubscription(this.topic.title, subscription.jid, subscription.subid);
   }
 
   newSubscription() {
-    this.navigationService.goToNewSubscription(this.nodeId);
+    this.navigationService.goToNewSubscription(this.topic.title);
   }
 
   private refresh() {
     this.isLoaded = false;
-    this.topicSubscriptionService.loadSubscriptions(this.nodeId)
+    this.topicSubscriptionService.loadSubscriptions(this.topic.title)
       .then((loadedSubscriptions: Subscription[]) => {
         this.isLoaded = true;
         this.subscriptions = loadedSubscriptions;

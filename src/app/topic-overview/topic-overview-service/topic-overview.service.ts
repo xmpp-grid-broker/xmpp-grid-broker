@@ -98,16 +98,7 @@ const topicsForWhichTheChildsShallBeLoaded: Array<string | undefined> = [undefin
       }
     };
     const response = await this.xmppService.executeIqToPubsub(cmd);
-    const topicTitle = response.discoInfo.node;
-    const topicType = response.discoInfo.identities[0]['type'];
-
-    if (topicType === 'leaf') {
-      return new LeafTopic(topicTitle);
-    } else if (topicType === 'collection') {
-      return new CollectionTopic(topicTitle);
-    } else {
-      throw new Error(`XMPP: Unsupported PubSub type "${topicType}"`);
-    }
+    return Topic.fromDiscoInfo(response.discoInfo);
 
   }
 

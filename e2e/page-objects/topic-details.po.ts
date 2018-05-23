@@ -150,7 +150,9 @@ export class TopicDetailsPage extends UrlAddressableComponent implements Locatab
 
   async navigateToTab(tab: TopicDetailsTab): Promise<void> {
     await tab.linkElement.click();
-    return Spinner.waitOnNone().then(() => {
+    return Spinner.waitOnNone()
+      .then(() => Spinner.waitOnNone()) // wait for topic to be loaded
+      .then(() => {
       this.tab = tab;
     });
   }

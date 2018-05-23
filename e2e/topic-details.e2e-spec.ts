@@ -15,6 +15,7 @@ describe('TopicDetails', () => {
   beforeEach(async () => {
     page = new TopicDetailsPage(defaultTopicId);
     await page.navigateTo();
+    await Spinner.waitOnNone(); // wait for the spinner while loading details
   });
 
   it('should go to the default tab on launch', () => {
@@ -22,7 +23,7 @@ describe('TopicDetails', () => {
   });
 
   it('should have the topics id as title', async () => {
-    expect(await page.getTitle()).toBe(defaultTopicId);
+    expect(await page.getTitle()).toBe(`Topic: ${defaultTopicId}`);
   });
 
   describe('TopicDetailsConfigurationTab', () => {

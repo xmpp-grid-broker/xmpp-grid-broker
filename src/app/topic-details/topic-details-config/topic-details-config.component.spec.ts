@@ -6,13 +6,14 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
-import {ActivatedRoute} from '@angular/router';
 import {ToastDirective} from '../../shared/toast.directive';
 import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {NavigationService} from '../../core/navigation.service';
+import {NotificationService} from '../../core/notifications/notification.service';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
 import createSpyObj = jasmine.createSpyObj;
 import SpyObj = jasmine.SpyObj;
-import {NotificationService} from '../../core/notifications/notification.service';
+import {LeafTopic} from '../../core/models/topic';
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,
@@ -67,11 +68,14 @@ describe('TopicDetailsConfigComponent', () => {
       mockService = new MockTopicDetailsService();
       navigationService = createSpyObj('NavigationService', ['goToHome']);
       notificationService = createSpyObj('NotificationService', ['confirm']);
+      const currentTopicDetailService = jasmine.createSpyObj('CurrentTopicDetailService', ['currentTopic']);
+      currentTopicDetailService.currentTopic.and.returnValue(new LeafTopic('testing'));
+
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicDetailsConfigComponent],
         providers: [{provide: TopicDetailsService, useValue: mockService},
-          {provide: ActivatedRoute, useValue: {parent: {snapshot: {params: {id: 'testing'}}}}},
+          {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
           {provide: NavigationService, useValue: navigationService},
           {provide: NotificationService, useValue: notificationService}
         ]
@@ -100,7 +104,6 @@ describe('TopicDetailsConfigComponent', () => {
   };
 
   [
-    {condition: LoadConfigurationFormErrorCodes.ItemNotFound, message: 'Node with NodeID testing does not exist!'},
     {condition: LoadConfigurationFormErrorCodes.Unsupported, message: 'Node configuration is not supported by the XMPP server'},
     {condition: LoadConfigurationFormErrorCodes.Forbidden, message: 'Insufficient Privileges to configure node testing'},
     {condition: LoadConfigurationFormErrorCodes.NotAllowed, message: 'There are no configuration options available'},
@@ -197,7 +200,7 @@ describe('TopicDetailsConfigComponent', () => {
 
     it('should render the delete button', fakeAsync(() => {
       expect(deleteTopicButton).toBeTruthy();
-      expect(deleteTopicButton.nativeElement.innerHTML).toBe('Delete Topic testing');
+      expect(deleteTopicButton.nativeElement.innerHTML.trim()).toBe('Delete Topic testing');
     }));
 
     it('should show a confirm dialog when clicking delete', fakeAsync(() => {
@@ -253,7 +256,6 @@ describe('TopicDetailsConfigComponent', () => {
     [
       {condition: TopicDeletionErrorCodes.NotAllowed, message: 'You are not allowed to delete the root node testing!'},
       {condition: TopicDeletionErrorCodes.Forbidden, message: 'Insufficient Privileges to delete node testing'},
-      {condition: TopicDeletionErrorCodes.ItemNotFound, message: 'Node with NodeID testing does not exist!'},
       {condition: 'other', message: 'An unknown error occurred: {"condition":"other"}!'},
     ].forEach(({condition, message}) => {
       it(`should render an error message when the delete service method fails (${condition})`, fakeAsync(() => {

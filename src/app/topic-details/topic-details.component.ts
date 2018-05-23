@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {Topic} from '../core/models/topic';
+import {ErrorToString} from '../core/errors';
+import {CurrentTopicDetailService} from './current-topic-detail.service';
+
 
 @Component({
   selector: 'xgb-topic-details',
@@ -7,13 +11,20 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class TopicDetailsComponent implements OnInit {
 
-  topic;
+  topic: undefined | Topic;
+  errorMessage: undefined | string;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute,
+              private service: CurrentTopicDetailService) {
   }
 
   ngOnInit() {
-    this.topic = this.route.snapshot.params.id;
+    const topicInUrl = this.route.snapshot.params.id;
+    this.service.loadTopic(topicInUrl).then((topic) => {
+      this.topic = topic;
+    }).catch((err) => {
+      this.errorMessage = ErrorToString(err);
+    });
   }
 
 }

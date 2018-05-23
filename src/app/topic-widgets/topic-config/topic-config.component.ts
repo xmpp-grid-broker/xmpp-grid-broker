@@ -1,6 +1,7 @@
 import {ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
+import {Topic} from '../../core/models/topic';
 
 @Component({
   selector: 'xgb-topic-config',
@@ -8,10 +9,9 @@ import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core
 })
 export class TopicConfigComponent implements DoCheck {
   /**
-   * The NodeID as given via URL used to identify
-   * the node (See XEP-0060 for details).
+   * The loaded topic (if modified)
    */
-  @Input() public nodeId: string;
+  @Input() public topic: undefined | Topic;
 
   /**
    * The label of the submit button.

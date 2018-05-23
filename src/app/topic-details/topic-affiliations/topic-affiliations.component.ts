@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {AffiliationManagementErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
-import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
 import {XmppService} from '../../core/xmpp/xmpp.service';
 import {NotificationService} from '../../core/notifications/notification.service';
+import {Topic} from '../../core/models/topic';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
 
 @Component({
   selector: 'xgb-topic-affiliations',
@@ -44,18 +45,18 @@ export class TopicAffiliationsComponent implements OnInit {
   }, []);
 
   /**
-   * The node on which the affiliations are managed.
+   * The topic on which the affiliations are managed.
    */
-  private nodeId: string;
+  private topic: undefined | Topic;
 
-  constructor(private route: ActivatedRoute,
-              private xmppService: XmppService,
+  constructor(private xmppService: XmppService,
+              private detailsService: CurrentTopicDetailService,
               private topicDetailsService: TopicDetailsService,
               private notificationService: NotificationService) {
   }
 
   ngOnInit() {
-    this.nodeId = this.route.parent.snapshot.params.id;
+    this.topic = this.detailsService.currentTopic();
     this.refresh();
   }
 
@@ -67,7 +68,7 @@ export class TopicAffiliationsComponent implements OnInit {
       form.get('affiliation').value);
 
     this.isLoaded = false;
-    this.topicDetailsService.modifyJidAffiliation(this.nodeId, newAffiliation)
+    this.topicDetailsService.modifyJidAffiliation(this.topic.title, newAffiliation)
       .then(() => {
         form.reset();
         this.refresh();
@@ -114,7 +115,7 @@ export class TopicAffiliationsComponent implements OnInit {
   private doRemoveAffiliation(affiliation: JidAffiliation) {
     affiliation.affiliation = Affiliation.None;
     this.isLoaded = false;
-    this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+    this.topicDetailsService.modifyJidAffiliation(this.topic.title, affiliation)
       .then(() => {
         this.refresh();
       })
@@ -124,7 +125,7 @@ export class TopicAffiliationsComponent implements OnInit {
   private doChangeAffiliation(affiliation: JidAffiliation, newAffiliation) {
     this.isLoaded = false;
     affiliation.affiliation = newAffiliation;
-    this.topicDetailsService.modifyJidAffiliation(this.nodeId, affiliation)
+    this.topicDetailsService.modifyJidAffiliation(this.topic.title, affiliation)
       .then(() => {
         this.refresh();
       })
@@ -133,7 +134,7 @@ export class TopicAffiliationsComponent implements OnInit {
 
   private refresh() {
     this.isLoaded = false;
-    this.topicDetailsService.loadJidAffiliations(this.nodeId)
+    this.topicDetailsService.loadJidAffiliations(this.topic.title)
       .then((loadedAffiliations: JidAffiliation[]) => {
         this.isLoaded = true;
         this.jidAffiliations = loadedAffiliations;
@@ -152,9 +153,6 @@ export class TopicAffiliationsComponent implements OnInit {
           break;
         case AffiliationManagementErrorCodes.Forbidden:
           this.errorMessage = 'You are not allowed to modify the affiliations because you are not owner';
-          break;
-        case AffiliationManagementErrorCodes.ItemNotFound:
-          this.errorMessage = `Node ${this.nodeId} does not exist`;
           break;
         default:
           this.errorMessage = `Unknown error "${error.condition}": ${JSON.stringify(error)}`;

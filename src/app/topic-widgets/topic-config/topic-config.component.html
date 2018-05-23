@@ -4,21 +4,21 @@
       (keyup.enter)="onFormSubmit()"
       (ngSubmit)="onFormSubmit()">
 
-  <xgb-form-field *ngIf="nodeId"
+  <xgb-form-field *ngIf="topic"
                   fieldId="nodeID"
-                  fieldLabel="NodeID"
+                  [fieldLabel]="topic.isCollection()? 'Collection Identifier' : 'Topic Identifier'"
                   fieldHelp="The unique identifier for a node within the context of a pubsub service.">
     <input type="text"
            xgbFormInput
            id="nodeID"
-           [value]="nodeId"
+           [value]="topic.title"
            disabled>
   </xgb-form-field>
 
 
   <xgb-form-field *ngIf="specificFormFields['pubsub#title']"
                   fieldId="title"
-                  fieldLabel="Topic / Collection title"
+                  [fieldLabel]="(!topic? 'Topic / Collection' : topic.isCollection()? 'Collection' : 'Topic') + ' Title'"
                   [fieldHelp]="specificFormFields['pubsub#title'].label">
     <input type="text"
            xgbFormInput

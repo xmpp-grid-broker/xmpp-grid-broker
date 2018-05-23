@@ -15,6 +15,7 @@ import {TopicSubscriptionComponent} from './topic-subscription/topic-subscriptio
 import {TopicSubscriptionService} from './topic-subscription/topic-subscription.service';
 import {NewTopicSubscriptionComponent} from './topic-subscription/new-topic-subscription/new-topic-subscription.component';
 import { ModifySubscriptionComponent } from './topic-subscription/modify-subscription/modify-subscription.component';
+import {CurrentTopicDetailService} from './current-topic-detail.service';
 
 
 @NgModule({
@@ -36,7 +37,7 @@ import { ModifySubscriptionComponent } from './topic-subscription/modify-subscri
     NewTopicSubscriptionComponent,
     ModifySubscriptionComponent
   ],
-  providers: [TopicDetailsService, PersistedItemsService, TopicSubscriptionService]
+  providers: [TopicDetailsService, CurrentTopicDetailService, PersistedItemsService, TopicSubscriptionService]
 })
 export class TopicDetailsModule {
 }

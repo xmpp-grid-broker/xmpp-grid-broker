@@ -1,5 +1,7 @@
 <div *ngIf="persistedItemsList.hasError" xgbToast toast-error>{{persistedItemsList.errorMessage}}</div>
-<ng-container>
+<div *ngIf="topic && topic.isCollection()" xgbToast toast-error>Persisted Items are not supported on collections</div>
+<xgb-spinner *ngIf="!topic"></xgb-spinner>
+<ng-container *ngIf="topic && !topic.isCollection()">
   <xgb-action-bar>
     <button xgbActionButton [routerLink]="['new']">Publish new item</button>
     <button xgbActionButton danger *ngIf="persistedItemsList.items.length > 0" (click)="purgeItems()">

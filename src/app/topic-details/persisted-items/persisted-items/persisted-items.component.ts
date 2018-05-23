@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {LoadPersistedItemsErrors, PersistedItem, PersistedItemsService} from '../persisted-items.service';
-import {ActivatedRoute} from '@angular/router';
 import {IteratorListPager} from '../../../shared/list/iterator-list-pager';
 import {NotificationService} from '../../../core/notifications/notification.service';
+import {CurrentTopicDetailService} from '../../current-topic-detail.service';
+import {Topic} from '../../../core/models/topic';
 
 @Component({
   selector: 'xgb-persisted-items',
@@ -12,20 +13,20 @@ import {NotificationService} from '../../../core/notifications/notification.serv
 export class PersistedItemsComponent implements OnInit {
 
   // Map used to keep track which items are "uncollapsed"
-  toggleMap: { [ key: number ]: boolean; } = {};
+  toggleMap: { [key: number]: boolean; } = {};
 
   persistedItemsList = new IteratorListPager<PersistedItem>();
 
-  private nodeId: string;
+  topic: undefined | Topic;
 
-  constructor(private route: ActivatedRoute,
+  constructor(private detailsService: CurrentTopicDetailService,
               private service: PersistedItemsService,
               private notificationService: NotificationService) {
   }
 
   ngOnInit() {
-    this.nodeId = this.route.parent.snapshot.params.id;
-    this.persistedItemsList.useIterator(this.service.persistedItems(this.nodeId));
+    this.topic = this.detailsService.currentTopic();
+    this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title));
     this.persistedItemsList.useErrorMapper(PersistedItemsComponent.errorConditionToMessage);
   }
 
@@ -33,7 +34,7 @@ export class PersistedItemsComponent implements OnInit {
     this.toggleMap[item.id] = !this.toggleMap[item.id];
 
     try {
-      await this.service.loadPersistedItemContent(this.nodeId, item);
+      await this.service.loadPersistedItemContent(this.topic.title, item);
     } catch (err) {
       // Hide the code block and show an error
       this.toggleMap[item.id] = false;
@@ -44,12 +45,12 @@ export class PersistedItemsComponent implements OnInit {
   async purgeItems() {
     const confirmation = await this.notificationService.confirm(
       'Warning',
-      `You are about to permanently delete all persisted items from ${this.nodeId}! Are you sure to proceed?`,
+      `You are about to permanently delete all persisted items from ${this.topic.title}! Are you sure to proceed?`,
       `Yes, permanently delete ALL items`, 'Cancel');
     if (!confirmation) {
       return;
     }
-    await this.executeAndRefreshIterator(this.service.purgePersistedItem(this.nodeId));
+    await this.executeAndRefreshIterator(this.service.purgePersistedItem(this.topic.title));
   }
 
 
@@ -57,13 +58,13 @@ export class PersistedItemsComponent implements OnInit {
 
     const confirmation = await this.notificationService.confirm(
       'Warning',
-      `You are about to permanently delete the item ${item.id} from the topic ${this.nodeId}! Are you sure to proceed?`,
+      `You are about to permanently delete the item ${item.id} from the topic ${this.topic.title}! Are you sure to proceed?`,
       `Yes, permanently delete this item`, 'Cancel');
     if (!confirmation) {
       return;
     }
 
-    await this.executeAndRefreshIterator(this.service.deletePersistedItem(this.nodeId, item));
+    await this.executeAndRefreshIterator(this.service.deletePersistedItem(this.topic.title, item));
   }
 
   private setError(err) {
@@ -74,9 +75,9 @@ export class PersistedItemsComponent implements OnInit {
   private async executeAndRefreshIterator(promise: Promise<void>) {
     try {
       await promise;
-      this.persistedItemsList.useIterator(this.service.persistedItems(this.nodeId));
+      this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title));
     } catch (err) {
-      this.persistedItemsList.useIterator(this.service.persistedItems(this.nodeId))
+      this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title))
         .then(() => this.setError(err))
         .catch(() => this.setError(err));
     }

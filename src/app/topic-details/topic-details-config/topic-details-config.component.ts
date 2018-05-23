@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {XmppDataForm} from '../../core/models/FormModels';
 import {LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsService} from '../topic-details.service';
 import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
 import {NavigationService} from '../../core/navigation.service';
 import {NotificationService} from '../../core/notifications/notification.service';
+import {Topic} from '../../core/models/topic';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
 
 @Component({
   selector: 'xgb-topic-details-config',
@@ -12,10 +13,9 @@ import {NotificationService} from '../../core/notifications/notification.service
 })
 export class TopicDetailsConfigComponent implements OnInit {
   /**
-   * The NodeID as given via URL used to identify
-   * the node (See XEP-0060 for details).
+   * The topic on which to operate.
    */
-  nodeId: string;
+  topic: undefined | Topic;
 
   /**
    * The formStatus is used as a helper
@@ -35,17 +35,16 @@ export class TopicDetailsConfigComponent implements OnInit {
    */
   initialFormLoaded = false;
 
-  constructor(private route: ActivatedRoute,
-              private topicDetailsService: TopicDetailsService,
+  constructor(private topicDetailsService: TopicDetailsService,
+              private detailsService: CurrentTopicDetailService,
               private navigationService: NavigationService,
               private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
-    this.nodeId = this.route.parent.snapshot.params.id;
     this.formProcessing.begin();
-
-    this.topicDetailsService.loadConfigurationForm(this.nodeId)
+    this.topic = this.detailsService.currentTopic();
+    this.topicDetailsService.loadConfigurationForm(this.topic.title)
       .then((form: XmppDataForm) => {
         this.initialFormLoaded = true;
         this.loadedForm = form;
@@ -53,14 +52,11 @@ export class TopicDetailsConfigComponent implements OnInit {
       })
       .catch((error) => {
         switch (error.condition) {
-          case  LoadConfigurationFormErrorCodes.ItemNotFound:
-            this.formProcessing.done({errorMessage: `Node with NodeID ${this.nodeId} does not exist!`});
-            break;
           case  LoadConfigurationFormErrorCodes.Unsupported:
             this.formProcessing.done({errorMessage: `Node configuration is not supported by the XMPP server`});
             break;
           case  LoadConfigurationFormErrorCodes.Forbidden:
-            this.formProcessing.done({errorMessage: `Insufficient Privileges to configure node ${this.nodeId}`});
+            this.formProcessing.done({errorMessage: `Insufficient Privileges to configure node ${this.topic.title}`});
             break;
           case  LoadConfigurationFormErrorCodes.NotAllowed:
             this.formProcessing.done({errorMessage: `There are no configuration options available`});
@@ -73,7 +69,7 @@ export class TopicDetailsConfigComponent implements OnInit {
 
   submit(submittedForm: XmppDataForm): void {
     this.formProcessing.begin();
-    this.topicDetailsService.updateTopicConfiguration(this.nodeId, submittedForm)
+    this.topicDetailsService.updateTopicConfiguration(this.topic.title, submittedForm)
       .then((dataForm) => {
         this.loadedForm = dataForm;
         this.formProcessing.done({
@@ -91,8 +87,8 @@ export class TopicDetailsConfigComponent implements OnInit {
 
     this.notificationService.confirm(
       'Warning',
-      `You are about to permanently delete the Topic ${this.nodeId}! Are you sure to proceed?`,
-      `Yes, permanently delete ${this.nodeId}`, 'Cancel')
+      `You are about to permanently delete the Topic ${this.topic.title}! Are you sure to proceed?`,
+      `Yes, permanently delete ${this.topic.title}`, 'Cancel')
       .then((confirmed) => {
         if (confirmed) {
           this.doDeleteTopic();
@@ -102,20 +98,20 @@ export class TopicDetailsConfigComponent implements OnInit {
   }
 
   private doDeleteTopic() {
-    this.topicDetailsService.deleteTopic(this.nodeId)
+    this.topicDetailsService.deleteTopic(this.topic.title)
       .then(() => {
         this.navigationService.goToHome();
       })
       .catch((error) => {
         switch (error.condition) {
           case  TopicDeletionErrorCodes.ItemNotFound:
-            this.formProcessing.done({errorMessage: `Node with NodeID ${this.nodeId} does not exist!`});
+            this.formProcessing.done({errorMessage: `Node with NodeID ${this.topic.title} does not exist!`});
             break;
           case  TopicDeletionErrorCodes.Forbidden:
-            this.formProcessing.done({errorMessage: `Insufficient Privileges to delete node ${this.nodeId}`});
+            this.formProcessing.done({errorMessage: `Insufficient Privileges to delete node ${this.topic.title}`});
             break;
           case  TopicDeletionErrorCodes.NotAllowed:
-            this.formProcessing.done({errorMessage: `You are not allowed to delete the root node ${this.nodeId}!`});
+            this.formProcessing.done({errorMessage: `You are not allowed to delete the root node ${this.topic.title}!`});
             break;
           default:
             this.formProcessing.done({errorMessage: `An unknown error occurred: ${JSON.stringify(error)}!`});
