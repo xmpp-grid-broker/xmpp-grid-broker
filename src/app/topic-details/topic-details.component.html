@@ -5,6 +5,8 @@
     <xgb-tab [routerLink]="['configuration']" tabTitle="Configuration"></xgb-tab>
     <xgb-tab [routerLink]="['affiliations']" tabTitle="Affiliations"></xgb-tab>
     <xgb-tab [routerLink]="['subscriptions']" tabTitle="Subscriptions"></xgb-tab>
+    <xgb-tab *ngIf="topic.isCollection()" [routerLink]="['subtopics']" tabTitle="Subtopics"></xgb-tab>
+    <xgb-tab [routerLink]="['parents']" tabTitle="Parent Collections"></xgb-tab>
     <xgb-tab *ngIf="topic.isLeaf()" [routerLink]="['items']" tabTitle="Persisted Items"></xgb-tab>
   </xgb-tabs>
   <router-outlet></router-outlet>

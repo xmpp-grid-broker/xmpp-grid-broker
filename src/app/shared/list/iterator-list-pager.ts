@@ -1,3 +1,5 @@
+import {ErrorToString} from '../../core/errors';
+
 /**
  * This class abstracts the loading and error handling
  * to simplify the usage of the a paged list ("load more").
@@ -21,9 +23,11 @@ export class IteratorListPager<T> {
     this.items = [];
     this.hasMore = false;
     this.errorMessage = undefined;
+    this.errorHandler = ErrorToString;
     return this.loadMore();
   }
 
+  // TODO: DO ERROR HANDLING IN SERVICES INSTEAD!
   public useErrorMapper(errorHandler: (error: any) => string) {
     this.errorHandler = errorHandler;
   }
