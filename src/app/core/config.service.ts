@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Config, XmppConfig} from './models/config';
+import {Config} from './models/config';
 import {environment} from '../../environments/environment';
-import {NotificationService} from './notifications/notification.service';
+import {XmppService} from './xmpp/xmpp.service';
 
 @Injectable()
 export class ConfigService {
@@ -14,34 +14,8 @@ export class ConfigService {
   private readonly _config: Promise<Config>;
 
   constructor(private http: HttpClient,
-              private notificationService: NotificationService) {
+              private xmppService: XmppService) {
     this._config = this.loadConfig();
-  }
-
-  loadConfig(): Promise<Config> {
-    return this.http.get(ConfigService.CONFIG_FILE)
-      .toPromise()
-      .then(json => Config.fromJson(json))
-      .catch(() => {
-        // TODO: FIND A BETTER SOLUTION THAN THIS!!!
-        this.notificationService.alert(
-          'Failed to load the configuration',
-          'Learn how to how to correctly set up this application in the ' +
-          '<a href="https://github.com/xmpp-grid-broker/xmpp-grid-broker/blob/master/docs/INSTALL.adoc">' +
-          'Installation Guide</a>.',
-          false,
-          undefined,
-          true);
-      })
-      .then((config: Config | undefined) => {
-        // Wait forever as we cannot continue here...
-        if (!config) {
-          return new Promise<Config>(() => {
-          });
-        }
-        return config;
-      });
-
   }
 
   /**
@@ -49,7 +23,18 @@ export class ConfigService {
    * that is loaded on this services initialisation.
    * @returns {Promise<Config>}
    */
-  getConfig(): Promise<Config> {
+  public getConfig(): Promise<Config> {
     return this._config;
   }
+
+  private loadConfig(): Promise<Config> {
+    return this.http.get(ConfigService.CONFIG_FILE)
+      .toPromise()
+      .then(json => {
+        const config = Config.fromJson(json);
+        this.xmppService.initialize(config);
+        return config;
+      });
+  }
+
 }

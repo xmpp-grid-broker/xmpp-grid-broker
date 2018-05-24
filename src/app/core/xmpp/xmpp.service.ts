@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
-import {ConfigService} from '../config.service';
 import {XmppConfig} from '../models/config';
 import {NotificationService} from '../notifications/notification.service';
 import {RawXmlStanzaAddon} from './raw-xml-stanza';
@@ -39,25 +38,27 @@ export class XmppService {
   /**
    * The JID used to address the pubsub service, see XEP-0060 for details
    */
-  public readonly pubSubJid: Promise<JID>;
+  public pubSubJid: JID;
 
-  private readonly _client: Promise<any>;
-  private readonly _config: Promise<XmppConfig>;
+  private _client: any;
+  private _config: XmppConfig;
   private _state = ConnectionState.Down;
 
   constructor(private xmppClientFactory: XmppClientFactory,
-              private configService: ConfigService,
               private notificationService: NotificationService) {
-    this._config = this.configService.getConfig().then(config => config.xmpp);
-    this._client = this._config.then(config => this._getClientInstance(config));
-    this.pubSubJid = this._config.then(config => new JID(`pubsub.${config.server}`));
+  }
+
+  public initialize(config) {
+    this._config = config.xmpp;
+    this._client = this._getClientInstance(this._config);
+    this.pubSubJid = new JID(`pubsub.${this._config.server}`);
   }
 
   /**
    * Returns the title of the configured server.
    */
-  public getServerTitle(): Promise<string> {
-    return this._config.then(config => config.server);
+  public getServerTitle(): string {
+    return this._config.server;
   }
 
   /**
@@ -66,7 +67,7 @@ export class XmppService {
    * (meaning the user who is connected to the xmpp server)
    */
   public isJidCurrentUser(bareJid: string): Promise<boolean> {
-    return this._client.then((client) => client.jid.bare === bareJid);
+    return this.getClient().then((client) => client.jid.bare === bareJid);
   }
 
   /**
@@ -74,9 +75,9 @@ export class XmppService {
    * Automatically tries to connect if no connection is established.
    */
   public getClient(): Promise<any> {
-    return this._client.then(client => new Promise((resolve) => {
+    return new Promise((resolve) => {
       if (this._state === ConnectionState.Up) {
-        resolve(client);
+        resolve(this._client);
       } else if (this._state === ConnectionState.Down) {
         // Register specific callbacks to see if reconnecting fails.
         const errCallback = () => {
@@ -88,18 +89,18 @@ export class XmppService {
         };
         const succCallBack = () => {
           // unsubscribe callbacks
-          client.off('session:started', succCallBack);
-          client.off('disconnected', errCallback);
-          resolve(client);
+          this._client.off('session:started', succCallBack);
+          this._client.off('disconnected', errCallback);
+          resolve(this._client);
         };
-        client.on('session:started', succCallBack);
-        client.on('disconnected', errCallback);
+        this._client.on('session:started', succCallBack);
+        this._client.on('disconnected', errCallback);
 
         this.connect();
       } else {
-        client.on('session:started', () => resolve(client));
+        this._client.on('session:started', () => resolve(this._client));
       }
-    }));
+    });
   }
 
   /**
@@ -108,10 +109,8 @@ export class XmppService {
    * promises and makes the code more readable.
    */
   public executeIqToPubsub(cmdWithoutTo: any): Promise<any> {
-    return this.pubSubJid.then((jid) => {
-      cmdWithoutTo.to = jid;
-      return this.executeIq(cmdWithoutTo);
-    });
+    cmdWithoutTo.to = this.pubSubJid;
+    return this.executeIq(cmdWithoutTo);
   }
 
   /**
@@ -154,7 +153,6 @@ export class XmppService {
         'Failed to authenticate on the XMPP server. Are using the right credentials?',
         false);
     });
-
     return client;
   }
 
@@ -169,11 +167,9 @@ export class XmppService {
    * connection to be available.
    */
   private connect(): void {
-    this._client.then(client => {
       if (this._state === ConnectionState.Down) {
         this._state = ConnectionState.Connecting;
-        client.connect();
+        this._client.connect();
       }
-    });
   }
 }

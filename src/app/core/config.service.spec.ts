@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs/Observable';
 import {ConfigService} from './config.service';
 import {Config, XmppConfig, XmppTransport} from './models/config';
-import {NotificationService} from './notifications/notification.service';
+import {XmppService} from './xmpp/xmpp.service';
 
 
 class FakeErrorResponse {
@@ -27,9 +27,9 @@ class FakeHttpClient {
 describe('ConfigService', () => {
   let httpClient, service: ConfigService;
 
-  let notificationService: jasmine.SpyObj<NotificationService>;
+  let xmppService: jasmine.SpyObj<XmppService>;
   beforeEach(() => {
-    notificationService = jasmine.createSpyObj('NotificationService', ['alert']);
+    xmppService = jasmine.createSpyObj('XmppService', ['initialize']);
   });
 
   const JSON_CONFIG = {
@@ -52,18 +52,30 @@ describe('ConfigService', () => {
   it('should request the configuration file', done => {
     httpClient = new FakeHttpClient('./configuration.json');
     spyOn(httpClient, 'get').and.callFake(() => Observable.of(JSON_CONFIG));
-    service = new ConfigService(httpClient, notificationService);
+    service = new ConfigService(httpClient, xmppService);
 
     service.getConfig().then(config => {
       expect(httpClient.get).toHaveBeenCalledWith(httpClient.fake_url);
       done();
-    });
+    }).catch(err => fail(err));
   });
+
+  it('should call initialize on the xmpp service', done => {
+    httpClient = new FakeHttpClient('./configuration.json');
+    spyOn(httpClient, 'get').and.callFake(() => Observable.of(JSON_CONFIG));
+    service = new ConfigService(httpClient, xmppService);
+
+    service.getConfig().then(config => {
+      expect(xmppService.initialize).toHaveBeenCalledWith(config);
+      done();
+    }).catch(err => fail(err));
+  });
+
 
   it('should parse the configuration json correctly', done => {
     httpClient = new FakeHttpClient('./configuration.json');
     spyOn(httpClient, 'get').and.callFake(() => Observable.of(JSON_CONFIG));
-    service = new ConfigService(httpClient, notificationService);
+    service = new ConfigService(httpClient, xmppService);
 
     service.getConfig().then((config: Config) => {
       const required = ['transport', 'boshUrl', 'useStreamManagement'];
@@ -74,7 +86,7 @@ describe('ConfigService', () => {
       expect(config.xmpp.server).toBe(REFERENCE_CONFIG.xmpp.server);
       expect(config.xmpp.sasl[0]).toBe(REFERENCE_CONFIG.xmpp.sasl[0]);
       done();
-    });
+    }).catch(err => fail(err));
   });
 
   it('should throw error if configuration file does not exist', (done) => {
@@ -82,7 +94,7 @@ describe('ConfigService', () => {
 
     // Catch asynchronously thrown error from ConfigService.constructor
     const initialisation = async () => {
-      service = new ConfigService(httpClient, notificationService);
+      service = new ConfigService(httpClient, xmppService);
       await service.getConfig();
     };
 
@@ -95,7 +107,7 @@ describe('ConfigService', () => {
 
     // Catch asynchronously thrown error from ConfigService.constructor
     const initialisation = async () => {
-      service = new ConfigService(httpClient, notificationService);
+      service = new ConfigService(httpClient, xmppService);
       return await service.getConfig();
     };
 
@@ -111,7 +123,7 @@ describe('ConfigService', () => {
 
     // Catch asynchronously thrown error from ConfigService.constructor
     const initialisation = async () => {
-      service = new ConfigService(httpClient, notificationService);
+      service = new ConfigService(httpClient, xmppService);
       return await service.getConfig();
     };
 
