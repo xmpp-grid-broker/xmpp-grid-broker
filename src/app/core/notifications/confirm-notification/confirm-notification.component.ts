@@ -14,6 +14,7 @@ export class ConfirmNotificationComponent {
   public resolvePromise: Promise<boolean>;
 
   private componentRef: ComponentRef<ConfirmNotificationComponent>;
+  // noinspection TypeScriptFieldCanBeMadeReadonly
   private resolve: (value?: (PromiseLike<boolean> | boolean)) => void;
 
 

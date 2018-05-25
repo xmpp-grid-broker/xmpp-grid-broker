@@ -88,13 +88,13 @@ export class XmppService {
             'To retry, reload the page.',
             false);
         };
-        const succCallBack = () => {
+        const successCallBack = () => {
           // unsubscribe callbacks
-          this._client.off('session:started', succCallBack);
+          this._client.off('session:started', successCallBack);
           this._client.off('disconnected', errCallback);
           resolve(this._client);
         };
-        this._client.on('session:started', succCallBack);
+        this._client.on('session:started', successCallBack);
         this._client.on('disconnected', errCallback);
 
         this.connect();
