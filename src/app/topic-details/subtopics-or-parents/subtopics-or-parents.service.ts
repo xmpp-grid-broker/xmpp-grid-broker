@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
 import {Topic} from '../../core/models/topic';
+import {TopicIteratorHelperService} from '../../topic-widgets/topic-iterator-helper.service';
 
 @Injectable()
 export class SubtopicsOrParentsService {
 
-  constructor() {
+  constructor(private iteratorHelperService: TopicIteratorHelperService) {
   }
 
-  public async* subtopics(forTopic: Topic): AsyncIterableIterator<Topic> {
-    // TODO: IMPLEMENT -> move the paging logic of the overview service in a utility class that can reused
-    // TODO: make sure leafs get an error
+  public subtopics(forTopic: Topic): AsyncIterableIterator<Topic> {
+    return this.iteratorHelperService.createTopicsIterator(forTopic.title, true);
   }
 
   public async* parents(forTopic: Topic): AsyncIterableIterator<Topic> {
