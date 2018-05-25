@@ -8,8 +8,7 @@ import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
 
 @Component({
   selector: 'xgb-subtopics-or-parents',
-  templateUrl: './subtopics-or-parents.component.html',
-  styleUrls: ['./subtopics-or-parents.component.css']
+  templateUrl: './subtopics-or-parents.component.html'
 })
 export class SubtopicsOrParentsComponent implements OnInit {
 

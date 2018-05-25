@@ -8,12 +8,12 @@ export class SubtopicsOrParentsService {
   }
 
   public async* subtopics(forTopic: Topic): AsyncIterableIterator<Topic> {
-    // TODO: IMPLEMENT
+    // TODO: IMPLEMENT -> move the paging logic of the overview service in a utility class that can reused
     // TODO: make sure leafs get an error
   }
 
   public async* parents(forTopic: Topic): AsyncIterableIterator<Topic> {
-    // TODO: IMPLEMENT
+    // TODO: IMPLEMENT -> if possible, use the same mechanism as above
   }
 
 }

@@ -9,8 +9,8 @@ describe('SubtopicsOrParentsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SubtopicsOrParentsComponent ]
-    })
-    .compileComponents();
+    });
+    // TODO: WRITE TEST
   }));
 
   beforeEach(() => {
