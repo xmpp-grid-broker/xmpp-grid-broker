@@ -24,7 +24,7 @@ describe('TopicOverviewComponent', () => {
     mockTopicOverviewService = createSpyObj('TopicOverviewService', ['rootTopics', 'allTopics', 'allCollections']);
     mockXmppService = createSpyObj('XmppService', ['getServerTitle']);
 
-    mockXmppService.getServerTitle.and.returnValue(Promise.resolve('xmpp.hsr.ch'));
+    mockXmppService.getServerTitle.and.returnValue('xmpp.hsr.ch');
 
     const activatedRouteMock = {
       snapshot: {url: [{path: route}], data: {filter: route}}
@@ -99,18 +99,9 @@ describe('TopicOverviewComponent', () => {
       expect(mockTopicOverviewService.allCollections.calls.count()).toBe(1);
     }));
 
-    it('should render "loading title" while the title is lazily loaded', async(() => {
+    it('should render the loaded title ', fakeAsync(() => {
       fixture.detectChanges();
-
-      expect(de.querySelector('h2').innerText).toBe('loading...');
-    }));
-
-    it('should render the loaded title after it is lazily loaded ', fakeAsync(() => {
-
-      fixture.detectChanges();
-      tick(500);
-      fixture.detectChanges();
-
+      tick();
       expect(de.querySelector('h2').innerText).toBe('xmpp.hsr.ch');
     }));
   });

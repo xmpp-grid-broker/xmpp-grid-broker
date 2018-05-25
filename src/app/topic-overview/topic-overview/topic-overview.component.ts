@@ -25,9 +25,7 @@ export class TopicOverviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.xmppService.getServerTitle().then((serverTitle) => {
-      this.serverTitle = serverTitle;
-    });
+    this.serverTitle = this.xmppService.getServerTitle();
 
     let iterator: AsyncIterableIterator<Topic>;
 

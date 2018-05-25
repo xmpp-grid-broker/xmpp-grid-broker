@@ -20,6 +20,19 @@ class FakeClient {
     this.handlers.set(event, handlers);
   }
 
+  off(event: string, action: () => any) {
+
+    if (this.handlers.has(event)) {
+      const handlers = this.handlers.get(event);
+      const idx = handlers.indexOf(action);
+      if (idx > -1) {
+        handlers.splice(idx, 1);
+      }
+    }
+  }
+
+
+
   emit(event: string) {
     if (this.handlers.has(event)) {
       this.handlers.get(event).forEach((command) => command());
@@ -34,14 +47,6 @@ class FakeClient {
   }
 }
 
-class FakeConfigService {
-  public getConfig(): Promise<Config> {
-    const xmppConfig = new XmppConfig('openfire', XmppTransport.Bosh, undefined, 'localhost');
-    const config = new Config(xmppConfig);
-    return Promise.resolve(config);
-  }
-}
-
 class FakeXmppClientFactory {
   public client = new FakeClient();
 
@@ -51,7 +56,7 @@ class FakeXmppClientFactory {
 }
 
 describe('XmppService', () => {
-  let xmppClientFactory, service: XmppService, configService, notificationServiceSpy: jasmine.SpyObj<NotificationService>;
+  let xmppClientFactory, service: XmppService, notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
     xmppClientFactory = new FakeXmppClientFactory();
@@ -59,36 +64,34 @@ describe('XmppService', () => {
     spyOn(xmppClientFactory.client, 'connect').and.callThrough();
     notificationServiceSpy = jasmine.createSpyObj('NotificationService', ['alert']);
 
-    configService = new FakeConfigService();
+    const xmppConfig = new XmppConfig('openfire', XmppTransport.Bosh, undefined, 'localhost');
+    const config = new Config(xmppConfig);
 
-    service = new XmppService(xmppClientFactory, configService, notificationServiceSpy);
+    service = new XmppService(xmppClientFactory, notificationServiceSpy);
+    service.initialize(config);
 
   });
 
-  it('should return the jid domain when calling getServerTitle', (done) => {
-    service.getServerTitle().then((title) => {
-      expect(title).toBe('openfire');
-      done();
-    });
+  it('should return the jid domain when calling getServerTitle', () => {
+    expect(service.getServerTitle()).toBe('openfire');
   });
 
-  it('should return the pubSubJid', (done) => {
-    service.pubSubJid.then(pubSubJid => {
-      expect(pubSubJid.full).toBe('pubsub.openfire');
-      done();
-    });
+  it('should return the pubSubJid', () => {
+    expect(service.pubSubJid.full).toBe('pubsub.openfire');
   });
 
   describe('when calling executeIqToPubsub', () => {
     it('should load and add the pubSubJid', (done) => {
       const spy = spyOn(service, 'executeIq').and.callFake(() => Promise.resolve());
-      service.executeIqToPubsub({}).then(() => {
-        expect(spy).toHaveBeenCalledTimes(1);
+      service.executeIqToPubsub({})
+        .then(() => {
+          expect(spy).toHaveBeenCalledTimes(1);
 
-        const args = spy.calls.mostRecent().args;
-        expect(args[0].to.full).toBe('pubsub.openfire');
-        done();
-      });
+          const args = spy.calls.mostRecent().args;
+          expect(args[0].to.full).toBe('pubsub.openfire');
+          done();
+        })
+        .catch((err) => fail(err));
     });
   });
   describe('when calling executeIq', () => {
@@ -96,13 +99,15 @@ describe('XmppService', () => {
     it('should call sendIq on the client', (done) => {
       const spy = spyOn(xmppClientFactory.client, 'sendIq').and.callThrough();
       const cmd = {type: IqType.Get};
-      service.executeIq(cmd).then(() => {
-        expect(spy).toHaveBeenCalledTimes(1);
+      service.executeIq(cmd)
+        .then(() => {
+          expect(spy).toHaveBeenCalledTimes(1);
 
-        const args = spy.calls.mostRecent().args;
-        expect(args[0]).toBe(cmd);
-        done();
-      });
+          const args = spy.calls.mostRecent().args;
+          expect(args[0]).toBe(cmd);
+          done();
+        })
+        .catch((err) => fail(err));
     });
 
     it('should resolve with result', (done) => {
@@ -111,10 +116,12 @@ describe('XmppService', () => {
         cb(undefined, expectedResult)
       );
 
-      service.executeIq({type: IqType.Get}).then((actualResult) => {
-        expect(actualResult).toBe(expectedResult);
-        done();
-      });
+      service.executeIq({type: IqType.Get})
+        .then((actualResult) => {
+          expect(actualResult).toBe(expectedResult);
+          done();
+        })
+        .catch((err) => fail(err));
     });
 
     it('should reject with the error', (done) => {
@@ -141,7 +148,7 @@ describe('XmppService', () => {
       service.getClient().then(() => {
         expect(xmppClientFactory.client.connect.calls.count()).toEqual(1);
         done();
-      });
+      }).catch((err) => fail(err));
     });
   });
 
@@ -150,13 +157,7 @@ describe('XmppService', () => {
     title: 'Authentication Failed',
     message: 'Failed to authenticate on the XMPP server. Are using the right credentials?',
     canHide: false
-  },
-    {
-      event: 'disconnected',
-      title: 'Connection lost',
-      message: 'You have lost connection with the XMPP server. Check your internet connection and reload the page.',
-      canHide: false
-    }].forEach(({event, title, message, canHide}) => {
+  }].forEach(({event, title, message, canHide}) => {
     it(`should show a notification when ${event} is emitted`, (done) => {
       service.getClient().then(() => {
         xmppClientFactory.client.emit(event);
@@ -166,7 +167,7 @@ describe('XmppService', () => {
         expect(args[1]).toBe(message);
         expect(args[2]).toBe(canHide);
         done();
-      });
+      }).catch((err) => fail(err));
     });
   });
 });

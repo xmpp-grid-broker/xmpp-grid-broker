@@ -9,11 +9,8 @@ class FakeXmppService {
   executeIqToPubsub(cmd: any): Promise<any> {
     return this.executeIq(cmd);
   }
-}
-
-class FakeConfigService {
-  getConfig(): Promise<any> {
-    return Promise.resolve({xmpp: {jid: {domain: 'openfire'}}});
+  getServerTitle(): string {
+    return 'openfire';
   }
 }
 
@@ -29,16 +26,15 @@ describe('XmppFeatureService', () => {
   PUBSUB_IQ_DISCOVERY_RESULT.discoInfo.features.push('http://jabber.org/protocol/pubsub');
 
   const xmppService: any = new FakeXmppService();
-  const configService: any = new FakeConfigService();
 
   beforeEach(() => {
     xmppSpy = spyOn(xmppService, 'executeIq');
     logSpy = jasmine.createSpyObj('ErrorLog', ['warn']);
-    service = new XmppFeatureService(xmppService, configService, logSpy);
+    service = new XmppFeatureService(xmppService, logSpy);
   });
 
   it('should detect a supported feature', done => {
-    xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
+    xmppSpy.and.returnValue(Promise.resolve(PUBSUB_IQ_DISCOVERY_RESULT));
     service.checkFeature('pubsub', 'subscribe').then(result => {
       expect(xmppSpy).toHaveBeenCalled();
       expect(result).toBe(true);
@@ -47,7 +43,7 @@ describe('XmppFeatureService', () => {
   });
 
   it('should detect a supported protocol', done => {
-    xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
+    xmppSpy.and.returnValue(Promise.resolve(PUBSUB_IQ_DISCOVERY_RESULT));
     service.checkFeature('pubsub').then(result => {
       expect(xmppSpy).toHaveBeenCalled();
       expect(result).toBe(true);
@@ -56,7 +52,7 @@ describe('XmppFeatureService', () => {
   });
 
   it('should detect an unsupported feature', done => {
-    xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
+    xmppSpy.and.returnValue(Promise.resolve(PUBSUB_IQ_DISCOVERY_RESULT));
     const protocol = 'pubsub';
     const feature = 'do-magic';
     service.checkFeature(protocol, feature).then(result => {
@@ -68,7 +64,7 @@ describe('XmppFeatureService', () => {
   });
 
   it('should detect if one of multiple features is unsupported', done => {
-    xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
+    xmppSpy.and.returnValue(Promise.resolve(PUBSUB_IQ_DISCOVERY_RESULT));
     const protocol = 'pubsub';
     const feature = 'do-magic';
     service.checkFeatures(protocol, [feature, 'subscribe']).then(result => {
@@ -81,7 +77,7 @@ describe('XmppFeatureService', () => {
   });
 
   it('should detect if all of multiple features are supported', done => {
-    xmppSpy.and.returnValue(PUBSUB_IQ_DISCOVERY_RESULT);
+    xmppSpy.and.returnValue(Promise.resolve(PUBSUB_IQ_DISCOVERY_RESULT));
     service.checkFeatures('pubsub', ['collections', 'subscribe']).then(result => {
       expect(xmppSpy).toHaveBeenCalled();
       expect(result.length).toBe(0);
@@ -94,7 +90,7 @@ describe('XmppFeatureService', () => {
     discovery_result.discoInfo.features = discovery_result.discoInfo.features
       .filter(feature => !feature.endsWith('collections'));
 
-    xmppSpy.and.returnValue(discovery_result);
+    xmppSpy.and.returnValue(Promise.resolve(discovery_result));
     service.getMissingRequiredFeatures().then(result => {
       expect(xmppSpy).toHaveBeenCalled();
       expect(result.length).toBe(1);

@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {ConfigService} from '../config.service';
 import {IqType, XmppService} from './xmpp.service';
 import {ErrorLogService} from '../errors/error-log.service';
 
@@ -13,7 +12,7 @@ export class XmppFeatureService {
   ];
   private _protocolFeatures: Map<string, Promise<string[]>> = new Map();
 
-  constructor(private xmppService: XmppService, private configService: ConfigService, private errorLogService: ErrorLogService) {
+  constructor(private xmppService: XmppService, private errorLogService: ErrorLogService) {
   }
 
   /**
@@ -71,40 +70,30 @@ export class XmppFeatureService {
       return this._protocolFeatures.get(protocol);
     }
 
-
-    const query = this.configService.getConfig()
-      .then(config => {
-        const cmd = {
-          type: IqType.Get,
-          to: config.xmpp.server,
-          discoInfo: {}
-        };
-
-        switch (protocol) {
-          case 'pubsub':
-            return this.xmppService.executeIqToPubsub(cmd);
-          default:
-            return this.xmppService.executeIq(cmd);
-        }
-      })
-      .then(rawFeatures => {
-        const features = rawFeatures.discoInfo.features
-        // Map URLs to feature strings
-          .map(url => {
-            if (url.startsWith(`http://jabber.org/protocol/${protocol}`)) {
-              if (url.includes('#')) {
-                return url.split('#', 2).pop();
-              } else {
-                return ''; // general protocol support
-              }
+    const cmd = {
+      type: IqType.Get,
+      to: this.xmppService.getServerTitle(),
+      discoInfo: {}
+    };
+    const req = protocol === 'pubsub' ? this.xmppService.executeIqToPubsub(cmd) : this.xmppService.executeIq(cmd);
+    const query = req.then(rawFeatures => {
+      const features = rawFeatures.discoInfo.features
+      // Map URLs to feature strings
+        .map(url => {
+          if (url.startsWith(`http://jabber.org/protocol/${protocol}`)) {
+            if (url.includes('#')) {
+              return url.split('#', 2).pop();
             } else {
-              return undefined;
+              return ''; // general protocol support
             }
-          })
-          // Filter features that do not belong to this protocol
-          .filter(feature => feature !== undefined);
-        return features;
-      });
+          } else {
+            return undefined;
+          }
+        })
+        // Filter features that do not belong to this protocol
+        .filter(feature => feature !== undefined);
+      return features;
+    });
 
     this._protocolFeatures.set(protocol, query);
     return query;

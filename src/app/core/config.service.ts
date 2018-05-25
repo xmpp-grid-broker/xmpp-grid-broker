@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Config} from './models/config';
 import {environment} from '../../environments/environment';
+import {XmppService} from './xmpp/xmpp.service';
 
 @Injectable()
 export class ConfigService {
@@ -12,14 +13,9 @@ export class ConfigService {
   static readonly CONFIG_FILE = environment.config_url;
   private readonly _config: Promise<Config>;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              private xmppService: XmppService) {
     this._config = this.loadConfig();
-  }
-
-  loadConfig(): Promise<Config> {
-    return this.http.get(ConfigService.CONFIG_FILE)
-      .toPromise()
-      .then(json => Config.fromJson(json));
   }
 
   /**
@@ -27,7 +23,18 @@ export class ConfigService {
    * that is loaded on this services initialisation.
    * @returns {Promise<Config>}
    */
-  getConfig(): Promise<Config> {
+  public getConfig(): Promise<Config> {
     return this._config;
   }
+
+  private loadConfig(): Promise<Config> {
+    return this.http.get(ConfigService.CONFIG_FILE)
+      .toPromise()
+      .then(json => {
+        const config = Config.fromJson(json);
+        this.xmppService.initialize(config);
+        return config;
+      });
+  }
+
 }

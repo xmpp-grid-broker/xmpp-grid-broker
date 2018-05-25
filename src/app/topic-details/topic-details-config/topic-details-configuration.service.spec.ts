@@ -8,7 +8,7 @@ describe('TopicDetailsConfigurationService', () => {
   let service: TopicDetailsConfigurationService;
   let xmppService: jasmine.SpyObj<XmppService>;
   beforeEach(() => {
-    xmppService = jasmine.createSpyObj('XmppService', ['getClient', 'executeIqToPubsub']);
+    xmppService = jasmine.createSpyObj('XmppService', ['executeIqToPubsub']);
     service = new TopicDetailsConfigurationService(xmppService);
   });
 
