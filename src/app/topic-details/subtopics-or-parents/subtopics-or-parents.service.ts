@@ -9,11 +9,11 @@ export class SubtopicsOrParentsService {
   }
 
   public subtopics(forTopic: Topic): AsyncIterableIterator<Topic> {
-    return this.iteratorHelperService.createTopicsIterator(forTopic.title, true);
+    return this.iteratorHelperService.createChildTopicsIterator(forTopic.title, true);
   }
 
-  public async* parents(forTopic: Topic): AsyncIterableIterator<Topic> {
-    // TODO: IMPLEMENT -> if possible, use the same mechanism as above
+  public parents(forTopic: Topic): AsyncIterableIterator<Topic> {
+    return this.iteratorHelperService.createParentsTopicsIterator(forTopic.title, true);
   }
 
 }

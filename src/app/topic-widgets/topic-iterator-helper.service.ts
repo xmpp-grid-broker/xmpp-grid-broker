@@ -16,7 +16,7 @@ export class TopicIteratorHelperService {
    * If recursive is set to true, all child topics/collections of the
    * root topics/collections are yielded as well.
    */
-  public async* createTopicsIterator(topicIdentifier: string, recursive: boolean): AsyncIterableIterator<Topic> {
+  public async* createChildTopicsIterator(topicIdentifier: string, recursive: boolean): AsyncIterableIterator<Topic> {
 
     const topicsForWhichTheChildsShallBeLoaded: Array<string | undefined> = [topicIdentifier];
     const visitedTopics = []; // To prevent duplicates...
@@ -43,12 +43,32 @@ export class TopicIteratorHelperService {
   }
 
   /**
-   * Same as createTopicsIterator(true), but only yield the elements for which the
-   * given predicate returns true.
+   * Returns an async iterator that yields all parent collections of the given topic/collection.
    */
-  public async* createFilterTopicsIterator(topicIdentifier: string, predicate: (value) => boolean): AsyncIterableIterator<Topic> {
-    const iterator = this.createTopicsIterator(topicIdentifier, true);
+  public async* createParentsTopicsIterator(topicIdentifier: string, recursive: true): AsyncIterableIterator<Topic> {
+    const topicsToLoad: Array<string> = [topicIdentifier];
+    const visitedTopics = [];
+    while (topicsToLoad.length > 0) {
+      const topicName = topicsToLoad.pop();
+      // Iterate over all direct parents
+      for (const topic of await this.loadParents(topicName)) {
+        // prevent duplicates...
+        if (visitedTopics.indexOf(topic.title) >= 0) {
+          continue;
+        }
+        yield topic;
+        visitedTopics.push(topic.title);
+        if (recursive) {
+          topicsToLoad.push(topic.title);
+        }
+      }
+    }
+  }
 
+  /**
+   * Filters the given iterator using the provided predicate.
+   */
+  public async* filterTopicsIterator(iterator: AsyncIterableIterator<Topic>, predicate: (value) => boolean): AsyncIterableIterator<Topic> {
     let next = await iterator.next();
     while (!next.done) {
       if (predicate(next.value)) {
@@ -90,6 +110,24 @@ export class TopicIteratorHelperService {
       }
     } while (hasMore);
   }
+
+  private async loadParents(topicName: string): Promise<Topic[]> {
+    const cmd = {
+      type: IqType.Get,
+      discoInfo: {
+        node: topicName
+      }
+    };
+    const response = await this.xmppService.executeIqToPubsub(cmd);
+    for (const field of response.discoInfo.form.fields) {
+      if (field.name === 'pubsub#collection' && field.value) {
+        // TODO: SUPPORT MULTIPLE VALUES!
+        return [await this.loadTopicByIdentifier(field.value)];
+      }
+    }
+    return [];
+  }
+
 
   /**
    * Load detailed Topic information (ie. Leaf or Collection) by its identifier.

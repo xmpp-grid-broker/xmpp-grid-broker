@@ -9,15 +9,17 @@ export class TopicOverviewService {
   }
 
   public rootTopics(): AsyncIterableIterator<Topic> {
-    return this.iteratorHelperService.createTopicsIterator(undefined, false);
+    return this.iteratorHelperService.createChildTopicsIterator(undefined, false);
   }
 
   public allTopics(): AsyncIterableIterator<Topic> {
-    return this.iteratorHelperService.createFilterTopicsIterator(undefined, (value) => value instanceof LeafTopic);
+    const iterator = this.iteratorHelperService.createChildTopicsIterator(undefined, true);
+    return this.iteratorHelperService.filterTopicsIterator(iterator, (value) => value instanceof LeafTopic);
   }
 
   public allCollections(): AsyncIterableIterator<Topic> {
-    return this.iteratorHelperService.createFilterTopicsIterator(undefined, (value) => value instanceof CollectionTopic);
+    const iterator = this.iteratorHelperService.createChildTopicsIterator(undefined, true);
+    return this.iteratorHelperService.filterTopicsIterator(iterator, (value) => value instanceof CollectionTopic);
   }
 
 }
