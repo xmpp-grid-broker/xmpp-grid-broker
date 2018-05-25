@@ -1,15 +1,50 @@
-import { TestBed, inject } from '@angular/core/testing';
+import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
+import {TopicIteratorHelperService} from '../../topic-widgets/topic-iterator-helper.service';
+import createSpyObj = jasmine.createSpyObj;
 
-import { SubtopicsOrParentsService } from './subtopics-or-parents.service';
+describe(SubtopicsOrParentsService.name, () => {
 
-describe('SubtopicsOrParentsService', () => {
+  let iteratorHelper: jasmine.SpyObj<TopicIteratorHelperService>;
+  let service: SubtopicsOrParentsService;
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [SubtopicsOrParentsService]
+    iteratorHelper = jasmine.createSpyObj(TopicIteratorHelperService.name,
+      ['createChildTopicsIterator', 'createParentsTopicsIterator']);
+    service = new SubtopicsOrParentsService(iteratorHelper);
+  });
+
+  describe('when calling subtopics', () => {
+    it('should just return the result of the call to the helper service', () => {
+      const fakeResult = createSpyObj('AsyncIterableIterator', ['next']);
+      iteratorHelper.createChildTopicsIterator.and.returnValue(fakeResult);
+
+      const result = service.subtopics('topicNane');
+
+      expect(result).toBe(fakeResult);
+    });
+
+    it('should call the helper service with the topic name and recursive flag', () => {
+      service.subtopics('topicNane');
+
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledTimes(1);
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith( 'topicNane', true);
     });
   });
 
-  it('should be created', inject([SubtopicsOrParentsService], (service: SubtopicsOrParentsService) => {
-    expect(service).toBeTruthy();
-  }));
+  describe('when calling parents', () => {
+    it('should just return the result of the call to the helper service', () => {
+      const fakeResult = createSpyObj('AsyncIterableIterator', ['next']);
+      iteratorHelper.createParentsTopicsIterator.and.returnValue(fakeResult);
+
+      const result = service.parents('topicNane');
+
+      expect(result).toBe(fakeResult);
+    });
+
+    it('should call the helper service with the topic name and recursive flag', () => {
+      service.parents('topicNane');
+
+      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledTimes(1);
+      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledWith( 'topicNane', true);
+    });
+  });
 });

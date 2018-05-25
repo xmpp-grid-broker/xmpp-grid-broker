@@ -18,6 +18,7 @@ export class TopicCreationService {
   }
 
   public createTopic(topicIdentifier: string, config: XmppDataForm): Promise<string> {
+    // TODO: REFACTOR
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
       .then(([client, pubSubJid]) => this._createService(topicIdentifier, config, client, pubSubJid));
   }
@@ -27,6 +28,7 @@ export class TopicCreationService {
    * (See "Request Default Node Configuration Options" in XEP-0060)
    */
   public loadDefaultConfig(): Promise<XmppDataForm> {
+    // TODO: REFACTOR
     return Promise.all([this.xmppService.getClient(), this.xmppService.pubSubJid])
       .then(([client, pubSubJid]) => this._loadDefaultConfig(client, pubSubJid));
   }

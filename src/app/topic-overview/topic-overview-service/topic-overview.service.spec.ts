@@ -1,180 +1,85 @@
+import {TopicIteratorHelperService} from '../../topic-widgets/topic-iterator-helper.service';
 import {TopicOverviewService} from './topic-overview.service';
-import {XmppService} from '../../core/xmpp/xmpp.service';
-import createSpyObj = jasmine.createSpyObj;
-import SpyObj = jasmine.SpyObj;
-import {JID} from 'xmpp-jid';
+import {CollectionTopic, LeafTopic} from '../../core/models/topic';
 
-describe('TopicOverviewService', () => {
-  const DISCO_ITEMS_NODE_ROOT = {
-    'discoItems': {
-      'items': [
-        {
-          'jid': new JID('pubsub.xmppserver'),
-          'node': 'leaf1'
-        },
-        {
-          'jid': new JID('pubsub.xmppserver'),
-          'node': 'collection1'
-        }
-      ],
-      'rsm': {
-        'count': 2,
-        'firstIndex': 0,
-        'first': 'pubsub.xmppserver#leaf1',
-        'last': 'pubsub.xmppserver#collection1'
-      }
-    },
-    'lang': 'en',
-    'id': '72977f2f-8db8-47f9-8a46-78c001905a12',
-    'to': new JID('admin@xmppserver'),
-    'from': new JID('pubsub.xmppserver'),
-    'type': 'result'
-  };
+describe(TopicOverviewService.name, () => {
 
-  const DISCO_ITEMS_NODE_COLLECTION1 = {
-    'discoItems': {
-      'items': [
-        {
-          'jid': new JID('pubsub.xmppserver'),
-          'node': 'leaf2'
-        },
-      ],
-      'rsm': {
-        'count': 1,
-        'firstIndex': 0,
-        'first': 'pubsub.xmppserver#leaf2',
-        'last': 'pubsub.xmppserver#leaf2'
-      }
-    },
-    'lang': 'en',
-    'id': '99999999-8db8-47f9-8a46-78c999999912',
-    'to': new JID('admin@xmppserver'),
-    'from': new JID('pubsub.xmppserver'),
-    'type': 'result'
-  };
-
-  const DISCO_INFO_NODE_LEAF1 = {
-    'discoInfo': {
-      'form': {
-        'type': 'result',
-      },
-      'node': 'leaf1',
-      'features': [
-        'http://jabber.org/protocol/pubsub',
-        'http://jabber.org/protocol/disco#info'
-      ],
-      'identities': [
-        {
-          'category': 'pubsub',
-          'type': 'leaf'
-        }
-      ],
-    },
-    'lang': 'en',
-    'id': '81d6b074-6069-4a78-a624-fffc5eada672',
-    'to': new JID('admin@xmppserver'),
-    'from': new JID('pubsub.xmppserver'),
-    'type': 'result'
-  };
-
-  const DISCO_INFO_NODE_LEAF2 = {
-    'discoInfo': {
-      'form': {
-        'type': 'result',
-      },
-      'node': 'leaf2',
-      'features': [
-        'http://jabber.org/protocol/pubsub',
-        'http://jabber.org/protocol/disco#info'
-      ],
-      'identities': [
-        {
-          'category': 'pubsub',
-          'type': 'leaf'
-        }
-      ],
-    },
-    'lang': 'en',
-    'id': '81d6b074-6069-4a78-a624-fffc5eada672',
-    'to': new JID('admin@xmppserver'),
-    'from': new JID('pubsub.xmppserver'),
-    'type': 'result'
-  };
-
-  const DISCO_INFO_NODE_COLLECTION1 = {
-    'discoInfo': {
-      'form': {
-        'type': 'result',
-      },
-      'node': 'collection1',
-      'features': [
-        'http://jabber.org/protocol/pubsub',
-        'http://jabber.org/protocol/disco#info'
-      ],
-      'identities': [
-        {
-          'category': 'pubsub',
-          'type': 'collection'
-        }
-      ],
-    },
-    'lang': 'en',
-    'id': '31d6b074-6069-4a78-a624-aaac5eada671',
-    'to': new JID('admin@xmppserver'),
-    'from': new JID('pubsub.xmppserver'),
-    'type': 'result'
-  };
-
-  let xmppService: SpyObj<XmppService>;
+  let iteratorHelper: jasmine.SpyObj<TopicIteratorHelperService>;
   let service: TopicOverviewService;
-
   beforeEach(() => {
-    xmppService = createSpyObj('XmppService', ['executeIqToPubsub']);
-    service = new TopicOverviewService(xmppService);
-
-    xmppService.executeIqToPubsub.and.callFake(
-      (cmd) => {
-        if (cmd.discoItems) {
-          switch (cmd.discoItems.node) {
-            case 'collection1':
-              return Promise.resolve(DISCO_ITEMS_NODE_COLLECTION1);
-            default:
-              return Promise.resolve(DISCO_ITEMS_NODE_ROOT);
-          }
-        } else if (cmd.discoInfo) {
-          switch (cmd.discoInfo.node) {
-            case 'leaf1':
-              return Promise.resolve(DISCO_INFO_NODE_LEAF1);
-            case 'leaf2':
-              return Promise.resolve(DISCO_INFO_NODE_LEAF2);
-            case 'collection1':
-              return Promise.resolve(DISCO_INFO_NODE_COLLECTION1);
-          }
-        }
-
-        return Promise.reject('No clever impl found...');
-      }
-    );
+    iteratorHelper = jasmine.createSpyObj(TopicIteratorHelperService.name,
+      ['createChildTopicsIterator', 'filterTopicsIterator']);
+    service = new TopicOverviewService(iteratorHelper);
   });
 
-  it('should return an iterator of all topics', async () => {
-    const iterator = service.allTopics();
-    expect((await iterator.next()).value.title).toBe('leaf1');
-    expect((await iterator.next()).value.title).toBe('leaf2');
-    expect((await iterator.next()).done).toBe(true);
+  describe('when calling rootTopics', () => {
+    it('should just return the result of the call to the helper service', () => {
+      const fakeResult = jasmine.createSpyObj('AsyncIterableIterator', ['next']);
+      iteratorHelper.createChildTopicsIterator.and.returnValue(fakeResult);
+
+      const result = service.rootTopics();
+
+      expect(result).toBe(fakeResult);
+    });
+
+    it('should call the helper service with undefined and recursive flag', () => {
+      service.rootTopics();
+
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledTimes(1);
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith(undefined, false);
+    });
+  });
+  describe('when calling allTopics', () => {
+    it('should return a filtered iterator', () => {
+      const fakeResult = jasmine.createSpyObj('AsyncIterableIterator', ['next']);
+      iteratorHelper.filterTopicsIterator.and.returnValue(fakeResult);
+
+      const result = service.allTopics();
+
+      expect(result).toBe(fakeResult);
+    });
+    it('should call the helper service with undefined and recursive flag', () => {
+      service.allTopics();
+
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledTimes(1);
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith(undefined, true);
+    });
+
+    it('should call the the filter method with a simple predicate', () => {
+      service.allTopics();
+
+      expect(iteratorHelper.filterTopicsIterator).toHaveBeenCalledTimes(1);
+      const filterFn = iteratorHelper.filterTopicsIterator.calls.mostRecent().args[1];
+      expect(filterFn(new LeafTopic('foo'))).toBe(true);
+      expect(filterFn(new CollectionTopic('foo'))).toBe(false);
+    });
+
   });
 
+  describe('when calling allCollections', () => {
+    it('should return a filtered iterator', () => {
+      const fakeResult = jasmine.createSpyObj('AsyncIterableIterator', ['next']);
+      iteratorHelper.filterTopicsIterator.and.returnValue(fakeResult);
 
-  it('should return an iterator of all root topics', async () => {
-    const iterator = service.rootTopics();
-    expect((await iterator.next()).value.title).toBe('leaf1');
-    expect((await iterator.next()).value.title).toBe('collection1');
-    expect((await iterator.next()).done).toBe(true);
-  });
-  it('should return an iterator of all collections', async () => {
-    const iterator = service.allCollections();
-    expect((await iterator.next()).value.title).toBe('collection1');
-    expect((await iterator.next()).done).toBe(true);
+      const result = service.allCollections();
+
+      expect(result).toBe(fakeResult);
+    });
+    it('should call the helper service with undefined and recursive flag', () => {
+      service.allCollections();
+
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledTimes(1);
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith(undefined, true);
+    });
+
+    it('should call the the filter method with a simple predicate', () => {
+      service.allCollections();
+
+      expect(iteratorHelper.filterTopicsIterator).toHaveBeenCalledTimes(1);
+      const filterFn = iteratorHelper.filterTopicsIterator.calls.mostRecent().args[1];
+      expect(filterFn(new LeafTopic('foo'))).toBe(false);
+      expect(filterFn(new CollectionTopic('foo'))).toBe(true);
+    });
+
   });
 });
-

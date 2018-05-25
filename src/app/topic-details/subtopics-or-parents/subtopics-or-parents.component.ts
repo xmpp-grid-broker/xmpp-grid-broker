@@ -12,7 +12,7 @@ import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
 })
 export class SubtopicsOrParentsComponent implements OnInit {
 
-  iterator = new IteratorListPager();
+  iterator = new IteratorListPager<Topic>();
   topic: Topic;
 
   constructor(private route: ActivatedRoute,
@@ -24,9 +24,9 @@ export class SubtopicsOrParentsComponent implements OnInit {
   ngOnInit() {
     this.topic = this.detailsService.currentTopic();
     if (this.route.snapshot.data.subtopics) {
-      this.iterator.useIterator(this.service.subtopics(this.topic));
+      this.iterator.useIterator(this.service.subtopics(this.topic.title));
     } else {
-      this.iterator.useIterator(this.service.parents(this.topic));
+      this.iterator.useIterator(this.service.parents(this.topic.title));
     }
 
   }

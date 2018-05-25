@@ -2,6 +2,11 @@ import {IqType, XmppService} from '../core/xmpp/xmpp.service';
 import {CollectionTopic, Topic} from '../core/models/topic';
 import {Injectable} from '@angular/core';
 
+/**
+ * This service provides commonly used functionallity
+ * to iterate (recursively) trough all children or parent
+ * topics/collections (of a given topic).
+ */
 @Injectable()
 export class TopicIteratorHelperService {
   // The internally used page size, meaning how many nodes to load at a time using result set management
@@ -18,24 +23,27 @@ export class TopicIteratorHelperService {
    */
   public async* createChildTopicsIterator(topicIdentifier: string, recursive: boolean): AsyncIterableIterator<Topic> {
 
-    const topicsForWhichTheChildsShallBeLoaded: Array<string | undefined> = [topicIdentifier];
+    const topicsForWhichTheChildrenShallBeLoaded: Array<string | undefined> = [topicIdentifier];
     const visitedTopics = []; // To prevent duplicates...
-    while (topicsForWhichTheChildsShallBeLoaded.length > 0) {
-      const topicName = topicsForWhichTheChildsShallBeLoaded.pop();
 
+    while (topicsForWhichTheChildrenShallBeLoaded.length > 0) {
+      const topicName = topicsForWhichTheChildrenShallBeLoaded.pop();
       // Iterate over all it's children
       const iterator = this.createTopicChildrenIterator(topicName);
       let next = await iterator.next();
+
       while (!next.done) {
         const topic = next.value;
+
         // top prevent duplicates...
         if (visitedTopics.indexOf(topic.title) >= 0) {
+          next = await iterator.next();
           continue;
         }
         yield topic;
         visitedTopics.push(topic.title);
         if (recursive && topic instanceof CollectionTopic) {
-          topicsForWhichTheChildsShallBeLoaded.push(topic.title);
+          topicsForWhichTheChildrenShallBeLoaded.push(topic.title);
         }
         next = await iterator.next();
       }
@@ -45,7 +53,7 @@ export class TopicIteratorHelperService {
   /**
    * Returns an async iterator that yields all parent collections of the given topic/collection.
    */
-  public async* createParentsTopicsIterator(topicIdentifier: string, recursive: true): AsyncIterableIterator<Topic> {
+  public async* createParentsTopicsIterator(topicIdentifier: string, recursive: boolean): AsyncIterableIterator<Topic> {
     const topicsToLoad: Array<string> = [topicIdentifier];
     const visitedTopics = [];
     while (topicsToLoad.length > 0) {
@@ -65,6 +73,7 @@ export class TopicIteratorHelperService {
     }
   }
 
+  // noinspection JSMethodCanBeStatic
   /**
    * Filters the given iterator using the provided predicate.
    */
@@ -86,6 +95,7 @@ export class TopicIteratorHelperService {
     let loadAfter: number | undefined;
     let hasMore = true;
     do {
+      // noinspection JSUnusedAssignment
       const cmd = {
         type: IqType.Get,
         discoItems: {
@@ -111,6 +121,9 @@ export class TopicIteratorHelperService {
     } while (hasMore);
   }
 
+  /**
+   * Loads all parent nodes of the given topic based on the disco form.
+   */
   private async loadParents(topicName: string): Promise<Topic[]> {
     const cmd = {
       type: IqType.Get,
@@ -121,8 +134,10 @@ export class TopicIteratorHelperService {
     const response = await this.xmppService.executeIqToPubsub(cmd);
     for (const field of response.discoInfo.form.fields) {
       if (field.name === 'pubsub#collection' && field.value) {
-        // TODO: SUPPORT MULTIPLE VALUES!
-        return [await this.loadTopicByIdentifier(field.value)];
+        const parents: [Promise<Topic>] = field.value.split('\n')
+          .filter(value => value)
+          .map(parent => this.loadTopicByIdentifier(parent));
+        return await Promise.all(parents);
       }
     }
     return [];
@@ -143,5 +158,4 @@ export class TopicIteratorHelperService {
     return Topic.fromDiscoInfo(response.discoInfo);
 
   }
-
 }

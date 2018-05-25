@@ -8,12 +8,12 @@ export class SubtopicsOrParentsService {
   constructor(private iteratorHelperService: TopicIteratorHelperService) {
   }
 
-  public subtopics(forTopic: Topic): AsyncIterableIterator<Topic> {
-    return this.iteratorHelperService.createChildTopicsIterator(forTopic.title, true);
+  public subtopics(forTopic: string): AsyncIterableIterator<Topic> {
+    return this.iteratorHelperService.createChildTopicsIterator(forTopic, true);
   }
 
-  public parents(forTopic: Topic): AsyncIterableIterator<Topic> {
-    return this.iteratorHelperService.createParentsTopicsIterator(forTopic.title, true);
+  public parents(forTopic: string): AsyncIterableIterator<Topic> {
+    return this.iteratorHelperService.createParentsTopicsIterator(forTopic, true);
   }
 
 }
