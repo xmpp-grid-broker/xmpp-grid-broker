@@ -1,33 +1,25 @@
 import {ErrorPageComponent} from './error-page.component';
-import {async, TestBed} from '@angular/core/testing';
+import {fakeAsync, TestBed} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 
-class MockActivatedRoute {
-  data: Observable<{ errorCode: string }>;
-
-  constructor(errorCode: string) {
-    this.data = Observable.of({errorCode});
-  }
-}
-
-describe('ErrorPageComponent', () => {
+describe(ErrorPageComponent.name, () => {
 
   let component: ErrorPageComponent;
   let fixture: ComponentFixture<ErrorPageComponent>;
   let de: HTMLElement;
-  let activatedRouteMock: MockActivatedRoute;
+  let routeData: Observable<{ errorCode: string }>;
 
   function setup(errorCode: string) {
-    activatedRouteMock = new MockActivatedRoute(errorCode);
+    routeData = Observable.of({errorCode});
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [ErrorPageComponent],
-      providers: [{provide: ActivatedRoute, useValue: activatedRouteMock}]
+      providers: [{provide: ActivatedRoute, useValue: {data: routeData}}]
     });
 
     fixture = TestBed.createComponent(ErrorPageComponent);
@@ -69,15 +61,14 @@ describe('ErrorPageComponent', () => {
   });
 
 
-  it('should subscribe to router data on init', async(() => {
+  it('should subscribe to router data on init', fakeAsync(() => {
     setup('404');
-    const routeSpy = spyOn(activatedRouteMock.data, 'subscribe').and.callThrough();
+    const routeSpy = spyOn(routeData, 'subscribe').and.callThrough();
 
     fixture.detectChanges();
 
     expect(routeSpy.calls.count()).toBe(1);
     expect(component.errorCode).toBe('404');
   }));
-
 
 });

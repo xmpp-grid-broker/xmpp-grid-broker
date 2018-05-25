@@ -3,7 +3,7 @@
  * to the pubsub item, enabling to parse and serialize
  * any XML payload.
  */
-export function RawXmlStanzaAddon(_, JXT) {
+export function RawXmlStanzaAddOn(_, JXT) {
   const XMLExtension = {
     get: function () {
 

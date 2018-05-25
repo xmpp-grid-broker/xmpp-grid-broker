@@ -4,13 +4,13 @@ import {FormControl, FormGroup} from '@angular/forms';
 describe('XmppDataFormField', () => {
   describe('when calling toJSON', () => {
     it('should return key and name as an object', () => {
-      const field = new XmppDataFormField(XmppDataFormFieldType.textSingle, 'title', 'fooBaaa');
+      const field = new XmppDataFormField(XmppDataFormFieldType.textSingle, 'title', 'fooBaa');
 
       const result = field.toJSON();
 
       expect(Object.keys(result).length).toBe(2);
       expect(result['name']).toBe('title');
-      expect(result['value']).toBe('fooBaaa');
+      expect(result['value']).toBe('fooBaa');
     });
   });
 
@@ -18,9 +18,9 @@ describe('XmppDataFormField', () => {
   describe('when calling fromJSON', () => {
     const givenJSON = {'type': 'hidden', 'name': 'fieldName', 'value': 'fieldValue', 'label': 'fieldLabel'};
 
-    it('should set type, name and label properly', () => {
+    it('should set type, name and label properly', async () => {
       const result = XmppDataFormField.fromJSON(givenJSON);
-      expect(result.type).toBe('hidden');
+      await expect(result.type).toBe('hidden');
       expect(result.name).toBe('fieldName');
       expect(result.label).toBe('fieldLabel');
     });
@@ -66,7 +66,7 @@ describe('XmppDataForm', () => {
 
     beforeEach(() => {
       field1 = new XmppDataFormField(XmppDataFormFieldType.hidden, 'FORM_TYPE', 'http://...');
-      field2 = new XmppDataFormField(XmppDataFormFieldType.textSingle, 'title', 'fooBaaa');
+      field2 = new XmppDataFormField(XmppDataFormFieldType.textSingle, 'title', 'fooBaa');
       form = new XmppDataForm([field1, field2]);
 
     });
@@ -135,7 +135,7 @@ describe('XmppDataForm', () => {
       const result = XmppDataForm.fromFormGroup(new FormGroup({}), null);
       expect(result).toBeNull();
     });
-    it('should return null forundefined FormGroup', () => {
+    it('should return null for undefined FormGroup', () => {
       const result = XmppDataForm.fromFormGroup(undefined, new XmppDataForm([]));
       expect(result).toBeNull();
     });
