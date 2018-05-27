@@ -7,7 +7,6 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/fromPromise';
 
 @Component({
   selector: 'xgb-bread-crumb',
@@ -48,7 +47,7 @@ export class BreadCrumbComponent {
     const crumb = isRouteConfigured ? route.routeConfig.data['breadcrumb'] : undefined;
 
     if (route === route.root) {
-      crumbs.unshift(new BreadCrumb(url, Observable.fromPromise(this.xmppService.getServerTitle())));
+      crumbs.unshift(new BreadCrumb(url, Observable.of(this.xmppService.getServerTitle())));
 
     } else if (crumb && typeof crumb === 'string') {
       crumbs.unshift(new BreadCrumb(url, this.substituteParamStrings(route, crumb)));
