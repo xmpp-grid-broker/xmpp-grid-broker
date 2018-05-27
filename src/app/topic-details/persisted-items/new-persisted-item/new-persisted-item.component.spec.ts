@@ -52,10 +52,6 @@ describe('NewPersistedItemComponent', () => {
   }));
 
   it('should initialize properly', fakeAsync(() => {
-
-    // Proper title
-    expect(de.query(By.css('h2')).nativeElement.innerHTML).toBe('Publish new Item on testing');
-
     // No error message
     expect(de.query(By.css('[xgbToast]'))).toBeNull();
   }));

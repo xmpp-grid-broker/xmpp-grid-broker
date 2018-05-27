@@ -55,11 +55,6 @@ describe('NewTopicSubscriptionComponent', () => {
 
   }));
 
-
-  it('should render topic name in title', fakeAsync(() => {
-    expect(el.querySelector('h2').innerHTML).toBe('New Subscription for testing');
-  }));
-
   it('should render input filed', fakeAsync(() => {
     expect(inputField).toBeDefined();
     expect(inputField.placeholder).toBe('Enter Subscription JID');

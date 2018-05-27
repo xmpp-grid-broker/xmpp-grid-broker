@@ -98,12 +98,6 @@ describe('TopicOverviewComponent', () => {
 
       expect(mockTopicOverviewService.allCollections.calls.count()).toBe(1);
     }));
-
-    it('should render the loaded title ', fakeAsync(() => {
-      fixture.detectChanges();
-      tick();
-      expect(de.querySelector('h2').innerText).toBe('xmpp.hsr.ch');
-    }));
   });
 
 });

@@ -80,11 +80,6 @@ describe('TopicCreationComponent', () => {
       waitUntilLoaded();
     }));
 
-    it('should render "Create New Collection" as title', () => {
-      const heading = de.nativeElement.querySelector('h2');
-      expect(heading.innerText).toBe('Create New Collection');
-    });
-
     it('should call the service if the form is filled out', fakeAsync(() => {
       spyOn(topicCreationService, 'createTopic').and.callThrough();
 
@@ -168,18 +163,4 @@ describe('TopicCreationComponent', () => {
     });
 
   });
-  describe('when creating a new collection', () => {
-
-    beforeEach(fakeAsync(() => {
-      fakeRoute.type = 'leaf';
-      waitUntilLoaded();
-    }));
-
-    it('should render "Create New Topic" as title', () => {
-      const heading = de.nativeElement.querySelector('h2');
-      expect(heading.innerText).toBe('Create New Topic');
-    });
-
-  });
-
 });
