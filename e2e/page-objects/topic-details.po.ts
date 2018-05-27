@@ -7,6 +7,7 @@ import {Locatable} from '../page-elements/locatable';
 import {Toast} from '../page-elements/toast';
 import {List} from '../page-elements/list';
 import {toPromise} from '../helpers';
+import {BreadCrumbs} from '../page-elements/bread-crumbs';
 
 type TopicDetailsTab = TopicDetailsConfigurationTab | TopicDetailsAffiliationTab;
 
@@ -155,10 +156,5 @@ export class TopicDetailsPage extends UrlAddressableComponent implements Locatab
       .then(() => {
       this.tab = tab;
     });
-  }
-
-  public async getTitle(): Promise<string> {
-    const titleElement = await this.locator.element(by.css('h2'));
-    return titleElement.getText();
   }
 }

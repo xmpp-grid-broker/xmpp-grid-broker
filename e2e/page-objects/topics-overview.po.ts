@@ -22,6 +22,10 @@ export class TopicOverviewRootCollectionsTab extends Tab {
     return 'Root Collections';
   }
 
+  get breadCrumbText(): string {
+    return 'Root';
+  }
+
   constructor(parentElement: Locatable) {
     super(parentElement);
   }
@@ -71,6 +75,10 @@ export class TopicsOverviewPage extends UrlAddressableComponent implements Locat
 
   get locator(): ElementFinder {
     return element(by.tagName('xgb-topic-overview'));
+  }
+
+  get breadCrumbText(): string {
+    return 'Topics';
   }
 
   private _tab: TopicsOverviewTab = undefined;
