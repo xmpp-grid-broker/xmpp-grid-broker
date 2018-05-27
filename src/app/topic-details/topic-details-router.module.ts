@@ -17,12 +17,15 @@ const routes: Routes = [
     canActivate: [XmppFeatureGuard],
     component: TopicDetailsComponent,
     children: [
-      {path: '', redirectTo: 'configuration', pathMatch: 'full'},
-      {path: 'configuration', component: TopicDetailsConfigComponent},
-      {path: 'affiliations', component: TopicAffiliationsComponent},
-      {path: 'subscriptions', component: TopicSubscriptionComponent},
-      {path: 'items', component: PersistedItemsComponent},
-    ]
+      {path: '', redirectTo: 'configuration', pathMatch: 'full', data: {breadcrumb: 'Topic :id'}},
+      {path: 'configuration', component: TopicDetailsConfigComponent, data: {breadcrumb: null}},
+      {path: 'affiliations', component: TopicAffiliationsComponent, data: {breadcrumb: 'Affiliations'}},
+      {path: 'subscriptions', component: TopicSubscriptionComponent, data: {breadcrumb: 'Subscriptions'}},
+      {path: 'items', component: PersistedItemsComponent, data: {breadcrumb: 'Items'}},
+    ],
+    data: {
+      breadcrumb: 'Topic :id'
+    }
   },
   {
     path: 'topics/details/:id',
@@ -32,17 +35,29 @@ const routes: Routes = [
         path: 'items/new',
         canActivate: [XmppFeatureGuard],
         component: NewPersistedItemComponent,
+        data: {
+          breadcrumb: 'New Persisted Item'
+        }
       }, {
         path: 'subscriptions/new',
         canActivate: [XmppFeatureGuard],
         component: NewTopicSubscriptionComponent,
+        data: {
+          breadcrumb: 'New Subscription'
+        }
       },
       {
         path: 'subscriptions/:jid/:subId',
         canActivate: [XmppFeatureGuard],
         component: ModifySubscriptionComponent,
+        data: {
+          breadcrumb: 'Modify Subscription :jid'
+        }
       }
-    ]
+    ],
+    data: {
+      breadcrumb: 'Topic :id'
+    }
   }
 ];
 

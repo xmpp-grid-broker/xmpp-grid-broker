@@ -10,12 +10,18 @@ export const routes: Routes = [
   {
     path: '',
     redirectTo: 'topics',
-    pathMatch: 'full'
+    pathMatch: 'full',
+    data: {
+      breadcrumb: 'Root'
+    }
   },
   {
     path: '**',
     component: ErrorPageComponent,
-    data: {errorCode: '404'}
+    data: {
+      errorCode: '404',
+      breadcrumb: '404 Not Found'
+    }
   },
 ];
 
