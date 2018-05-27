@@ -18,10 +18,10 @@ const routes: Routes = [
     component: TopicDetailsComponent,
     children: [
       {path: '', redirectTo: 'configuration', pathMatch: 'full', data: {breadcrumb: 'Topic :id'}},
-      {path: 'configuration', component: TopicDetailsConfigComponent, data: {breadcrumb: null}},
+      {path: 'configuration', component: TopicDetailsConfigComponent, data: {breadcrumb: 'Configuration'}},
       {path: 'affiliations', component: TopicAffiliationsComponent, data: {breadcrumb: 'Affiliations'}},
       {path: 'subscriptions', component: TopicSubscriptionComponent, data: {breadcrumb: 'Subscriptions'}},
-      {path: 'items', component: PersistedItemsComponent, data: {breadcrumb: 'Items'}},
+      {path: 'items', component: PersistedItemsComponent, data: {breadcrumb: 'Persisted Items'}},
     ],
     data: {
       breadcrumb: 'Topic :id'

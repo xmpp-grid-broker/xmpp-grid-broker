@@ -14,7 +14,7 @@ const routes: Routes = [
         component: TopicCreationComponent,
         data: {
           type: 'leaf',
-          breadcrumb: 'Leaf'
+          breadcrumb: 'Create New Topic'
         }
       },
       {
@@ -22,12 +22,12 @@ const routes: Routes = [
         component: TopicCreationComponent,
         data: {
           type: 'collection',
-          breadcrumb: 'Collection'
+          breadcrumb: 'Create New Collection'
         }
       }
     ],
     data: {
-      breadcrumb: 'New Topic'
+      breadcrumb: null
     }
   }
 ];

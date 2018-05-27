@@ -20,7 +20,7 @@ export const routes: Routes = [
     component: ErrorPageComponent,
     data: {
       errorCode: '404',
-      breadcrumb: '404 Not Found'
+      breadcrumb: 'Oops! 404 Not Found'
     }
   },
 ];
