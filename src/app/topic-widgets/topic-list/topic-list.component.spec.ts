@@ -33,7 +33,8 @@ describe('TopicListComponent', () => {
   it('should show loading spinner when uninitialized', fakeAsync(() => {
     component.topicList = new IteratorListPager<Topic>();
 
-    waitUntilLoaded();
+    fixture.detectChanges();
+    tick();
 
     expect(de.querySelector('.loading')).toBeTruthy();
     expect(de.querySelector('.loading').innerHTML).toBe('Loading...');
@@ -71,7 +72,7 @@ describe('TopicListComponent', () => {
     waitUntilLoaded();
 
     expect(de.querySelector('[toast-error]')).toBeTruthy();
-    expect(de.querySelector('[toast-error]').innerHTML).toBe('Error: a problem');
+    expect(de.querySelector('[toast-error]').innerHTML).toBe('An unknown error has occurred: a problem');
   }));
 
   it('should list topics when topics are provided', fakeAsync(() => {

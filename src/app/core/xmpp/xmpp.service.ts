@@ -3,7 +3,7 @@ import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
 import {XmppConfig} from '../models/config';
 import {NotificationService} from '../notifications/notification.service';
-import {RawXmlStanzaAddon} from './raw-xml-stanza';
+import {RawXmlStanzaAddOn} from './raw-xml-stanza';
 
 enum ConnectionState {
   Down = 0,
@@ -23,6 +23,7 @@ export enum IqType {
  */
 @Injectable()
 export class XmppClientFactory {
+  // noinspection JSMethodCanBeStatic
   public createClient(config: any): any {
     return createClient(config);
   }
@@ -87,13 +88,13 @@ export class XmppService {
             'To retry, reload the page.',
             false);
         };
-        const succCallBack = () => {
+        const successCallBack = () => {
           // unsubscribe callbacks
-          this._client.off('session:started', succCallBack);
+          this._client.off('session:started', successCallBack);
           this._client.off('disconnected', errCallback);
           resolve(this._client);
         };
-        this._client.on('session:started', succCallBack);
+        this._client.on('session:started', successCallBack);
         this._client.on('disconnected', errCallback);
 
         this.connect();
@@ -140,7 +141,7 @@ export class XmppService {
    */
   private _getClientInstance(config: XmppConfig): any {
     const client = this.xmppClientFactory.createClient(config);
-    client.use(RawXmlStanzaAddon);
+    client.use(RawXmlStanzaAddOn);
     client.on('session:started', () => this._state = ConnectionState.Up);
     client.on('disconnected', () => {
       this._state = ConnectionState.Down;

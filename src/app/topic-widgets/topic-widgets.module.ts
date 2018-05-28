@@ -8,6 +8,7 @@ import {FormFieldNamePipe} from './generic-form-config/form-field-name.pipe';
 import {JidMultiComponent} from './jid-multi/jid-multi.component';
 import {TopicChooserComponent} from './topic-chooser/topic-chooser.component';
 import {TopicConfigComponent} from './topic-config/topic-config.component';
+import {TopicIteratorHelperService} from './topic-iterator-helper.service';
 
 const EXPORTED_DECLARATIONS = [
   TopicListComponent,
@@ -20,7 +21,9 @@ const EXPORTED_DECLARATIONS = [
 @NgModule({
   imports: [CommonModule, FormsModule, ReactiveFormsModule, SharedModule],
   declarations: [...EXPORTED_DECLARATIONS, JidMultiComponent],
-  exports: [...EXPORTED_DECLARATIONS]
+  exports: [...EXPORTED_DECLARATIONS],
+  providers: [TopicIteratorHelperService]
+
 })
 export class TopicWidgetsModule {
 }

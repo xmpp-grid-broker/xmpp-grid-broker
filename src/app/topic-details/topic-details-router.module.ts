@@ -9,6 +9,7 @@ import {NewPersistedItemComponent} from './persisted-items/new-persisted-item/ne
 import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription/topic-subscription.component';
 import {NewTopicSubscriptionComponent} from './topic-subscription/new-topic-subscription/new-topic-subscription.component';
 import {ModifySubscriptionComponent} from './topic-subscription/modify-subscription/modify-subscription.component';
+import {SubtopicsOrParentsComponent} from './subtopics-or-parents/subtopics-or-parents.component';
 
 
 const routes: Routes = [
@@ -21,6 +22,8 @@ const routes: Routes = [
       {path: 'configuration', component: TopicDetailsConfigComponent, data: {breadcrumb: 'Configuration'}},
       {path: 'affiliations', component: TopicAffiliationsComponent, data: {breadcrumb: 'Affiliations'}},
       {path: 'subscriptions', component: TopicSubscriptionComponent, data: {breadcrumb: 'Subscriptions'}},
+      {path: 'subtopics', component: SubtopicsOrParentsComponent, data: {subtopics: true, breadcrumb: 'Subtopics'}},
+      {path: 'parents', component: SubtopicsOrParentsComponent, data: {subtopics: false, breadcrumb: 'Parent Collections'}},
       {path: 'items', component: PersistedItemsComponent, data: {breadcrumb: 'Persisted Items'}},
     ],
     data: {

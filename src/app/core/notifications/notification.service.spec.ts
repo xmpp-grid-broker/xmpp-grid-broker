@@ -3,6 +3,7 @@ import {ComponentFactoryResolver, ViewContainerRef} from '@angular/core';
 import {AlertNotificationComponent} from './alert-notification/alert-notification.component';
 import {ConfirmNotificationComponent} from './confirm-notification/confirm-notification.component';
 import createSpyObj = jasmine.createSpyObj;
+import SpyObj = jasmine.SpyObj;
 
 class FakeComponentRef {
   instance: any;
@@ -26,11 +27,11 @@ class FakeComponentRef {
   }
 }
 
-describe('NotificationService', () => {
+describe(NotificationService.name, () => {
   let service: NotificationService;
-  let componentFactoryResolverSpy: jasmine.SpyObj<ComponentFactoryResolver>;
+  let componentFactoryResolverSpy: SpyObj<ComponentFactoryResolver>;
   let fakeComponentRef: FakeComponentRef;
-  let rootViewContainerSpy: jasmine.SpyObj<ViewContainerRef>;
+  let rootViewContainerSpy: SpyObj<ViewContainerRef>;
 
   beforeEach(() => {
     componentFactoryResolverSpy = createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
@@ -92,7 +93,8 @@ describe('NotificationService', () => {
   });
 
   describe('when calling confirm', () => {
-    it('should set given parameters on the component', () => {
+    it('should set given parameters on the component', async () => {
+      // noinspection JSIgnoredPromiseFromCall
       service.confirm('title', 'message', 'confirmLabel', 'cancelLabel');
       expect(fakeComponentRef.instance.title).toBe('title');
       expect(fakeComponentRef.instance.message).toBe('message');
@@ -101,11 +103,13 @@ describe('NotificationService', () => {
     });
 
     it('should call insert on the rootViewContainer', () => {
+      // noinspection JSIgnoredPromiseFromCall
       service.confirm('title', 'message');
       expect(rootViewContainerSpy.insert).toHaveBeenCalledTimes(1);
     });
 
     it('should destroy and return true on componentRef when confirming', (done) => {
+      // noinspection JSIgnoredPromiseFromCall
       const promise = service.confirm('title', 'message');
       spyOn(fakeComponentRef, 'destroy').and.callThrough();
       fakeComponentRef.instance.complete(true);

@@ -40,7 +40,7 @@ export class XmppError extends Error {
  * Generic errors such as timeout and internal server errors are handled by this method.
  *
  * @param error the error as returned by stanza.io or the xmpp service.
- * @param conditionToErrorMapping {{[key: string]: string}} Specific error handling. Use {@link XmppErrorCondition} as keys!
+ * @param conditionToErrorMapping Specific error handling. Use {@link XmppErrorCondition} as keys!
  */
 export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key: string]: string }): XmppError {
   if (error && error.condition) {
@@ -67,7 +67,8 @@ export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key:
 export function ErrorToString(error: any): string {
   if (error instanceof XmppError) {
     return error.message;
-  } else if (error instanceof Error) {
+  } else  // noinspection SuspiciousInstanceOfGuard
+  if (error instanceof Error) {
     return `An unknown error has occurred: ${error.message}`;
   } else {
     return `An unknown error has occurred: ${JSON.stringify(error)}`;

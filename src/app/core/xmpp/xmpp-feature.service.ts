@@ -54,9 +54,9 @@ export class XmppFeatureService {
       .then((resolvedFeatures) => {
         return resolvedFeatures
           .map((item, idx) => {
-            return {isSuported: item, label: `${features[idx]}(${protocol})`};
+            return {isSupported: item, label: `${features[idx]}(${protocol})`};
           })
-          .filter((feature) => !feature.isSuported)
+          .filter((feature) => !feature.isSupported)
           .map((feature) => feature.label);
       });
   }
@@ -77,7 +77,7 @@ export class XmppFeatureService {
     };
     const req = protocol === 'pubsub' ? this.xmppService.executeIqToPubsub(cmd) : this.xmppService.executeIq(cmd);
     const query = req.then(rawFeatures => {
-      const features = rawFeatures.discoInfo.features
+      return rawFeatures.discoInfo.features
       // Map URLs to feature strings
         .map(url => {
           if (url.startsWith(`http://jabber.org/protocol/${protocol}`)) {
@@ -92,7 +92,6 @@ export class XmppFeatureService {
         })
         // Filter features that do not belong to this protocol
         .filter(feature => feature !== undefined);
-      return features;
     });
 
     this._protocolFeatures.set(protocol, query);

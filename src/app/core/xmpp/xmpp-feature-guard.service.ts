@@ -6,6 +6,7 @@ import {ConfigService} from '../config.service';
 
 @Injectable()
 export class XmppFeatureGuardService implements CanActivate {
+  // noinspection TypeScriptFieldCanBeMadeReadonly
   private checkWasSuccessfulOnce: boolean;
 
 
@@ -35,7 +36,7 @@ export class XmppFeatureGuardService implements CanActivate {
           }
           return successful;
         })
-      ).catch((e) => {
+      ).catch(() => {
         this.notificationService.alert(
           'Failed to load the configuration',
           'Learn how to how to correctly set up this application in the ' +

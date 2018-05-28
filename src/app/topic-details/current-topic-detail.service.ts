@@ -36,6 +36,7 @@ export class CurrentTopicDetailService {
    * Returns a promise to handle possible failures.
    */
   public loadTopic(topicIdentifier: string): Promise<Topic> {
+    this._topic = undefined;
     const cmd = {
       type: IqType.Get,
       discoInfo: {

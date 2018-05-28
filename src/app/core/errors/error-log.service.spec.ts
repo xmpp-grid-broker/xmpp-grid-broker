@@ -1,6 +1,6 @@
 import {ErrorLogService} from './error-log.service';
 
-describe('ErrorLogService', () => {
+describe(ErrorLogService.name, () => {
   let errorLog: ErrorLogService;
   const message = 'some error message';
 

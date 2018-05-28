@@ -4,6 +4,7 @@ describe('XmppError', () => {
   // (See https://github.com/Microsoft/TypeScript/wiki/Breaking-Changes#extending-built-ins-like-error-array-and-map-may-no-longer-work)
   it('XmppError instance should be instance of XmppError', async () => {
     const instance = new XmppError('msg', XmppErrorCondition.BadRequest);
+    // noinspection SuspiciousInstanceOfGuard
     await expect(instance instanceof XmppError).toBe(true);
   });
 });
@@ -65,7 +66,7 @@ describe('JxtErrorToXmppError', () => {
 
   it('should handle unmapped conditions', async () => {
     const error = {
-      condition: 'je-ne-sais-pas'
+      condition: 'unknown'
     };
     const errorMapping = {
       [XmppErrorCondition.FeatureNotImplemented]: 'An example'
@@ -73,7 +74,7 @@ describe('JxtErrorToXmppError', () => {
 
     const mappedError = JxtErrorToXmppError(error, errorMapping);
 
-    await expect(mappedError.message).toBe('An unknown error has occurred: {"condition":"je-ne-sais-pas"}!');
+    await expect(mappedError.message).toBe('An unknown error has occurred: {"condition":"unknown"}!');
     await expect(mappedError.condition).toBeUndefined();
   });
 

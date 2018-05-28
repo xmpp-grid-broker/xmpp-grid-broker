@@ -17,6 +17,8 @@ import {NewTopicSubscriptionComponent} from './topic-subscription/new-topic-subs
 import { ModifySubscriptionComponent } from './topic-subscription/modify-subscription/modify-subscription.component';
 import {CurrentTopicDetailService} from './current-topic-detail.service';
 import {TopicAffiliationsService} from './topic-affiliations/topic-affiliations.service';
+import { SubtopicsOrParentsComponent } from './subtopics-or-parents/subtopics-or-parents.component';
+import { SubtopicsOrParentsService } from './subtopics-or-parents/subtopics-or-parents.service';
 
 @NgModule({
   imports: [
@@ -35,14 +37,16 @@ import {TopicAffiliationsService} from './topic-affiliations/topic-affiliations.
     NewPersistedItemComponent,
     TopicSubscriptionComponent,
     NewTopicSubscriptionComponent,
-    ModifySubscriptionComponent
+    ModifySubscriptionComponent,
+    SubtopicsOrParentsComponent
   ],
   providers: [
     TopicDetailsConfigurationService,
     CurrentTopicDetailService,
     TopicAffiliationsService,
     PersistedItemsService,
-    TopicSubscriptionService]
+    TopicSubscriptionService,
+    SubtopicsOrParentsService]
 })
 export class TopicDetailsModule {
 }

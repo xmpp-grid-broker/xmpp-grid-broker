@@ -1,5 +1,5 @@
 export abstract class Topic {
-  constructor(public title: string) {
+  protected constructor(public title: string) {
   }
 
   static fromDiscoInfo(discoInfo: any): Topic {
@@ -21,6 +21,7 @@ export abstract class Topic {
   public isCollection(): boolean {
     return this instanceof CollectionTopic; //tslint:disable-line
   }
+
   /**
    * utility method to simplify template code.
    */
@@ -32,7 +33,13 @@ export abstract class Topic {
 export type Topics = Array<Topic>;
 
 export class LeafTopic extends Topic {
+  constructor(public title: string) {
+    super(title);
+  }
 }
 
 export class CollectionTopic extends Topic {
+  constructor(public title: string) {
+    super(title);
+  }
 }
