@@ -19,11 +19,11 @@ export class TopicOverviewRootCollectionsTab extends Tab {
   }
 
   get linkText(): string {
-    return 'Root Collections';
+    return 'Root Topics';
   }
 
   get breadCrumbText(): string {
-    return 'Root';
+    return 'Root Topics';
   }
 
   constructor(parentElement: Locatable) {
@@ -75,10 +75,6 @@ export class TopicsOverviewPage extends UrlAddressableComponent implements Locat
 
   get locator(): ElementFinder {
     return element(by.tagName('xgb-topic-overview'));
-  }
-
-  get breadCrumbText(): string {
-    return 'Topics';
   }
 
   private _tab: TopicsOverviewTab = undefined;

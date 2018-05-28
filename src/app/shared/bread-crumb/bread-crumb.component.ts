@@ -15,16 +15,17 @@ import 'rxjs/add/observable/of';
   encapsulation: ViewEncapsulation.None
 })
 export class BreadCrumbComponent {
-  // noinspection SuspiciousInstanceOfGuard
-  breadcrumbs = this.router.events
-    .filter(event => event instanceof NavigationEnd)
-    .distinctUntilChanged()
-    .map(() => this.getBreadFromRoute(this.activatedRoute.root));
+  breadcrumbs: Observable<BreadCrumbs>;
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
               private xmppService: XmppService,
               private errorLogService: ErrorLogService) {
+    // noinspection SuspiciousInstanceOfGuard
+    this.breadcrumbs = this.router.events
+      .filter(event => event instanceof NavigationEnd)
+      .distinctUntilChanged()
+      .map(() => this.getBreadFromRoute(this.activatedRoute.root));
   }
 
   /**
@@ -32,7 +33,6 @@ export class BreadCrumbComponent {
    *
    * @param {ActivatedRoute} route The root from where to reconstruct BreadCrumbs
    * @param {string[]} parentUrlFragments URL fragments of the current path
-   * @returns {BreadCrumbs}
    */
   private getBreadFromRoute(route: ActivatedRoute, parentUrlFragments: string[] = []): BreadCrumbs {
 
@@ -63,11 +63,8 @@ export class BreadCrumbComponent {
   }
 
   /**
-   * Substitutes all route parameters (e.g. :id) in the string text.
-   *
-   * @param {ActivatedRoute} route
-   * @param {string} text
-   * @returns {Observable<string>}
+   * Substitutes all route parameters (e.g. :id) in the string text with the parameter
+   * value of the given route.
    */
   private substituteParamStrings(route: ActivatedRoute, text: string): Observable<string> {
     return route.params.map(params => {

@@ -22,7 +22,6 @@ describe('Routes', () => {
     const breadCrumbs = await appPage.breadCrumbs.crumbContent();
 
     expect(breadCrumbs.pop()).toBe(destinationTab.breadCrumbText);
-    expect(breadCrumbs.pop()).toBe(destinationPage.breadCrumbText);
     expect(breadCrumbs.pop()).toBe('openfire');
   });
 });
