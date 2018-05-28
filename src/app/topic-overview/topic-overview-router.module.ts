@@ -13,6 +13,9 @@ const routes: Routes = [
       {path: 'all', component: TopicOverviewComponent, data: {filter: 'all', breadcrumb: 'All Topics'}},
       {path: 'collections', component: TopicOverviewComponent, data: {filter: 'collections', breadcrumb: 'All Collections'}}
     ],
+    data: {
+      breadcrumb: null
+    }
   }
 ];
 
