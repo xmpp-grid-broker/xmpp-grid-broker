@@ -83,15 +83,6 @@ describe('ModifySubscriptionComponent', () => {
     expect(errorLogService.error).toHaveBeenCalledWith(error.message, error);
   }));
 
-  it('should render node in title', fakeAsync(() => {
-    service.loadConfiguration.and.returnValue(Promise.resolve(new XmppDataForm([])));
-
-    waitUntilLoaded();
-
-    expect(el.querySelector('h2').innerHTML).toBe('Modify Subscription on testing');
-
-  }));
-
   it('should render disabled jid field', fakeAsync(() => {
     service.loadConfiguration.and.returnValue(Promise.resolve(new XmppDataForm([])));
 

@@ -1,7 +1,6 @@
 <xgb-spinner *ngIf="!topic && !errorMessage"></xgb-spinner>
 <div *ngIf="errorMessage" xgbToast toast-error>{{errorMessage}}</div>
 <ng-container *ngIf="topic">
-  <h2>{{topic.isCollection()?"Collection" :"Topic" }}: {{topic.title}}</h2>
   <xgb-tabs>
     <xgb-tab [routerLink]="['configuration']" tabTitle="Configuration"></xgb-tab>
     <xgb-tab [routerLink]="['affiliations']" tabTitle="Affiliations"></xgb-tab>

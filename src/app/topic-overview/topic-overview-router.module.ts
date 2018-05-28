@@ -9,10 +9,13 @@ const routes: Routes = [
     canActivate: [XmppFeatureGuard],
     children: [
       {path: '', redirectTo: 'root', pathMatch: 'full'},
-      {path: 'root', component: TopicOverviewComponent, data: {filter: 'root'}},
-      {path: 'all', component: TopicOverviewComponent, data: {filter: 'all'}},
-      {path: 'collections', component: TopicOverviewComponent, data: {filter: 'collections'}}
-    ]
+      {path: 'root', component: TopicOverviewComponent, data: {filter: 'root', breadcrumb: 'Root Topics'}},
+      {path: 'all', component: TopicOverviewComponent, data: {filter: 'all', breadcrumb: 'All Topics'}},
+      {path: 'collections', component: TopicOverviewComponent, data: {filter: 'collections', breadcrumb: 'All Collections'}}
+    ],
+    data: {
+      breadcrumb: null
+    }
   }
 ];
 

@@ -10,12 +10,25 @@ const routes: Routes = [
     canActivate: [XmppFeatureGuard],
     children: [
       {
-        path: 'topic', component: TopicCreationComponent, data: {type: 'leaf'}
+        path: 'topic',
+        component: TopicCreationComponent,
+        data: {
+          type: 'leaf',
+          breadcrumb: 'Create New Topic'
+        }
       },
       {
-        path: 'collection', component: TopicCreationComponent, data: {type: 'collection'}
+        path: 'collection',
+        component: TopicCreationComponent,
+        data: {
+          type: 'collection',
+          breadcrumb: 'Create New Collection'
+        }
       }
-    ]
+    ],
+    data: {
+      breadcrumb: null
+    }
   }
 ];
 

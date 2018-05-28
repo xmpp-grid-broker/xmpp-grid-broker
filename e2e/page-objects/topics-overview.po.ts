@@ -19,7 +19,11 @@ export class TopicOverviewRootCollectionsTab extends Tab {
   }
 
   get linkText(): string {
-    return 'Root Collections';
+    return 'Root Topics';
+  }
+
+  get breadCrumbText(): string {
+    return 'Root Topics';
   }
 
   constructor(parentElement: Locatable) {

@@ -17,6 +17,7 @@ import {ToastDirective} from './toast.directive';
 import {NoDuplicatesAllowedDirective} from './form/no-duplicates-allowed.directive';
 import {ListActionComponent} from './list/list-action.component';
 import {ListBodyComponent} from './list/list-body.component';
+import {BreadCrumbComponent} from './bread-crumb/bread-crumb.component';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,
@@ -34,7 +35,8 @@ const EXPORTED_DECLARATIONS = [
   FormFieldComponent,
   SpinnerComponent,
   CollapsibleComponent,
-  NoDuplicatesAllowedDirective
+  NoDuplicatesAllowedDirective,
+  BreadCrumbComponent
 ];
 
 @NgModule({
