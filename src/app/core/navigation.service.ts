@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {Topic} from './models/topic';
+import {Topic} from '.';
 
 @Injectable()
 export class NavigationService {

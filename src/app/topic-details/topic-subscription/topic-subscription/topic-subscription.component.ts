@@ -1,11 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Subscription} from '../../../core/models/Subscription';
-import {TopicSubscriptionService} from '../topic-subscription.service';
-import {ErrorToString} from '../../../core/errors';
-import {NavigationService} from '../../../core/navigation.service';
-import {ErrorLogService} from '../../../core/errors/error-log.service';
-import {Topic} from '../../../core/models/topic';
-import {CurrentTopicDetailService} from '../../current-topic-detail.service';
+import {ErrorLogService, ErrorToString, NavigationService, Subscription, Topic} from '../../../core';
+import {CurrentTopicDetailService, TopicSubscriptionService} from '../..';
 
 @Component({
   selector: 'xgb-topic-subscription',

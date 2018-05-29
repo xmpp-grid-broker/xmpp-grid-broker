@@ -1,15 +1,10 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
-import {TopicAffiliationsComponent} from './topic-affiliations.component';
-import {SharedModule} from '../../shared/shared.module';
+import {AffiliationManagementErrorCodes, CurrentTopicDetailService, TopicAffiliationsComponent, TopicAffiliationsService} from '..';
+import {SharedModule} from '../../shared';
 import {DebugElement} from '@angular/core';
-import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
+import {Affiliation, JidAffiliation, LeafTopic, NotificationService, XmppService} from '../../core';
 import {FormsModule} from '@angular/forms';
-import {XmppService} from '../../core/xmpp/xmpp.service';
-import {NotificationService} from '../../core/notifications/notification.service';
-import {LeafTopic} from '../../core/models/topic';
-import {CurrentTopicDetailService} from '../current-topic-detail.service';
-import {AffiliationManagementErrorCodes, TopicAffiliationsService} from './topic-affiliations.service';
 
 describe('TopicAffiliationsComponent', () => {
   let component: TopicAffiliationsComponent;

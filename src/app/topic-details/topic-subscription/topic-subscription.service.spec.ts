@@ -1,9 +1,14 @@
-import {TopicSubscriptionService} from './topic-subscription.service';
-import {XmppService} from '../../core/xmpp/xmpp.service';
+import {TopicSubscriptionService} from '..';
+import {
+  Subscription,
+  SubscriptionState,
+  XmppDataForm,
+  XmppDataFormField,
+  XmppDataFormFieldType,
+  XmppErrorCondition,
+  XmppService
+} from '../../core';
 import {JID} from 'xmpp-jid';
-import {Subscription, SubscriptionState} from '../../core/models/Subscription';
-import {XmppErrorCondition} from '../../core/errors';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
 
 describe('TopicSubscriptionService', () => {
   let service: TopicSubscriptionService;

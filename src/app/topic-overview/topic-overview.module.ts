@@ -1,10 +1,8 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {TopicOverviewComponent} from './topic-overview/topic-overview.component';
-import {SharedModule} from '../shared/shared.module';
-import {TopicOverviewRoutingModule} from './topic-overview-router.module';
-import {TopicOverviewService} from './topic-overview-service/topic-overview.service';
-import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
+import {TopicOverviewComponent, TopicOverviewRoutingModule, TopicOverviewService} from '.';
+import {SharedModule} from '../shared';
+import {TopicWidgetsModule} from '../topic-widgets';
 
 @NgModule({
   imports: [

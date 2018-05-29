@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {LoadPersistedItemsErrors, PersistedItem, PersistedItemsService} from '../persisted-items.service';
-import {IteratorListPager} from '../../../shared/list/iterator-list-pager';
-import {NotificationService} from '../../../core/notifications/notification.service';
-import {CurrentTopicDetailService} from '../../current-topic-detail.service';
-import {Topic} from '../../../core/models/topic';
+import {CurrentTopicDetailService, LoadPersistedItemsErrors, PersistedItem, PersistedItemsService} from '../..';
+import {IteratorListPager} from '../../../shared';
+import {NotificationService, Topic} from '../../../core';
 
 @Component({
   selector: 'xgb-persisted-items',

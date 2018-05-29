@@ -1,4 +1,4 @@
-import {ErrorToString, JxtErrorToXmppError, XmppError, XmppErrorCondition} from './error-utils';
+import {ErrorToString, JxtErrorToXmppError, XmppError, XmppErrorCondition} from '..';
 
 describe('XmppError', () => {
   // (See https://github.com/Microsoft/TypeScript/wiki/Breaking-Changes#extending-built-ins-like-error-array-and-map-may-no-longer-work)

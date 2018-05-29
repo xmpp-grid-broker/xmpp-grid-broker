@@ -1,11 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {TopicSubscriptionService} from '../topic-subscription.service';
-import {NavigationService} from '../../../core/navigation.service';
+import {TopicSubscriptionService} from '../..';
+import {ErrorLogService, ErrorToString, NavigationService, XmppDataForm} from '../../../core';
 import {ActivatedRoute} from '@angular/router';
 import {FormGroup} from '@angular/forms';
-import {XmppDataForm} from '../../../core/models/FormModels';
-import {ErrorToString} from '../../../core/errors';
-import {ErrorLogService} from '../../../core/errors/error-log.service';
 
 @Component({
   selector: 'xgb-modify-subscription',

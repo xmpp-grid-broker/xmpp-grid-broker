@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
+import {IqType, XmppService} from '../../core';
 
 export class PersistedItem {
   /**

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {PersistedItemsService, PublishItemErrors} from '../persisted-items.service';
+import {PersistedItemsService, PublishItemErrors} from '../..';
 import {NgForm} from '@angular/forms';
-import {NavigationService} from '../../../core/navigation.service';
+import {NavigationService} from '../../../core';
 
 @Component({
   selector: 'xgb-new-persisted-item',

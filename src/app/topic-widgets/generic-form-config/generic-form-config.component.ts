@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 
 @Component({
   selector: 'xgb-generic-form-config',

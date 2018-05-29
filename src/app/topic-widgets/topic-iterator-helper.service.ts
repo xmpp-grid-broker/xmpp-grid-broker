@@ -1,5 +1,4 @@
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {CollectionTopic, Topic} from '../core/models/topic';
+import {CollectionTopic, IqType, Topic, XmppService} from '../core';
 import {Injectable} from '@angular/core';
 
 /**

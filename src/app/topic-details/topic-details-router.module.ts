@@ -1,15 +1,17 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {TopicDetailsComponent} from './topic-details.component';
-import {TopicDetailsConfigComponent} from './topic-details-config/topic-details-config.component';
-import {TopicAffiliationsComponent} from './topic-affiliations/topic-affiliations.component';
-import {XmppFeatureGuardService as XmppFeatureGuard} from '../core/xmpp/xmpp-feature-guard.service';
-import {PersistedItemsComponent} from './persisted-items/persisted-items/persisted-items.component';
-import {NewPersistedItemComponent} from './persisted-items/new-persisted-item/new-persisted-item.component';
-import {TopicSubscriptionComponent} from './topic-subscription/topic-subscription/topic-subscription.component';
-import {NewTopicSubscriptionComponent} from './topic-subscription/new-topic-subscription/new-topic-subscription.component';
-import {ModifySubscriptionComponent} from './topic-subscription/modify-subscription/modify-subscription.component';
-import {SubtopicsOrParentsComponent} from './subtopics-or-parents/subtopics-or-parents.component';
+import {
+  ModifySubscriptionComponent,
+  NewPersistedItemComponent,
+  NewTopicSubscriptionComponent,
+  PersistedItemsComponent,
+  SubtopicsOrParentsComponent,
+  TopicAffiliationsComponent,
+  TopicDetailsComponent,
+  TopicDetailsConfigComponent,
+  TopicSubscriptionComponent
+} from '.';
+import {XmppFeatureGuardService as XmppFeatureGuard} from '../core';
 
 
 const routes: Routes = [

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Topic} from '../../core/models/topic';
-import {IteratorListPager} from '../../shared/list/iterator-list-pager';
+import {Topic} from '../../core';
+import {IteratorListPager} from '../../shared';
 
 @Component({
   selector: 'xgb-topics',

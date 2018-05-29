@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {Topic} from '../../core/models/topic';
-import {TopicIteratorHelperService} from '../../topic-widgets/topic-iterator-helper.service';
+import {Topic} from '../../core';
+import {TopicIteratorHelperService} from '../../topic-widgets';
 
 @Injectable()
 export class SubtopicsOrParentsService {

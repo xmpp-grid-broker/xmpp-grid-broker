@@ -1,4 +1,4 @@
-import {ErrorToString} from '../../core/errors';
+import {ErrorToString} from '../../core';
 
 /**
  * This class abstracts the loading and error handling

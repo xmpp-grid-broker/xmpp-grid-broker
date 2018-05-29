@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {JidAffiliation} from '../../core/models/Affiliation';
-import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
+import {IqType, JidAffiliation, XmppService} from '../../core';
 
 export enum AffiliationManagementErrorCodes {
   ItemNotFound = 'item-not-found',

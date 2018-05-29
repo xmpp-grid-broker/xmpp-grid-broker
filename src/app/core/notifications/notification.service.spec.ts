@@ -1,7 +1,5 @@
-import {NotificationService} from './notification.service';
+import {AlertNotificationComponent, ConfirmNotificationComponent, NotificationService} from '..';
 import {ComponentFactoryResolver, ViewContainerRef} from '@angular/core';
-import {AlertNotificationComponent} from './alert-notification/alert-notification.component';
-import {ConfirmNotificationComponent} from './confirm-notification/confirm-notification.component';
 import createSpyObj = jasmine.createSpyObj;
 import SpyObj = jasmine.SpyObj;
 

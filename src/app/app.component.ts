@@ -1,6 +1,6 @@
 import {Component, ViewContainerRef} from '@angular/core';
 import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent} from '@angular/router';
-import {NotificationService} from './core/notifications/notification.service';
+import {NotificationService} from './core';
 
 /**
  * Root-Component of the xmpp-grid broker app.

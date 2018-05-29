@@ -1,6 +1,6 @@
 import {Component, forwardRef, Input} from '@angular/core';
 import {ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
-import {XmppDataFormFieldType} from '../../core/models/FormModels';
+import {XmppDataFormFieldType} from '../../core';
 
 /**
  * This is a specific form control to simplify the management

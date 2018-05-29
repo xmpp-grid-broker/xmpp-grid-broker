@@ -1,8 +1,6 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
-import {XmppFeatureService} from './xmpp-feature.service';
-import {NotificationService} from '../notifications/notification.service';
+import {ConfigService, NotificationService, XmppFeatureService} from '..';
 import {Injectable} from '@angular/core';
-import {ConfigService} from '../config.service';
 
 @Injectable()
 export class XmppFeatureGuardService implements CanActivate {

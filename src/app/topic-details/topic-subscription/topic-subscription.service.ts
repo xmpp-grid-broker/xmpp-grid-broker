@@ -1,8 +1,5 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
-import {Subscription} from '../../core/models/Subscription';
-import {JxtErrorToXmppError, XmppErrorCondition} from '../../core/errors';
-import {XmppDataForm} from '../../core/models/FormModels';
+import {IqType, JxtErrorToXmppError, Subscription, XmppDataForm, XmppErrorCondition, XmppService} from '../../core';
 
 
 @Injectable()

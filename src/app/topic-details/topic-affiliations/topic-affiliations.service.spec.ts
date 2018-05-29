@@ -1,7 +1,6 @@
 import {JID} from 'xmpp-jid';
-import {TopicAffiliationsService} from './topic-affiliations.service';
-import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
-import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
+import {TopicAffiliationsService} from '..';
+import {Affiliation, IqType, JidAffiliation, XmppService} from '../../core';
 
 
 describe('TopicDetailsConfigurationService', () => {

@@ -1,5 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
-import {LogLevel} from '../app/core/errors/log-level';
+import {LogLevel} from '../app/core';
 
 /**
  * Production environment configuration.

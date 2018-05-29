@@ -1,5 +1,4 @@
-import {IqType, XmppClientFactory, XmppService} from './xmpp.service';
-import {Config, XmppConfig, XmppTransport} from '../models/config';
+import {Config, IqType, XmppClientFactory, XmppConfig, XmppService, XmppTransport} from '..';
 import {NotificationService} from '../notifications/notification.service';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;

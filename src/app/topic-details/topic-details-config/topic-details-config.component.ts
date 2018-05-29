@@ -1,15 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {XmppDataForm} from '../../core/models/FormModels';
-import {
-  LoadConfigurationFormErrorCodes,
-  TopicDeletionErrorCodes,
-  TopicDetailsConfigurationService
-} from './topic-details-configuration.service';
-import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
-import {NavigationService} from '../../core/navigation.service';
-import {NotificationService} from '../../core/notifications/notification.service';
-import {Topic} from '../../core/models/topic';
-import {CurrentTopicDetailService} from '../current-topic-detail.service';
+import {NavigationService, NotificationService, Topic, XmppDataForm} from '../../core';
+import {CurrentTopicDetailService, LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsConfigurationService} from '..';
+import {FormProcessingStatus} from '../../shared';
 
 @Component({
   selector: 'xgb-topic-details-config',

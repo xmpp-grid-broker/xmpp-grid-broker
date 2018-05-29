@@ -1,5 +1,5 @@
-import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
-import {TopicIteratorHelperService} from '../../topic-widgets/topic-iterator-helper.service';
+import {SubtopicsOrParentsService} from '..';
+import {TopicIteratorHelperService} from '../../topic-widgets';
 import createSpyObj = jasmine.createSpyObj;
 
 describe(SubtopicsOrParentsService.name, () => {

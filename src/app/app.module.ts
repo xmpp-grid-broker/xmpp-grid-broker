@@ -1,5 +1,5 @@
-import {SharedModule} from './shared/shared.module';
-import {CoreModule} from './core/core.module';
+import {SharedModule} from './shared';
+import {CoreModule} from './core';
 import {AppComponent} from './app.component';
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';

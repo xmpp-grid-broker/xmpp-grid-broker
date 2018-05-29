@@ -1,10 +1,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {ErrorPageComponent} from './core/error-page/error-page.component';
-import {TopicOverviewModule} from './topic-overview/topic-overview.module';
-import {TopicCreationModule} from './topic-creation/topic-creation.module';
-import {TopicDetailsModule} from './topic-details/topic-details.module';
-
+import {ErrorPageComponent} from './core/';
+import {TopicOverviewModule} from './topic-overview';
+import {TopicCreationModule} from './topic-creation';
+import {TopicDetailsModule} from './topic-details';
 
 export const routes: Routes = [
   {
