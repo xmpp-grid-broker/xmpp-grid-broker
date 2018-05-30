@@ -1,11 +1,7 @@
 import {by, element, ElementFinder} from 'protractor';
-import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
-import {Tab} from '../page-elements/tab';
+import {List, Locatable, Spinner, Tab, UrlAddressableComponent} from '../page-elements';
 import {CreateTopicPage} from './create-topic.po';
-import {Spinner} from '../page-elements/spinner';
 import {CreateCollectionPage} from './create-collection.po';
-import {List} from '../page-elements/list';
-import {Locatable} from '../page-elements/locatable';
 
 type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 

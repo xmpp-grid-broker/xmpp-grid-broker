@@ -1,6 +1,5 @@
 import {browser} from 'protractor';
-import {TopicOverviewRootCollectionsTab, TopicsOverviewPage} from './page-objects/topics-overview.po';
-import {AppPage} from './page-objects/app.po';
+import {AppPage, TopicOverviewRootCollectionsTab, TopicsOverviewPage} from './page-objects';
 
 
 describe('Routes', () => {

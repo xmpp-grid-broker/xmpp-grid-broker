@@ -1,13 +1,6 @@
-import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
+import {Form, List, Locatable, Spinner, Tab, Toast, UrlAddressableComponent} from '../page-elements';
 import {by, element, ElementFinder} from 'protractor';
-import {Tab} from '../page-elements/tab';
-import {Spinner} from '../page-elements/spinner';
-import {Form} from '../page-elements/form';
-import {Locatable} from '../page-elements/locatable';
-import {Toast} from '../page-elements/toast';
-import {List} from '../page-elements/list';
 import {toPromise} from '../helpers';
-import {BreadCrumbs} from '../page-elements/bread-crumbs';
 
 type TopicDetailsTab = TopicDetailsConfigurationTab | TopicDetailsAffiliationTab;
 

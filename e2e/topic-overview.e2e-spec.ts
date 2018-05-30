@@ -3,7 +3,7 @@ import {
   TopicOverviewAllTopicsTab,
   TopicOverviewRootCollectionsTab,
   TopicsOverviewPage
-} from './page-objects/topics-overview.po';
+} from './page-objects';
 import {browser} from 'protractor';
 
 
