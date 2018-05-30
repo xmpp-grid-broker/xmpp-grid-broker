@@ -3,7 +3,7 @@ export * from './errors';
 export * from './header';
 export * from './notifications';
 export * from './xmpp';
-
+export * from './xmpp-feature-detection';
 export * from './config.service';
 export * from './global-error-handler.service';
 export * from './navigation.service';

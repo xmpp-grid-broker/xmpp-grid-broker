@@ -1,6 +1,6 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
 import {ConfigService} from '../config.service';
-import {NotificationService} from '../notifications';
+import {NotificationService} from '../notifications/index';
 import {XmppFeatureService} from './xmpp-feature.service';
 import {Injectable} from '@angular/core';
 
