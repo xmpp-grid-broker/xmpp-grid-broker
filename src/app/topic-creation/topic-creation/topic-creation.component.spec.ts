@@ -1,9 +1,11 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {SharedModule, ToastDirective} from '../../shared';
+import {ToastDirective} from '../../shared';
+import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicWidgetsModule} from '../../topic-widgets';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {TopicCreationComponent, TopicCreationErrors, TopicCreationService} from '..';
-import {NavigationService, XmppDataForm} from '../../core';
+import {NavigationService} from '../../core';
+import {XmppDataForm} from '../../models';
 import {DebugElement} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';

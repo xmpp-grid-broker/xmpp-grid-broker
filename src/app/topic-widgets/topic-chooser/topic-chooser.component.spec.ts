@@ -3,7 +3,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {TopicChooserComponent} from './topic-chooser.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import {XmppDataFormFieldType} from '../../core';
+import {XmppDataFormFieldType} from '../../models';
 
 describe('TopicChooserComponent', () => {
   let component: TopicChooserComponent;

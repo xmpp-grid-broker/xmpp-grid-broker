@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Topic} from '../../core';
+import {Topic} from '../../models';
 import {TopicIteratorHelperService} from '../../topic-widgets';
 
 @Injectable()

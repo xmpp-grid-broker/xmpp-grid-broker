@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {XmppDataForm, XmppService} from '../core';
+import {XmppService} from '../core';
+import {XmppDataForm} from '../models';
 import {JID} from 'xmpp-jid';
 import {JXT} from 'stanza.io';
 

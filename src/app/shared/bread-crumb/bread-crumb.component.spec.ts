@@ -1,4 +1,4 @@
-import {BreadCrumbComponent} from '..';
+import {BreadCrumbComponent} from '.';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';

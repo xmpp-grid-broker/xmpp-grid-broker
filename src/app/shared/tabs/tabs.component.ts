@@ -1,5 +1,5 @@
 import {Component, ContentChildren, QueryList} from '@angular/core';
-import {TabComponent} from '..';
+import {TabComponent} from './tab.component';
 
 @Component({
   selector: 'xgb-tabs',

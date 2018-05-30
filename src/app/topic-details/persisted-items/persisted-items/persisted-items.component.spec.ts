@@ -1,10 +1,11 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
-import {CurrentTopicDetailService, PersistedItem, PersistedItemsComponent, PersistedItemsService} from '../..';
-import {SharedModule} from '../../../shared';
+import {CurrentTopicDetailService, PersistedItemsComponent, PersistedItemsService} from '../..';
+import {SharedModule} from '../../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
-import {LeafTopic, NotificationService} from '../../../core';
+import {NotificationService} from '../../../core';
+import {LeafTopic, PersistedItem} from '../../../models';
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe('PersistedItemsComponent', () => {

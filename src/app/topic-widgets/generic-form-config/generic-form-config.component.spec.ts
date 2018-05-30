@@ -1,8 +1,9 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {FormFieldNamePipe, GenericFormConfigComponent, JidMultiComponent} from '..';
-import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
-import {FormFieldComponent, SharedModule} from '../../shared';
+import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
+import {FormFieldComponent} from '../../shared';
+import {SharedModule} from '../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 

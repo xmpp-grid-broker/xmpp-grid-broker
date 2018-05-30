@@ -1,17 +1,14 @@
 import {Injectable} from '@angular/core';
 import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
-import {NotificationService, RawXmlStanzaAddOn, XmppConfig} from '..';
+import {NotificationService} from '../notifications';
+import {RawXmlStanzaAddOn} from './raw-xml-stanza';
+import {XmppConfig} from '../../models';
 
-enum ConnectionState {
+enum XmppConnectionState {
   Down = 0,
   Up = 1,
   Connecting = 2,
-}
-
-export enum IqType {
-  Set = 'set',
-  Get = 'get'
 }
 
 /**
@@ -41,7 +38,7 @@ export class XmppService {
 
   private _client: any;
   private _config: XmppConfig;
-  private _state = ConnectionState.Down;
+  private _state = XmppConnectionState.Down;
 
   constructor(private xmppClientFactory: XmppClientFactory,
               private notificationService: NotificationService) {
@@ -75,9 +72,9 @@ export class XmppService {
    */
   public getClient(): Promise<any> {
     return new Promise((resolve) => {
-      if (this._state === ConnectionState.Up) {
+      if (this._state === XmppConnectionState.Up) {
         resolve(this._client);
-      } else if (this._state === ConnectionState.Down) {
+      } else if (this._state === XmppConnectionState.Down) {
         // Register specific callbacks to see if reconnecting fails.
         const errCallback = () => {
           this.notificationService.alert(
@@ -140,13 +137,13 @@ export class XmppService {
   private _getClientInstance(config: XmppConfig): any {
     const client = this.xmppClientFactory.createClient(config);
     client.use(RawXmlStanzaAddOn);
-    client.on('session:started', () => this._state = ConnectionState.Up);
+    client.on('session:started', () => this._state = XmppConnectionState.Up);
     client.on('disconnected', () => {
-      this._state = ConnectionState.Down;
+      this._state = XmppConnectionState.Down;
     });
-    client.on('session:end', () => this._state = ConnectionState.Down);
+    client.on('session:end', () => this._state = XmppConnectionState.Down);
     client.on('auth:failed', () => {
-      this._state = ConnectionState.Down;
+      this._state = XmppConnectionState.Down;
       this.notificationService.alert(
         'Authentication Failed',
         'Failed to authenticate on the XMPP server. Are using the right credentials?',
@@ -166,8 +163,8 @@ export class XmppService {
    * connection to be available.
    */
   private connect(): void {
-      if (this._state === ConnectionState.Down) {
-        this._state = ConnectionState.Connecting;
+      if (this._state === XmppConnectionState.Down) {
+        this._state = XmppConnectionState.Connecting;
         this._client.connect();
       }
   }

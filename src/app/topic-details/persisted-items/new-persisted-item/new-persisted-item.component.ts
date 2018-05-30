@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {PersistedItemsService, PublishItemErrors} from '../..';
+import {PersistedItemsService, PublishItemErrors} from '../persisted-items.service';
 import {NgForm} from '@angular/forms';
 import {NavigationService} from '../../../core';
 

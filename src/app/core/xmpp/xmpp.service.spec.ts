@@ -1,5 +1,6 @@
-import {Config, IqType, XmppClientFactory, XmppConfig, XmppService, XmppTransport} from '..';
-import {NotificationService} from '../notifications/notification.service';
+import {Config, XmppConfig, XmppIqType, XmppTransport} from '../../models';
+import {XmppClientFactory, XmppService} from '.';
+import {NotificationService} from '../notifications';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
 
@@ -48,7 +49,7 @@ describe(XmppService.name, () => {
 
     it('should call sendIq on the client', (done) => {
       const spy = spyOn(client, 'sendIq').and.callThrough();
-      const cmd = {type: IqType.Get};
+      const cmd = {type: XmppIqType.Get};
       service.executeIq(cmd)
         .then(() => {
           expect(spy).toHaveBeenCalledTimes(1);
@@ -66,7 +67,7 @@ describe(XmppService.name, () => {
         cb(undefined, expectedResult)
       );
 
-      service.executeIq({type: IqType.Get})
+      service.executeIq({type: XmppIqType.Get})
         .then((actualResult) => {
           expect(actualResult).toBe(expectedResult);
           done();
@@ -80,7 +81,7 @@ describe(XmppService.name, () => {
         cb(expectedError, undefined)
       );
 
-      service.executeIq({type: IqType.Get})
+      service.executeIq({type: XmppIqType.Get})
         .then(() => {
           fail('Expected Promise to reject');
         })

@@ -1,5 +1,7 @@
 import {Observable} from 'rxjs/Observable';
-import {Config, ConfigService, XmppConfig, XmppService, XmppTransport} from '.';
+import {Config, XmppConfig, XmppTransport} from '../models';
+import {ConfigService} from './config.service';
+import {XmppService} from './xmpp';
 
 
 class FakeErrorResponse {

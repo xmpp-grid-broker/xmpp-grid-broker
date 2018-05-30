@@ -1,4 +1,4 @@
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './FormModels';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './form-models';
 import {FormControl, FormGroup} from '@angular/forms';
 
 describe('XmppDataFormField', () => {

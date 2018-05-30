@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {CurrentTopicDetailService, SubtopicsOrParentsService} from '..';
-import {NavigationService, Topic} from '../../core';
+import {NavigationService} from '../../core';
+import {Topic} from '../../models';
 import {ActivatedRoute} from '@angular/router';
 import {IteratorListPager} from '../../shared';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
+import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
 
 @Component({
   selector: 'xgb-subtopics-or-parents',

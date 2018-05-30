@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {SharedModule} from '../shared';
+import {SharedModule} from '../shared/shared.module';
 import {
   CurrentTopicDetailService,
   ModifySubscriptionComponent,
@@ -15,12 +15,12 @@ import {
   TopicDetailsComponent,
   TopicDetailsConfigComponent,
   TopicDetailsConfigurationService,
-  TopicDetailsRouterModule,
   TopicSubscriptionComponent,
   TopicSubscriptionService
 } from '.';
+import {TopicDetailsRouterModule} from './topic-details-router.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicWidgetsModule} from '../topic-widgets';
+import {TopicWidgetsModule} from '../topic-widgets/topic-widgets.module';
 
 @NgModule({
   imports: [

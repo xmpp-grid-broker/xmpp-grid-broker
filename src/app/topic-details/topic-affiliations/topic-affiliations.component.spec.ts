@@ -1,9 +1,10 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {AffiliationManagementErrorCodes, CurrentTopicDetailService, TopicAffiliationsComponent, TopicAffiliationsService} from '..';
-import {SharedModule} from '../../shared';
+import {SharedModule} from '../../shared/shared.module';
 import {DebugElement} from '@angular/core';
-import {Affiliation, JidAffiliation, LeafTopic, NotificationService, XmppService} from '../../core';
+import {Affiliation, JidAffiliation, LeafTopic} from '../../models';
+import {NotificationService, XmppService} from '../../core';
 import {FormsModule} from '@angular/forms';
 
 describe('TopicAffiliationsComponent', () => {

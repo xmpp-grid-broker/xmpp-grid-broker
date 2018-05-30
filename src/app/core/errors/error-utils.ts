@@ -1,38 +1,4 @@
-/**
- * All possible Xmpp error conditions used in xep-0060.
- */
-export enum XmppErrorCondition {
-  BadRequest = 'bad-request',
-  Conflict = 'conflict',
-  FeatureNotImplemented = 'feature-not-implemented',
-  Forbidden = 'forbidden',
-  Gone = 'gone',
-  InternalServerError = 'internal-server-error',
-  ItemNotFound = 'item-not-found',
-  JidMalformed = 'jid-malformed',
-  NotAcceptable = 'not-acceptable',
-  NotAllowed = 'not-allowed',
-  NotAuthorized = 'not-authorized',
-  PaymentRequired = 'payment-required',
-  PolicyViolation = 'policy-violation',
-  Timeout = 'timeout',
-  UnexpectedRequest = 'unexpected-request',
-  Unsupported = 'unsupported',
-}
-
-/**
- * An XMPP specific error object that contains the condition in addition to a user friendly message.
- */
-export class XmppError extends Error {
-
-  constructor(message: string, public readonly condition: XmppErrorCondition | string) {
-    super(message);
-
-    // Set the prototype explicitly
-    // (See https://github.com/Microsoft/TypeScript/wiki/Breaking-Changes#extending-built-ins-like-error-array-and-map-may-no-longer-work)
-    Object.setPrototypeOf(this, XmppError.prototype);
-  }
-}
+import {XmppError, XmppErrorCondition} from '../../models';
 
 /**
  * Maps the given error object into an XmppError.

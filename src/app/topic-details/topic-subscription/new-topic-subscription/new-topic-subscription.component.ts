@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
-import {TopicSubscriptionService} from '..';
+import {TopicSubscriptionService} from '../topic-subscription.service';
 import {ErrorLogService, ErrorToString, NavigationService} from '../../../core';
 
 @Component({

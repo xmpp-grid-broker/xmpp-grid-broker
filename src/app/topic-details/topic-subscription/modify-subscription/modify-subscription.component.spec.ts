@@ -2,10 +2,11 @@ import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/t
 
 import {ActivatedRoute} from '@angular/router';
 import {ModifySubscriptionComponent, TopicSubscriptionService} from '..';
-import {SharedModule} from '../../../shared';
-import {ErrorLogService, NavigationService, XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppError} from '../../../core';
+import {SharedModule} from '../../../shared/shared.module';
+import {ErrorLogService, NavigationService} from '../../../core';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppError} from '../../../models';
 import {ReactiveFormsModule} from '@angular/forms';
-import {TopicWidgetsModule} from '../../../topic-widgets';
+import {TopicWidgetsModule} from '../../../topic-widgets/topic-widgets.module';
 
 describe('ModifySubscriptionComponent', () => {
   let component: ModifySubscriptionComponent;

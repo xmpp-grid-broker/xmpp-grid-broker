@@ -2,10 +2,11 @@ import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {RouterTestingModule} from '@angular/router/testing';
 import {TopicOverviewComponent, TopicOverviewService} from '..';
-import {TopicWidgetsModule} from '../../topic-widgets';
-import {SharedModule} from '../../shared';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
+import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
-import {LeafTopic, NavigationService, XmppService} from '../../core';
+import {NavigationService, XmppService} from '../../core';
+import {LeafTopic} from '../../models';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
 

@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppDataForm, XmppService} from '../../core';
+import {XmppService} from '../../core';
+import {XmppDataForm, XmppIqType} from '../../models';
 
 export enum LoadConfigurationFormErrorCodes {
   ItemNotFound = 'item-not-found',
@@ -23,7 +24,7 @@ export class TopicDetailsConfigurationService {
 
   public loadConfigurationForm(topicIdentifier: string): Promise<XmppDataForm> {
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsubOwner: {
         config: {
           node: topicIdentifier,
@@ -40,7 +41,7 @@ export class TopicDetailsConfigurationService {
     const form = xmppDataForm.toJSON();
 
     const cmd = {
-      type: IqType.Set,
+      type: XmppIqType.Set,
       pubsubOwner: {
         config: {
           node: topicIdentifier,
@@ -58,7 +59,7 @@ export class TopicDetailsConfigurationService {
    */
   public deleteTopic(topicIdentifier: string): Promise<void> {
     const cmd = {
-      type: IqType.Set,
+      type: XmppIqType.Set,
       pubsubOwner: {
         del: topicIdentifier
       }

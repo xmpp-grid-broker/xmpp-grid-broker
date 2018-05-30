@@ -1,4 +1,4 @@
-import {ErrorLogService} from '..';
+import {ErrorLogService} from '.';
 
 describe(ErrorLogService.name, () => {
   let errorLog: ErrorLogService;

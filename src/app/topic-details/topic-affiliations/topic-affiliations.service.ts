@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {IqType, JidAffiliation, XmppService} from '../../core';
+import {JidAffiliation, XmppIqType} from '../../models';
+import {XmppService} from '../../core/xmpp';
 
 export enum AffiliationManagementErrorCodes {
   ItemNotFound = 'item-not-found',
@@ -16,7 +17,7 @@ export class TopicAffiliationsService {
    */
   public loadJidAffiliations(node: string): Promise<JidAffiliation[]> {
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsubOwner: {
         affiliations: {
           node: node
@@ -36,7 +37,7 @@ export class TopicAffiliationsService {
    */
   public modifyJidAffiliation(node: string, affiliation: JidAffiliation): Promise<void> {
     const cmd = {
-      type: IqType.Set,
+      type: XmppIqType.Set,
       pubsubOwner: {
         affiliations: {
           node: node,

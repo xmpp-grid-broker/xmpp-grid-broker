@@ -1,9 +1,11 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {LeafTopic, NavigationService, NotificationService, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
+import {NavigationService, NotificationService} from '../../core';
+import {LeafTopic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
 import {TopicDetailsConfigComponent} from '..';
-import {SharedModule, ToastDirective} from '../../shared';
+import {ToastDirective} from '../../shared';
+import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicWidgetsModule} from '../../topic-widgets';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {

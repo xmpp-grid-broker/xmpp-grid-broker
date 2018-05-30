@@ -1,8 +1,9 @@
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {TopicListComponent} from './topic-list.component';
-import {IteratorListPager, SharedModule} from '../../shared';
-import {LeafTopic, Topic} from '../../core';
+import {IteratorListPager} from '../../shared';
+import {SharedModule} from '../../shared/shared.module';
+import {LeafTopic, Topic} from '../../models';
 
 
 describe('TopicListComponent', () => {

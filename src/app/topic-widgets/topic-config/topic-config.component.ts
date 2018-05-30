@@ -1,6 +1,6 @@
 import {ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
-import {Topic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
+import {Topic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
 
 @Component({
   selector: 'xgb-topic-config',

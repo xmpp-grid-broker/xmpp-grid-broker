@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import 'rxjs/add/operator/filter';
-import {NavigationService, Topic, XmppService} from '../../core';
-import {TopicOverviewService} from '..';
+import {NavigationService, XmppService} from '../../core';
+import {Topic} from '../../models';
+import {TopicOverviewService} from '../topic-overview-service';
 import {IteratorListPager} from '../../shared';
 
 

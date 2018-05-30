@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {AffiliationManagementErrorCodes, CurrentTopicDetailService, TopicAffiliationsService} from '..';
-import {Affiliation, JidAffiliation, NotificationService, Topic, XmppService} from '../../core';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
+import {Affiliation, JidAffiliation, Topic} from '../../models';
+import {NotificationService, XmppService} from '../../core';
 import {NgForm} from '@angular/forms';
+import {AffiliationManagementErrorCodes, TopicAffiliationsService} from './topic-affiliations.service';
 
 @Component({
   selector: 'xgb-topic-affiliations',

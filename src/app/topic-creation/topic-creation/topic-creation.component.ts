@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TopicCreationErrors, TopicCreationService} from '../topic-creation.service';
-import {NavigationService, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
+import {NavigationService} from '../../core';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {FormProcessingStatus} from '../../shared';

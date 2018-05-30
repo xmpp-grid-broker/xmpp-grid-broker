@@ -1,6 +1,6 @@
 import {TopicIteratorHelperService} from '../../topic-widgets';
 import {TopicOverviewService} from '..';
-import {CollectionTopic, LeafTopic} from '../../core';
+import {CollectionTopic, LeafTopic} from '../../models';
 
 describe(TopicOverviewService.name, () => {
 

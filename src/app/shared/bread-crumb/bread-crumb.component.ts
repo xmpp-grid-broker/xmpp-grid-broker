@@ -1,6 +1,7 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {BreadCrumb, BreadCrumbs, ErrorLogService, XmppService} from '../../core';
+import {ErrorLogService, XmppService} from '../../core';
+import {BreadCrumb, BreadCrumbs} from '../../models';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/map';

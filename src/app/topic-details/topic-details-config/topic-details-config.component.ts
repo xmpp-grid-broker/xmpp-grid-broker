@@ -1,6 +1,12 @@
 import {Component, OnInit} from '@angular/core';
-import {NavigationService, NotificationService, Topic, XmppDataForm} from '../../core';
-import {CurrentTopicDetailService, LoadConfigurationFormErrorCodes, TopicDeletionErrorCodes, TopicDetailsConfigurationService} from '..';
+import {NavigationService, NotificationService} from '../../core';
+import {Topic, XmppDataForm} from '../../models';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
+import {
+  LoadConfigurationFormErrorCodes,
+  TopicDeletionErrorCodes,
+  TopicDetailsConfigurationService
+} from './topic-details-configuration.service';
 import {FormProcessingStatus} from '../../shared';
 
 @Component({

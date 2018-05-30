@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
-import {IqType, JxtErrorToXmppError, Subscription, XmppDataForm, XmppErrorCondition, XmppService} from '../../core';
+import {JxtErrorToXmppError, XmppService} from '../../core';
+import {Subscription, XmppDataForm, XmppErrorCondition, XmppIqType} from '../../models';
 
 
 @Injectable()
@@ -13,7 +14,7 @@ export class TopicSubscriptionService {
    */
   public loadSubscriptions(topicIdentifier: string): Promise<Subscription[]> {
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsubOwner: {
         subscriptions: {
           node: topicIdentifier
@@ -43,7 +44,7 @@ export class TopicSubscriptionService {
    */
   public subscribe(topicIdentifier: string, jid: string): Promise<void> {
     const cmd = {
-      type: IqType.Set,
+      type: XmppIqType.Set,
       pubsub: {
         subscribe: {
           node: topicIdentifier,
@@ -77,7 +78,7 @@ export class TopicSubscriptionService {
    */
   public unsubscribe(topicIdentifier: string, subscription: Subscription): Promise<void> {
     const cmd = {
-      type: IqType.Set,
+      type: XmppIqType.Set,
       pubsub: {
         unsubscribe: {
           node: topicIdentifier,
@@ -102,7 +103,7 @@ export class TopicSubscriptionService {
 
   public loadConfiguration(topicIdentifier: string, jid: string, subid: string): Promise<XmppDataForm> {
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsub: {
         subscriptionOptions: {
           node: topicIdentifier,
@@ -130,7 +131,7 @@ export class TopicSubscriptionService {
 
   public updateConfiguration(topicIdentifier: string, jid: string, subid: string, xmppDataForm: XmppDataForm) {
     const cmd = {
-      type: IqType.Set,
+      type: XmppIqType.Set,
       pubsub: {
         subscriptionOptions: {
           node: topicIdentifier,

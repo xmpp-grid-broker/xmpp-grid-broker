@@ -1,5 +1,6 @@
 import {LoadConfigurationFormErrorCodes, TopicDetailsConfigurationService} from '..';
-import {IqType, XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppService} from '../../core';
+import {XmppService} from '../../core';
+import {XmppIqType, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
 
 
 describe('TopicDetailsConfigurationService', () => {
@@ -95,7 +96,7 @@ describe('TopicDetailsConfigurationService', () => {
       ).then(() => {
         expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
         const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
-        expect(cmd.type).toBe(IqType.Set);
+        expect(cmd.type).toBe(XmppIqType.Set);
         expect(cmd.pubsubOwner.del).toBe('testing');
         done();
       });
