@@ -1,6 +1,6 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
-import {ConfigService} from '../config.service';
-import {NotificationService} from '../notifications/index';
+import {ConfigLoaderService} from '../config-loader/config-loader.service';
+import {NotificationService} from '../notifications/';
 import {XmppFeatureService} from './xmpp-feature.service';
 import {Injectable} from '@angular/core';
 
@@ -11,7 +11,7 @@ export class XmppFeatureGuardService implements CanActivate {
 
 
   constructor(private xmppFeatureService: XmppFeatureService,
-              private configService: ConfigService,
+              private configService: ConfigLoaderService,
               private notificationService: NotificationService) {
     this.checkWasSuccessfulOnce = false;
   }
@@ -20,7 +20,7 @@ export class XmppFeatureGuardService implements CanActivate {
     if (this.checkWasSuccessfulOnce) {
       return true;
     }
-    return this.configService.getConfig()
+    return this.configService.loadConfig()
       .then(() => this.xmppFeatureService.getMissingRequiredFeatures()
         .then(missingFeatures => {
           const successful = missingFeatures.length === 0;

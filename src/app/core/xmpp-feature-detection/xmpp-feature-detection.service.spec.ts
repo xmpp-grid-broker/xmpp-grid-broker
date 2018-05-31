@@ -1,5 +1,5 @@
 import {XmppService} from '../xmpp/';
-import {ErrorLogService} from '../errors/index';
+import {ErrorLogService} from '../errors/';
 import {XmppFeatureService} from './xmpp-feature.service';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;

@@ -3,7 +3,7 @@ import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {
   AlertNotificationComponent,
-  ConfigService,
+  ConfigLoaderService,
   ConfirmNotificationComponent,
   ErrorLogService,
   ErrorPageComponent,
@@ -27,7 +27,7 @@ import {RouterModule} from '@angular/router';
   providers: [
     {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
     NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService,
-    ConfigService, ErrorLogService]
+    ConfigLoaderService, ErrorLogService]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
