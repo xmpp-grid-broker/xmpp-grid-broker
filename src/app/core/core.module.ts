@@ -1,22 +1,23 @@
 import {ErrorHandler, NgModule, Optional, SkipSelf} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
+import {RouterModule} from '@angular/router';
 import {
   AlertNotificationComponent,
+  BreadCrumbComponent,
   ConfigLoaderService,
   ConfirmNotificationComponent,
   ErrorLogService,
   ErrorPageComponent,
+  FeatureDetectionGuardService,
+  FeatureService,
   GlobalErrorHandlerService,
+  HeaderComponent,
   NavigationService,
   NotificationService,
   XmppClientFactory,
-  XmppFeatureGuardService,
-  XmppFeatureService,
   XmppService
 } from '.';
-import {RouterModule} from '@angular/router';
-import {BreadCrumbComponent, HeaderComponent} from './index';
 
 const EXPORTED_DECLARATIONS = [
   HeaderComponent,
@@ -44,8 +45,8 @@ const EXPORTED_DECLARATIONS = [
     NavigationService,
     XmppService,
     XmppClientFactory,
-    XmppFeatureService,
-    XmppFeatureGuardService,
+    FeatureService,
+    FeatureDetectionGuardService,
     ConfigLoaderService,
     ErrorLogService
   ]

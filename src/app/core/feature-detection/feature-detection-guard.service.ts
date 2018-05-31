@@ -1,16 +1,16 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
-import {ConfigLoaderService} from '../config-loader/config-loader.service';
+import {ConfigLoaderService} from '../config-loader';
 import {NotificationService} from '../notifications/';
-import {XmppFeatureService} from './xmpp-feature.service';
+import {FeatureService} from './feature.service';
 import {Injectable} from '@angular/core';
 
 @Injectable()
-export class XmppFeatureGuardService implements CanActivate {
+export class FeatureDetectionGuardService implements CanActivate {
   // noinspection TypeScriptFieldCanBeMadeReadonly
   private checkWasSuccessfulOnce: boolean;
 
 
-  constructor(private xmppFeatureService: XmppFeatureService,
+  constructor(private xmppFeatureService: FeatureService,
               private configService: ConfigLoaderService,
               private notificationService: NotificationService) {
     this.checkWasSuccessfulOnce = false;
