@@ -2,7 +2,7 @@ import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/t
 
 import {CurrentTopicDetailService, TopicSubscriptionComponent, TopicSubscriptionService} from '../..';
 import {SharedModule} from '../../../shared/shared.module';
-import {LeafTopic, Subscription, SubscriptionState, XmppError} from '../../../models';
+import {LeafTopic, Subscription, SubscriptionState, XmppError} from '../../../core';
 import {ErrorLogService, NavigationService} from '../../../core';
 
 describe('TopicSubscriptionComponent', () => {

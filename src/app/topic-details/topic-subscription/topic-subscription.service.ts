@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {JxtErrorToXmppError, XmppService} from '../../core';
-import {Subscription, XmppDataForm, XmppErrorCondition, XmppIqType} from '../../models';
+import {Subscription, XmppDataForm, XmppErrorCondition, XmppIqType} from '../../core';
 
 
 @Injectable()

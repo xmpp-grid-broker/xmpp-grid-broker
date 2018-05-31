@@ -3,7 +3,7 @@ import {CurrentTopicDetailService} from '../../current-topic-detail.service';
 import {LoadPersistedItemsErrors, PersistedItemsService} from '../persisted-items.service';
 import {IteratorListPager} from '../../../shared';
 import {NotificationService} from '../../../core';
-import {PersistedItem, Topic} from '../../../models';
+import {PersistedItem, Topic} from '../../../core';
 
 @Component({
   selector: 'xgb-persisted-items',

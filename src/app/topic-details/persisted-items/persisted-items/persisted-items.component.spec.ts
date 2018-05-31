@@ -5,7 +5,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
 import {NotificationService} from '../../../core';
-import {LeafTopic, PersistedItem} from '../../../models';
+import {LeafTopic, PersistedItem} from '../../../core';
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe('PersistedItemsComponent', () => {

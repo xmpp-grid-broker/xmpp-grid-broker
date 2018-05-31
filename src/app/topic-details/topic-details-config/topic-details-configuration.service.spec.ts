@@ -1,6 +1,6 @@
 import {LoadConfigurationFormErrorCodes, TopicDetailsConfigurationService} from '..';
 import {XmppService} from '../../core';
-import {XmppIqType, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
+import {XmppIqType, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 
 
 describe('TopicDetailsConfigurationService', () => {

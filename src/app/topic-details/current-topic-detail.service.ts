@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {JxtErrorToXmppError, XmppService} from '../core';
-import {XmppIqType, Topic, XmppErrorCondition} from '../models';
+import {XmppIqType, Topic, XmppErrorCondition} from '../core';
 
 /**
  * This service is used to pass topics

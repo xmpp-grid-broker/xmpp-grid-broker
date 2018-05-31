@@ -1,6 +1,6 @@
 import {PersistedItemsService} from './persisted-items.service';
 import {XmppService} from '../../core';
-import {XmppIqType, PersistedItem} from '../../models';
+import {XmppIqType, PersistedItem} from '../../core';
 
 describe('PersistedItemsService', () => {
   let service: PersistedItemsService;

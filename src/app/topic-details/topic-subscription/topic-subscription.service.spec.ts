@@ -1,6 +1,6 @@
 import {TopicSubscriptionService} from '..';
 import {XmppService} from '../../core';
-import {Subscription, SubscriptionState, XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppErrorCondition} from '../../models';
+import {Subscription, SubscriptionState, XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppErrorCondition} from '../../core';
 import {JID} from 'xmpp-jid';
 
 describe('TopicSubscriptionService', () => {

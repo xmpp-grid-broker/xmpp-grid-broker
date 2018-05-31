@@ -2,7 +2,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 
 import {CurrentTopicDetailService, SubtopicsOrParentsComponent, SubtopicsOrParentsService} from '..';
 import {ActivatedRoute} from '@angular/router';
-import {CollectionTopic, Topic} from '../../models';
+import {CollectionTopic, Topic} from '../../core';
 import {NavigationService} from '../../core';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {IteratorListPager} from '../../shared';

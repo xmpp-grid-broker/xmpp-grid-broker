@@ -1,4 +1,4 @@
-import {XmppErrorCondition} from './models/xmpp-error-condition';
+import {XmppErrorCondition} from './models';
 
 /**
  * An XMPP specific error object that contains the condition in addition to a user friendly message.

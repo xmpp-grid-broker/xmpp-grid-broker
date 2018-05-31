@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {JidAffiliation, XmppIqType} from '../../models';
+import {JidAffiliation, XmppIqType} from '../../core';
 import {XmppService} from '../../core/xmpp';
 
 export enum AffiliationManagementErrorCodes {

@@ -6,7 +6,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {NewTopicSubscriptionComponent} from './new-topic-subscription.component';
 import {FormsModule} from '@angular/forms';
 import {ErrorLogService, NavigationService} from '../../../core';
-import {XmppError, XmppErrorCondition} from '../../../models';
+import {XmppError, XmppErrorCondition} from '../../../core';
 
 describe('NewTopicSubscriptionComponent', () => {
   let component: NewTopicSubscriptionComponent;

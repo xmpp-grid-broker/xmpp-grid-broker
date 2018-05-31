@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Topic} from '../../models';
+import {Topic} from '../../core';
 import {IteratorListPager} from '../../shared';
 
 @Component({

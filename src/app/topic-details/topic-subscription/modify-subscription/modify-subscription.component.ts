@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TopicSubscriptionService} from '../topic-subscription.service';
 import {ErrorLogService, ErrorToString, NavigationService} from '../../../core';
-import {XmppDataForm} from '../../../models';
+import {XmppDataForm} from '../../../core';
 import {ActivatedRoute} from '@angular/router';
 import {FormGroup} from '@angular/forms';
 

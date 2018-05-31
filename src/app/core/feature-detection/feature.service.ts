@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ErrorLogService} from '../errors/';
-import {XmppService} from '../xmpp/';
-import {XmppIqType} from '../../models/';
+import {XmppIqType, XmppService} from '../xmpp/';
 
 @Injectable()
 export class FeatureService {

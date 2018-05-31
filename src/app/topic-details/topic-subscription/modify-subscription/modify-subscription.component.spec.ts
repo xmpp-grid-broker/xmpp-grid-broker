@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ModifySubscriptionComponent, TopicSubscriptionService} from '..';
 import {SharedModule} from '../../../shared/shared.module';
 import {ErrorLogService, NavigationService} from '../../../core';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppError} from '../../../models';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppError} from '../../../core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../../topic-widgets/topic-widgets.module';
 
