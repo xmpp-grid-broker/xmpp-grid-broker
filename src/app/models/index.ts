@@ -1,5 +1,4 @@
 export * from './affiliation';
-export * from './bread-crumb';
 export * from './config';
 export * from './form-models';
 export * from './jid-affiliation';

@@ -1,8 +1,8 @@
-import {BreadCrumbComponent} from '.';
+import {BreadCrumbComponent} from './bread-crumb.component';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorLogService, XmppService} from '../../core';
+import {ErrorLogService, XmppService} from '../';
 import {Router} from '@angular/router';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;

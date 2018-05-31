@@ -8,7 +8,6 @@ import {
   ErrorLogService,
   ErrorPageComponent,
   GlobalErrorHandlerService,
-  HeaderComponent,
   NavigationService,
   NotificationService,
   XmppClientFactory,
@@ -17,17 +16,39 @@ import {
   XmppService
 } from '.';
 import {RouterModule} from '@angular/router';
+import {BreadCrumbComponent, HeaderComponent} from './index';
 
+const EXPORTED_DECLARATIONS = [
+  HeaderComponent,
+  BreadCrumbComponent,
+  AlertNotificationComponent,
+  ConfirmNotificationComponent
+];
 
 @NgModule({
   imports: [CommonModule, RouterModule, HttpClientModule],
-  declarations: [HeaderComponent, ErrorPageComponent, AlertNotificationComponent, ConfirmNotificationComponent],
-  exports: [HeaderComponent, AlertNotificationComponent, ConfirmNotificationComponent],
-  entryComponents: [AlertNotificationComponent, ConfirmNotificationComponent],
+  declarations: [
+    ...EXPORTED_DECLARATIONS,
+    ErrorPageComponent
+  ],
+  exports: [
+    ...EXPORTED_DECLARATIONS
+  ],
+  entryComponents: [
+    AlertNotificationComponent,
+    ConfirmNotificationComponent
+  ],
   providers: [
     {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
-    NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService,
-    ConfigLoaderService, ErrorLogService]
+    NotificationService,
+    NavigationService,
+    XmppService,
+    XmppClientFactory,
+    XmppFeatureService,
+    XmppFeatureGuardService,
+    ConfigLoaderService,
+    ErrorLogService
+  ]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

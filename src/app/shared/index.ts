@@ -1,5 +1,4 @@
 export * from './action-bar';
-export * from './bread-crumb';
 export * from './collapsible';
 export * from './form';
 export * from './list';

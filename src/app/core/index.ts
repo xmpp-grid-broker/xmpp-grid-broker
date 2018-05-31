@@ -1,3 +1,4 @@
+export * from './bread-crumb';
 export * from './error-page';
 export * from './errors';
 export * from './header';
@@ -5,5 +6,5 @@ export * from './notifications';
 export * from './xmpp';
 export * from './xmpp-feature-detection';
 export * from './config-loader/';
-export * from './global-error-handler.service';
-export * from './navigation.service';
+export * from './utils/';
+export * from './navigation/';

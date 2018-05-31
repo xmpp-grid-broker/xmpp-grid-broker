@@ -5,7 +5,7 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouterModule, UrlSerializer} from '@angular/router';
 import {AppRoutingModule} from './app-routing.module';
-import {CustomUrlSerializer} from './core/custom-url-serializer';
+import {CustomUrlSerializer} from './core/';
 
 /**
  * Root-Module of the XMPP-Grid Broker App.
