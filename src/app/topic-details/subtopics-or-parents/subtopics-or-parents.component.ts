@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {CurrentTopicDetailService} from '../current-topic-detail.service';
-import {Topic} from '../../core/models/topic';
+import {NavigationService} from '../../core';
+import {Topic} from '../../models';
 import {ActivatedRoute} from '@angular/router';
-import {IteratorListPager} from '../../shared/list/iterator-list-pager';
-import {NavigationService} from '../../core/navigation.service';
+import {IteratorListPager} from '../../shared';
+import {CurrentTopicDetailService} from '../current-topic-detail.service';
 import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
 
 @Component({

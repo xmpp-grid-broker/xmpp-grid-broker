@@ -1,14 +1,16 @@
-import {TopicListComponent} from './topic-list/topic-list.component';
+import {
+  FormFieldNamePipe,
+  GenericFormConfigComponent,
+  JidMultiComponent,
+  TopicChooserComponent,
+  TopicConfigComponent,
+  TopicIteratorHelperService,
+  TopicListComponent
+} from '.';
 import {CommonModule} from '@angular/common';
 import {SharedModule} from '../shared/shared.module';
 import {NgModule} from '@angular/core';
-import {GenericFormConfigComponent} from './generic-form-config/generic-form-config.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {FormFieldNamePipe} from './generic-form-config/form-field-name.pipe';
-import {JidMultiComponent} from './jid-multi/jid-multi.component';
-import {TopicChooserComponent} from './topic-chooser/topic-chooser.component';
-import {TopicConfigComponent} from './topic-config/topic-config.component';
-import {TopicIteratorHelperService} from './topic-iterator-helper.service';
 
 const EXPORTED_DECLARATIONS = [
   TopicListComponent,

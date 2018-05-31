@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {CollectionTopic, LeafTopic, Topic} from '../../core/models/topic';
-import {TopicIteratorHelperService} from '../../topic-widgets/topic-iterator-helper.service';
+import {CollectionTopic, LeafTopic, Topic} from '../../models';
+import {TopicIteratorHelperService} from '../../topic-widgets';
 
 @Injectable()
 export class TopicOverviewService {

@@ -1,4 +1,4 @@
-import {ErrorPageComponent} from './error-page.component';
+import {ErrorPageComponent} from '.';
 import {fakeAsync, TestBed} from '@angular/core/testing';
 import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
 import {ActivatedRoute} from '@angular/router';

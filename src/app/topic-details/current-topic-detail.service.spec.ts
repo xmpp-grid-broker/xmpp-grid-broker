@@ -1,5 +1,6 @@
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {CurrentTopicDetailService} from './current-topic-detail.service';
+import {XmppService} from '../core';
+import {XmppIqType} from '../models';
+import {CurrentTopicDetailService} from '.';
 
 describe('CurrentTopicDetailService', () => {
 
@@ -24,7 +25,7 @@ describe('CurrentTopicDetailService', () => {
     expect(result.title).toBe('example');
     expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
     const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
-    expect(cmd.type).toBe(IqType.Get);
+    expect(cmd.type).toBe(XmppIqType.Get);
     expect(cmd.discoInfo.node).toBe('example');
   });
 

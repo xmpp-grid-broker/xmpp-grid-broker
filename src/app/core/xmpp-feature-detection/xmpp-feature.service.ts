@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppService} from './xmpp.service';
-import {ErrorLogService} from '../errors/error-log.service';
+import {ErrorLogService} from '../errors/';
+import {XmppService} from '../xmpp/';
+import {XmppIqType} from '../../models/';
 
 @Injectable()
 export class XmppFeatureService {
@@ -71,7 +72,7 @@ export class XmppFeatureService {
     }
 
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       to: this.xmppService.getServerTitle(),
       discoInfo: {}
     };

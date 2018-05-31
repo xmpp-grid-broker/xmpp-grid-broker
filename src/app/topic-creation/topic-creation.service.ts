@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {XmppService} from '../core/xmpp/xmpp.service';
+import {XmppService} from '../core';
+import {XmppDataForm} from '../models';
 import {JID} from 'xmpp-jid';
 import {JXT} from 'stanza.io';
-import {XmppDataForm} from '../core/models/FormModels';
 
 export enum TopicCreationErrors {
   FeatureNotImplemented = 'feature-not-implemented',

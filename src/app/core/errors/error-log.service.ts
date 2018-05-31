@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {environment} from '../../../environments/environment';
-import {LogLevel} from './log-level';
+import {environment} from '../../../environments';
+import {LogLevel} from '../../models';
 
 @Injectable()
 export class ErrorLogService {

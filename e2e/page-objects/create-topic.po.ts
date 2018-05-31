@@ -1,4 +1,4 @@
-import {UrlAddressableComponent} from '../page-elements/urlAddressableComponent';
+import {UrlAddressableComponent} from '../page-elements';
 
 export class CreateTopicPage extends UrlAddressableComponent {
   get landingUrl(): string {

@@ -1,7 +1,7 @@
 import 'rxjs/add/operator/publish';
 import {ComponentFactoryResolver, Injectable, ViewContainerRef} from '@angular/core';
-import {AlertNotificationComponent} from './alert-notification/alert-notification.component';
-import {ConfirmNotificationComponent} from './confirm-notification/confirm-notification.component';
+import {AlertNotificationComponent} from './alert-notification';
+import {ConfirmNotificationComponent} from './confirm-notification';
 
 /**
  * The Notification can be used to send notification

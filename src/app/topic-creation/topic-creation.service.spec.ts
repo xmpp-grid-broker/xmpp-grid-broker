@@ -1,4 +1,4 @@
-import {TopicCreationErrors, TopicCreationService} from './topic-creation.service';
+import {TopicCreationErrors, TopicCreationService} from '.';
 
 
 describe('TopicCreationService', () => {

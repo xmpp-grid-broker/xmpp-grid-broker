@@ -1,15 +1,6 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
-
-export class PersistedItem {
-  /**
-   * The XML payload of the persisted item in the form of a plain xml string.
-   */
-  public rawXML: string;
-
-  constructor(public readonly id: string) {
-  }
-}
+import {XmppService} from '../../core';
+import {PersistedItem, XmppIqType} from '../../models';
 
 export enum LoadPersistedItemsErrors {
   FeatureNotImplemented = 'feature-not-implemented',
@@ -45,7 +36,7 @@ export class PersistedItemsService {
    */
   public loadPersistedItemContent(topicIdentifier: string, item: PersistedItem): Promise<PersistedItem> {
     const detailedCmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsub: {
         retrieve: {
           node: topicIdentifier,
@@ -77,7 +68,7 @@ export class PersistedItemsService {
 
     do {
       const cmd = {
-        type: IqType.Get,
+        type: XmppIqType.Get,
         discoItems: {
           node: topicIdentifier,
           rsm: {
@@ -109,7 +100,7 @@ export class PersistedItemsService {
    */
   public deletePersistedItem(topicIdentifier: string, item: PersistedItem): Promise<void> {
     const detailedCmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsub: {
         retract: {
           node: topicIdentifier,
@@ -126,7 +117,7 @@ export class PersistedItemsService {
    */
   public purgePersistedItem(topicIdentifier: string): Promise<void> {
     const detailedCmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsubOwner: {
         purge: topicIdentifier
       }
@@ -137,7 +128,7 @@ export class PersistedItemsService {
 
   public publishItem(topicIdentifier: string, rawXML: string): Promise<void> {
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       pubsub: {
         publish: {
           node: topicIdentifier,

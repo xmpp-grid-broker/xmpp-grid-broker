@@ -1,5 +1,5 @@
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {CollectionTopic, Topic} from '../core/models/topic';
+import {XmppService} from '../core';
+import {CollectionTopic, XmppIqType, Topic} from '../models';
 import {Injectable} from '@angular/core';
 
 /**
@@ -97,7 +97,7 @@ export class TopicIteratorHelperService {
     do {
       // noinspection JSUnusedAssignment
       const cmd = {
-        type: IqType.Get,
+        type: XmppIqType.Get,
         discoItems: {
           node: topicIdentifier,
           rsm: {
@@ -126,7 +126,7 @@ export class TopicIteratorHelperService {
    */
   private async loadParents(topicName: string): Promise<Topic[]> {
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       discoInfo: {
         node: topicName
       }
@@ -149,7 +149,7 @@ export class TopicIteratorHelperService {
    */
   private async loadTopicByIdentifier(name: string): Promise<Topic> {
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       discoInfo: {
         node: name
       }

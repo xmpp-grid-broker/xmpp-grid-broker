@@ -1,15 +1,14 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ToastDirective} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {TopicCreationComponent} from './topic-creation.component';
-import {TopicCreationErrors, TopicCreationService} from '../topic-creation.service';
-import {NavigationService} from '../../core/navigation.service';
+import {TopicCreationComponent, TopicCreationErrors, TopicCreationService} from '..';
+import {NavigationService} from '../../core';
+import {XmppDataForm} from '../../models';
 import {DebugElement} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';
-import {ToastDirective} from '../../shared/toast.directive';
-import {XmppDataForm} from '../../core/models/FormModels';
 
 
 class MockTopicCreationService {

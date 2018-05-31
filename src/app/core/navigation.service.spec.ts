@@ -1,5 +1,5 @@
 import {NavigationService} from './navigation.service';
-import {LeafTopic} from './models/topic';
+import {LeafTopic} from '../models';
 
 describe('NavigationService', () => {
 

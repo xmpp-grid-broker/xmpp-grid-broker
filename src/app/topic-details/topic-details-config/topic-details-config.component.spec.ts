@@ -1,23 +1,21 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
-import {TopicDetailsConfigComponent} from './topic-details-config.component';
+import {NavigationService, NotificationService} from '../../core';
+import {LeafTopic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
+import {TopicDetailsConfigComponent} from '..';
+import {ToastDirective} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
-import {ToastDirective} from '../../shared/toast.directive';
 import {
   LoadConfigurationFormErrorCodes,
   TopicDeletionErrorCodes,
   TopicDetailsConfigurationService
 } from './topic-details-configuration.service';
-import {NavigationService} from '../../core/navigation.service';
-import {NotificationService} from '../../core/notifications/notification.service';
-import {CurrentTopicDetailService} from '../current-topic-detail.service';
+import {CurrentTopicDetailService} from '../';
 import createSpyObj = jasmine.createSpyObj;
 import SpyObj = jasmine.SpyObj;
-import {LeafTopic} from '../../core/models/topic';
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,

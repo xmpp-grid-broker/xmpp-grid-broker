@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {TopicCreationErrors, TopicCreationService} from '../topic-creation.service';
-import {NavigationService} from '../../core/navigation.service';
+import {NavigationService} from '../../core';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
-import {FormProcessingStatus} from '../../shared/FormProcessingStatus';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core/models/FormModels';
-import {TopicConfigComponent} from '../../topic-widgets/topic-config/topic-config.component';
+import {FormProcessingStatus} from '../../shared';
+import {TopicConfigComponent} from '../../topic-widgets';
 
 @Component({
   selector: 'xgb-topic-creation',

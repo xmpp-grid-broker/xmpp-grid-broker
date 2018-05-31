@@ -1,12 +1,4 @@
-/**
- * Represents the state of a subscription.
- */
-export enum SubscriptionState {
-  None = 'none',
-  Pending = 'pending',
-  Subscribed = 'subscribed',
-  Unconfigured = 'unconfigured',
-}
+import {SubscriptionState} from './subscription-state';
 
 /**
  * A class that represents a subscription

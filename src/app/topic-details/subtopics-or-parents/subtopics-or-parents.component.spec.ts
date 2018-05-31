@@ -1,13 +1,11 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
-import {SubtopicsOrParentsComponent} from './subtopics-or-parents.component';
+import {CurrentTopicDetailService, SubtopicsOrParentsComponent, SubtopicsOrParentsService} from '..';
 import {ActivatedRoute} from '@angular/router';
-import {NavigationService} from '../../core/navigation.service';
-import {CurrentTopicDetailService} from '../current-topic-detail.service';
-import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
+import {CollectionTopic, Topic} from '../../models';
+import {NavigationService} from '../../core';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {IteratorListPager} from '../../shared/list/iterator-list-pager';
-import {CollectionTopic, Topic} from '../../core/models/topic';
+import {IteratorListPager} from '../../shared';
 import createSpyObj = jasmine.createSpyObj;
 
 

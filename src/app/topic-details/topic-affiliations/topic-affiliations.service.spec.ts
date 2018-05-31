@@ -1,7 +1,7 @@
 import {JID} from 'xmpp-jid';
 import {TopicAffiliationsService} from './topic-affiliations.service';
-import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
-import {Affiliation, JidAffiliation} from '../../core/models/Affiliation';
+import {Affiliation, XmppIqType, JidAffiliation} from '../../models';
+import {XmppService} from '../../core';
 
 
 describe('TopicDetailsConfigurationService', () => {
@@ -38,7 +38,7 @@ describe('TopicDetailsConfigurationService', () => {
       service.loadJidAffiliations('testing').then(() => {
         expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
         const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
-        expect(cmd.type).toBe(IqType.Get);
+        expect(cmd.type).toBe(XmppIqType.Get);
         expect(cmd.pubsubOwner.affiliations.node).toBe('testing');
         done();
       });
@@ -75,7 +75,7 @@ describe('TopicDetailsConfigurationService', () => {
       ).then(() => {
         expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
         const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
-        expect(cmd.type).toBe(IqType.Set);
+        expect(cmd.type).toBe(XmppIqType.Set);
         expect(cmd.pubsubOwner.affiliations.node).toBe('testing');
         expect(cmd.pubsubOwner.affiliations.affiliation.type).toBe(Affiliation.Publisher);
         expect(cmd.pubsubOwner.affiliations.affiliation.jid).toBe('bard@shakespeare.lit');

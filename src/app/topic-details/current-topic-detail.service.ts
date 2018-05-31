@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {IqType, XmppService} from '../core/xmpp/xmpp.service';
-import {Topic} from '../core/models/topic';
-import {JxtErrorToXmppError, XmppErrorCondition} from '../core/errors';
+import {JxtErrorToXmppError, XmppService} from '../core';
+import {XmppIqType, Topic, XmppErrorCondition} from '../models';
 
 /**
  * This service is used to pass topics
@@ -38,7 +37,7 @@ export class CurrentTopicDetailService {
   public loadTopic(topicIdentifier: string): Promise<Topic> {
     this._topic = undefined;
     const cmd = {
-      type: IqType.Get,
+      type: XmppIqType.Get,
       discoInfo: {
         node: topicIdentifier
       }

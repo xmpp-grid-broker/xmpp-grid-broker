@@ -1,5 +1,6 @@
-import {PersistedItem, PersistedItemsService} from './persisted-items.service';
-import {IqType, XmppService} from '../../core/xmpp/xmpp.service';
+import {PersistedItemsService} from './persisted-items.service';
+import {XmppService} from '../../core';
+import {XmppIqType, PersistedItem} from '../../models';
 
 describe('PersistedItemsService', () => {
   let service: PersistedItemsService;
@@ -33,7 +34,7 @@ describe('PersistedItemsService', () => {
       // Verify stanza object
       expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
       const args = xmppService.executeIqToPubsub.calls.mostRecent().args;
-      expect(args[0].type).toBe(IqType.Get);
+      expect(args[0].type).toBe(XmppIqType.Get);
       expect(args[0].pubsub.retrieve.node).toBe('test-topic');
       expect(args[0].pubsub.retrieve.item.id).toBe('001');
 
