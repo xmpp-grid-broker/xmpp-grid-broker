@@ -3,7 +3,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {ErrorToString} from '../core';
 import {Topic} from '../models';
 import {CurrentTopicDetailService} from './current-topic-detail.service';
-import {Subscription} from 'rxjs/Subscription';
+import {Subscription} from 'rxjs';
 
 
 @Component({

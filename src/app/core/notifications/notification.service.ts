@@ -1,4 +1,3 @@
-import 'rxjs/add/operator/publish';
 import {ComponentFactoryResolver, Injectable, ViewContainerRef} from '@angular/core';
 import {AlertNotificationComponent} from './alert-notification';
 import {ConfirmNotificationComponent} from './confirm-notification';

@@ -2,10 +2,8 @@ import {Component, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {ErrorLogService, XmppService} from '../../core';
 import {BreadCrumb, BreadCrumbs} from '../../models';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/of';
+import {Observable, of} from 'rxjs';
+import {distinctUntilChanged, filter, map} from 'rxjs/operators';
 
 @Component({
   selector: 'xgb-bread-crumb',
@@ -22,9 +20,11 @@ export class BreadCrumbComponent {
               private errorLogService: ErrorLogService) {
     // noinspection SuspiciousInstanceOfGuard
     this.breadcrumbs = this.router.events
-      .filter(event => event instanceof NavigationEnd)
-      .distinctUntilChanged()
-      .map(() => this.getBreadFromRoute(this.activatedRoute.root));
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        distinctUntilChanged(),
+        map(() => this.getBreadFromRoute(this.activatedRoute.root)),
+      );
   }
 
   /**
@@ -46,7 +46,7 @@ export class BreadCrumbComponent {
     const crumb = isRouteConfigured ? route.routeConfig.data['breadcrumb'] : undefined;
 
     if (route === route.root) {
-      crumbs.unshift(new BreadCrumb(url, Observable.of(this.xmppService.getServerTitle())));
+      crumbs.unshift(new BreadCrumb(url, of(this.xmppService.getServerTitle())));
 
     } else if (crumb && typeof crumb === 'string') {
       crumbs.unshift(new BreadCrumb(url, this.substituteParamStrings(route, crumb)));
@@ -66,11 +66,12 @@ export class BreadCrumbComponent {
    * value of the given route.
    */
   private substituteParamStrings(route: ActivatedRoute, text: string): Observable<string> {
-    return route.params.map(params => {
-      for (const paramKey of Object.keys(params)) {
-        text = text.replace(`:${paramKey}`, params[paramKey]);
-      }
-      return text;
-    });
+    return route.params.pipe(
+      map(params => {
+        for (const paramKey of Object.keys(params)) {
+          text = text.replace(`:${paramKey}`, params[paramKey]);
+        }
+        return text;
+      }));
   }
 }
