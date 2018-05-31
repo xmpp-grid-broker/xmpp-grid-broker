@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs/Observable';
-import {Config, XmppConfig, XmppTransport} from '../../models/';
+import {Config, XmppConfig, XmppTransport} from '../config';
 import {ConfigLoaderService} from './config-loader.service';
-import {XmppService} from '../xmpp/';
+import {XmppService} from '../../xmpp';
 
 
 class FakeErrorResponse {
@@ -54,7 +54,7 @@ describe('ConfigLoaderService', () => {
     spyOn(httpClient, 'get').and.callFake(() => Observable.of(JSON_CONFIG));
     service = new ConfigLoaderService(httpClient, xmppService);
 
-    service.getConfig().then(config => {
+    service.loadConfig().then(config => {
       expect(httpClient.get).toHaveBeenCalledWith(httpClient.fake_url);
       done();
     }).catch(err => fail(err));
@@ -65,7 +65,7 @@ describe('ConfigLoaderService', () => {
     spyOn(httpClient, 'get').and.callFake(() => Observable.of(JSON_CONFIG));
     service = new ConfigLoaderService(httpClient, xmppService);
 
-    service.getConfig().then(config => {
+    service.loadConfig().then(config => {
       expect(xmppService.initialize).toHaveBeenCalledWith(config);
       done();
     }).catch(err => fail(err));
@@ -77,7 +77,7 @@ describe('ConfigLoaderService', () => {
     spyOn(httpClient, 'get').and.callFake(() => Observable.of(JSON_CONFIG));
     service = new ConfigLoaderService(httpClient, xmppService);
 
-    service.getConfig().then((config: Config) => {
+    service.loadConfig().then((config: Config) => {
       const required = ['transport', 'boshUrl', 'useStreamManagement'];
       for (const name of required) {
         expect(config.xmpp[name]).toBe(REFERENCE_CONFIG.xmpp[name]);
@@ -95,7 +95,7 @@ describe('ConfigLoaderService', () => {
     // Catch asynchronously thrown error from ConfigLoaderService.constructor
     const initialisation = async () => {
       service = new ConfigLoaderService(httpClient, xmppService);
-      await service.getConfig();
+      await service.loadConfig();
     };
 
     initialisation().then(() => fail('No error thrown!'), () => done());
@@ -108,7 +108,7 @@ describe('ConfigLoaderService', () => {
     // Catch asynchronously thrown error from ConfigLoaderService.constructor
     const initialisation = async () => {
       service = new ConfigLoaderService(httpClient, xmppService);
-      return await service.getConfig();
+      return await service.loadConfig();
     };
 
     initialisation().then(() => fail('No error thrown!'), () => done());
@@ -124,7 +124,7 @@ describe('ConfigLoaderService', () => {
     // Catch asynchronously thrown error from ConfigLoaderService.constructor
     const initialisation = async () => {
       service = new ConfigLoaderService(httpClient, xmppService);
-      return await service.getConfig();
+      return await service.loadConfig();
     };
 
     initialisation()

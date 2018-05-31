@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Config} from '../../models/';
-import {XmppService} from '../xmpp/';
-import {environment} from '../../../environments/';
+import {Config} from '../config';
+import {XmppService} from '../../xmpp';
+import {environment} from '../../../../environments';
 
 @Injectable()
 export class ConfigLoaderService {

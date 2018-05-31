@@ -1,5 +1,5 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
-import {ConfigLoaderService} from '../config-loader';
+import {ConfigLoaderService} from '../config/config-loader';
 import {NotificationService} from '../notifications/';
 import {FeatureService} from './feature.service';
 import {Injectable} from '@angular/core';

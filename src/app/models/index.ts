@@ -1,6 +1,6 @@
-export * from './config';
-export * from './log-level';
-export * from './xmpp-error';
+export * from '../core/config/config';
+export * from '../core/errors/log-level';
+export * from '../core/xmpp/xmpp-error';
 
 export * from '../core/xmpp/models/affiliation';
 export * from '../core/xmpp/models/form-models';

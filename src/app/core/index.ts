@@ -1,5 +1,5 @@
 export * from './components';
-export * from './config-loader';
+export * from './config/';
 export * from './errors';
 export * from './feature-detection';
 export * from './navigation';
