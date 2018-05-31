@@ -17,16 +17,16 @@ describe(SubtopicsOrParentsService.name, () => {
       const fakeResult = createSpyObj('AsyncIterableIterator', ['next']);
       iteratorHelper.createChildTopicsIterator.and.returnValue(fakeResult);
 
-      const result = service.subtopics('topicNane');
+      const result = service.subtopics('topicName');
 
       expect(result).toBe(fakeResult);
     });
 
     it('should call the helper service with the topic name and recursive flag', () => {
-      service.subtopics('topicNane');
+      service.subtopics('topicName');
 
       expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledTimes(1);
-      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith( 'topicNane', true);
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith( 'topicName', true);
     });
   });
 
@@ -35,16 +35,16 @@ describe(SubtopicsOrParentsService.name, () => {
       const fakeResult = createSpyObj('AsyncIterableIterator', ['next']);
       iteratorHelper.createParentsTopicsIterator.and.returnValue(fakeResult);
 
-      const result = service.parents('topicNane');
+      const result = service.parents('topicName');
 
       expect(result).toBe(fakeResult);
     });
 
     it('should call the helper service with the topic name and recursive flag', () => {
-      service.parents('topicNane');
+      service.parents('topicName');
 
       expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledTimes(1);
-      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledWith( 'topicNane', true);
+      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledWith( 'topicName', true);
     });
   });
 });

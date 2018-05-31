@@ -18,7 +18,7 @@ describe('PersistedItemsComponent', () => {
   const errorMap = [
     {condition: 'feature-not-implemented', message: 'The XMPP server does not support persisted items or persisted items retrieval'},
     {
-      condition: 'not-authorized', message: 'You are not authorized to fetch the persited items. ' +
+      condition: 'not-authorized', message: 'You are not authorized to fetch the persisted items. ' +
       'Check your subscription and the access model of this node'
     },
     {condition: 'payment-required', message: 'Payment is required to retrieve items'},

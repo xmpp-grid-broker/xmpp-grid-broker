@@ -44,7 +44,7 @@ export class BreadCrumbComponent {
     const crumbs = route.firstChild ? this.getBreadFromRoute(route.firstChild, urlFragments) : [];
 
     const isRouteConfigured = route.routeConfig && route.routeConfig.data && route.routeConfig.data['breadcrumb'] !== undefined;
-    const crumb = isRouteConfigured ? route.routeConfig.data['breadcrumb'] : undefined;
+    const crumb: any = isRouteConfigured ? route.routeConfig.data['breadcrumb'] : undefined;
 
     if (route === route.root) {
       crumbs.unshift(new BreadCrumb(url, Observable.of(this.xmppService.getServerTitle())));

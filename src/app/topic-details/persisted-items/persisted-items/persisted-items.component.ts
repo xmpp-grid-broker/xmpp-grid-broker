@@ -12,7 +12,7 @@ import {PersistedItem, Topic} from '../../../core';
 })
 export class PersistedItemsComponent implements OnInit {
 
-  // Map used to keep track which items are "uncollapsed"
+  // Map used to keep track which items are "un-collapsed"
   toggleMap: { [key: number]: boolean; } = {};
 
   persistedItemsList = new IteratorListPager<PersistedItem>();
@@ -88,7 +88,7 @@ export class PersistedItemsComponent implements OnInit {
       case LoadPersistedItemsErrors.FeatureNotImplemented:
         return 'The XMPP server does not support persisted items or persisted items retrieval';
       case LoadPersistedItemsErrors.NotAuthorized:
-        return 'You are not authorized to fetch the persited items. Check your subscription and the access model of this node';
+        return 'You are not authorized to fetch the persisted items. Check your subscription and the access model of this node';
       case LoadPersistedItemsErrors.PaymentRequired:
         return 'Payment is required to retrieve items';
       case LoadPersistedItemsErrors.Forbidden:

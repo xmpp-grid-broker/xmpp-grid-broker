@@ -73,7 +73,7 @@ describe('NewTopicSubscriptionComponent', () => {
       tick();
     }));
 
-    it('the submit button shoud be enabled', fakeAsync(() => {
+    it('the submit button should be enabled', fakeAsync(() => {
       expect(submitButton.disabled).toBeFalsy();
     }));
 

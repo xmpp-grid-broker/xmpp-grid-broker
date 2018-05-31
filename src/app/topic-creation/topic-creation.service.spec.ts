@@ -47,7 +47,7 @@ describe('TopicCreationService', () => {
       });
     });
 
-    it('should call `createTopic` with `true` if the given value is falsy', (done) => {
+    it('should call `createTopic` with `true` if the given value is false', (done) => {
       spyOn(client, 'createNode').and.callThrough();
       service.createTopic(null, null)
         .then((generatedTopicTitle) => {

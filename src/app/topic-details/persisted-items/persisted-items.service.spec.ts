@@ -38,7 +38,7 @@ describe('PersistedItemsService', () => {
       expect(args[0].pubsub.retrieve.node).toBe('test-topic');
       expect(args[0].pubsub.retrieve.item.id).toBe('001');
 
-      // Ensure the element is updated inplace
+      // Ensure the element is updated in-place
       expect(testItem.rawXML).toBe('<foo><baa></baa></foo>');
       await expect(returnedItem).toBe(testItem);
     });
