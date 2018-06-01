@@ -27,11 +27,6 @@ export class IteratorListPager<T> {
     return this.loadMore();
   }
 
-  // TODO: DO ERROR HANDLING IN SERVICES INSTEAD!
-  public useErrorMapper(errorHandler: (error: any) => string) {
-    this.errorHandler = errorHandler;
-  }
-
   public loadMore(): Promise<void> {
     this.isLoaded = false;
     this.hasError = false;

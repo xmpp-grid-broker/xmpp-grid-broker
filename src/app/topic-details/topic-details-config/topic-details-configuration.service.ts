@@ -1,20 +1,5 @@
 import {Injectable} from '@angular/core';
-import {XmppService} from '../../core';
-import {XmppDataForm, XmppIqType} from '../../core';
-
-export enum LoadConfigurationFormErrorCodes {
-  ItemNotFound = 'item-not-found',
-  Unsupported = 'unsupported',
-  Forbidden = 'forbidden',
-  NotAllowed = 'not-allowed'
-}
-
-
-export enum TopicDeletionErrorCodes {
-  Forbidden = 'forbidden',
-  ItemNotFound = 'item-not-found',
-  NotAllowed = 'not-allowed' // Deleting the Root Node, see XEP-0248
-}
+import {JxtErrorToXmppError, XmppDataForm, XmppErrorCondition, XmppIqType, XmppService} from '../../core';
 
 @Injectable()
 export class TopicDetailsConfigurationService {
@@ -31,10 +16,17 @@ export class TopicDetailsConfigurationService {
         }
       }
     };
-
     return this.xmppService.executeIqToPubsub(cmd).then((result) =>
       XmppDataForm.fromJSON(result.pubsubOwner.config.form)
-    );
+    ).catch(error => {
+      throw JxtErrorToXmppError(error, {
+        [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`,
+        [XmppErrorCondition.BadRequest]: `Missing topic identifier`,
+        [XmppErrorCondition.FeatureNotImplemented]: 'The service does not support node configuration',
+        [XmppErrorCondition.Forbidden]: `You have insufficient Privileges to configure topic ${topicIdentifier}`,
+        [XmppErrorCondition.NotAllowed]: 'The topic has no configuration options'
+      });
+    });
   }
 
   public async updateTopicConfiguration(topicIdentifier: string, xmppDataForm: XmppDataForm): Promise<XmppDataForm> {
@@ -51,7 +43,12 @@ export class TopicDetailsConfigurationService {
     };
 
     return this.xmppService.executeIqToPubsub(cmd)
-      .then(() => this.loadConfigurationForm(topicIdentifier));
+      .then(() => this.loadConfigurationForm(topicIdentifier))
+      .catch(error => {
+        throw JxtErrorToXmppError(error, {
+          [XmppErrorCondition.NotAcceptable]: 'The server could not process the configuration change'
+        });
+      });
   }
 
   /**
@@ -64,7 +61,12 @@ export class TopicDetailsConfigurationService {
         del: topicIdentifier
       }
     };
-    return this.xmppService.executeIqToPubsub(cmd);
+    return this.xmppService.executeIqToPubsub(cmd)
+      .catch(error => JxtErrorToXmppError(error, {
+        [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist!`,
+        [XmppErrorCondition.Forbidden]: 'You have insufficient Privileges to delete this node',
+        [XmppErrorCondition.NotAllowed]: `You are not allowed to delete the root node ${topicIdentifier}`,
+      }));
   }
 
 

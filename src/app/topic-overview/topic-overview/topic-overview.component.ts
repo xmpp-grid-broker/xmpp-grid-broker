@@ -39,12 +39,7 @@ export class TopicOverviewComponent implements OnInit {
         iterator = this.topicOverviewService.allCollections();
         break;
     }
-    this.topicList.useErrorMapper(this.mapErrors.bind(this));
     this.topicList.useIterator(iterator);
-  }
-
-  mapErrors(error: any): string {
-    return `Failed to load topics / collection : ${JSON.stringify(error)}`;
   }
 
   createNew(what: string) {
