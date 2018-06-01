@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {JidAffiliation, XmppIqType} from '../../core';
+import {JidAffiliation, JxtErrorToXmppError, XmppErrorCondition, XmppIqType} from '../../core';
 import {XmppService} from '../../core/xmpp';
 
 export enum AffiliationManagementErrorCodes {
@@ -7,6 +7,7 @@ export enum AffiliationManagementErrorCodes {
   Unsupported = 'unsupported',
   Forbidden = 'forbidden'
 }
+
 @Injectable()
 export class TopicAffiliationsService {
   constructor(private xmppService: XmppService) {
@@ -48,7 +49,13 @@ export class TopicAffiliationsService {
         }
       }
     };
-    return this.xmppService.executeIqToPubsub(cmd);
+    return this.xmppService.executeIqToPubsub(cmd)
+      .catch(error => {
+        throw JxtErrorToXmppError(error, {
+          [XmppErrorCondition.Unsupported]: 'Topic or service does not support affiliation management',
+          [XmppErrorCondition.Forbidden]: 'You are not allowed to modify the affiliations because you are not owner'
+        });
+      });
   }
 
 }

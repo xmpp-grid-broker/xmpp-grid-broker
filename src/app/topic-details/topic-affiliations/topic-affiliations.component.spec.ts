@@ -3,11 +3,11 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import {AffiliationManagementErrorCodes, CurrentTopicDetailService, TopicAffiliationsComponent, TopicAffiliationsService} from '..';
 import {SharedModule} from '../../shared/shared.module';
 import {DebugElement} from '@angular/core';
-import {Affiliation, JidAffiliation, LeafTopic} from '../../core';
+import {Affiliation, JidAffiliation, LeafTopic, XmppError, XmppErrorCondition} from '../../core';
 import {NotificationService, XmppService} from '../../core';
 import {FormsModule} from '@angular/forms';
 
-describe('TopicAffiliationsComponent', () => {
+describe(TopicAffiliationsComponent.name, () => {
   let component: TopicAffiliationsComponent;
   let fixture: ComponentFixture<TopicAffiliationsComponent>;
   let de: DebugElement;
@@ -371,25 +371,19 @@ describe('TopicAffiliationsComponent', () => {
       expect(component.isLoaded).toBeTruthy();
       expect(component.errorMessage).toBeTruthy();
     }));
-    [
-      {condition: AffiliationManagementErrorCodes.Unsupported, message: 'Node or service does not support affiliation management'},
-      {
-        condition: AffiliationManagementErrorCodes.Forbidden,
-        message: 'You are not allowed to modify the affiliations because you are not owner'
-      },
-    ].forEach(({condition, message}) => {
-      it('should render an error box whe the error is received', fakeAsync(() => {
 
-        loadJidAffiliationsResult = Promise.reject({condition});
-        setup();
+    it('should render an error box whe the error is received', fakeAsync(() => {
 
-        // Spinner is currently present...
-        fixture.detectChanges();
-        tick();
+      loadJidAffiliationsResult = Promise.reject(new XmppError('Error Message', XmppErrorCondition.NotAcceptable));
+      setup();
 
-        const errorBoxMessage = de.nativeElement.querySelector('.toast-error');
-        expect(errorBoxMessage.innerText).toBe(message);
-      }));
-    });
+      // Spinner is currently present...
+      fixture.detectChanges();
+      tick();
+
+      const errorBoxMessage = de.nativeElement.querySelector('.toast-error');
+      expect(errorBoxMessage.innerText).toBe('Error Message');
+    }));
   });
+
 });
