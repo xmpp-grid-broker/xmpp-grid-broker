@@ -3,47 +3,21 @@ import {ToastDirective} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {TopicCreationComponent, TopicCreationErrors, TopicCreationService} from '..';
-import {NavigationService} from '../../core';
-import {XmppDataForm} from '../../core';
+import {TopicCreationComponent, TopicCreationService} from '..';
+import {NavigationService, XmppError, XmppErrorCondition} from '../../core';
 import {DebugElement} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';
+import SpyObj = jasmine.SpyObj;
+import createSpyObj = jasmine.createSpyObj;
 
-
-class MockTopicCreationService {
-  createTopic(topicIdentifier: string): Promise<string> {
-    return Promise.resolve(topicIdentifier);
-  }
-  loadDefaultConfig(): Promise<XmppDataForm> {
-    return Promise.reject({});
-  }
-}
-
-class FakeActivatedRoute {
-
-  type = undefined;
-
-  // noinspection JSUnusedGlobalSymbols
-  get snapshot() {
-    return {data: {type: this.type}};
-  }
-}
-
-class FakeNavigationService {
-  goToTopic() {
-  }
-
-}
-
-describe('TopicCreationComponent', () => {
+describe(TopicCreationComponent.name, () => {
 
   let component: TopicCreationComponent;
   let fixture: ComponentFixture<TopicCreationComponent>;
   let de: DebugElement;
-  let topicCreationService;
-  let fakeRoute;
-  let navigationService;
+  let topicCreationService: SpyObj<TopicCreationService>;
+  let navigationService: SpyObj<NavigationService>;
 
   const waitUntilLoaded = () => {
     fixture.detectChanges();
@@ -54,16 +28,15 @@ describe('TopicCreationComponent', () => {
 
 
   beforeEach(fakeAsync(() => {
-      topicCreationService = new MockTopicCreationService();
-      fakeRoute = new FakeActivatedRoute();
-      navigationService = new FakeNavigationService();
+      topicCreationService = createSpyObj(TopicCreationService.name, ['loadDefaultConfig', 'createTopic']);
+      navigationService = createSpyObj(NavigationService.name, ['goToTopic']);
 
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicCreationComponent],
         providers: [{provide: TopicCreationService, useValue: topicCreationService},
           {provide: NavigationService, useValue: navigationService},
-          {provide: ActivatedRoute, useValue: fakeRoute}]
+          {provide: ActivatedRoute, useValue: {snapshot: {data: {type: 'collection'}}}}]
       });
 
       fixture = TestBed.createComponent(TopicCreationComponent);
@@ -75,12 +48,14 @@ describe('TopicCreationComponent', () => {
   describe('when creating a new collection', () => {
 
     beforeEach(fakeAsync(() => {
-      fakeRoute.type = 'collection';
+      topicCreationService.loadDefaultConfig.and.callFake(() =>
+        Promise.reject({})
+      );
       waitUntilLoaded();
     }));
 
     it('should call the service if the form is filled out', fakeAsync(() => {
-      spyOn(topicCreationService, 'createTopic').and.callThrough();
+      topicCreationService.createTopic.and.returnValue(Promise.resolve('myNewTopic'));
 
       // Fill in node id
       const inputField = de.nativeElement.querySelector('#nodeID');
@@ -103,8 +78,7 @@ describe('TopicCreationComponent', () => {
     }));
 
     it('should redirect when creation was successful', fakeAsync(() => {
-      spyOn(navigationService, 'goToTopic').and.callThrough();
-
+      topicCreationService.createTopic.and.returnValue(Promise.resolve('myNewTopic'));
       // Fill in node id
       const inputField = de.nativeElement.querySelector('#nodeID');
       inputField.value = 'myNewTopic';
@@ -125,41 +99,33 @@ describe('TopicCreationComponent', () => {
       expect(args[0]).toBe('myNewTopic');
     }));
 
-    [
-      {condition: TopicCreationErrors.FeatureNotImplemented, message: 'Service does not support node creation'},
-      {condition: TopicCreationErrors.RegistrationRequired, message: 'Service requires registration'},
-      {condition: TopicCreationErrors.Forbidden, message: 'Requesting entity is prohibited from creating nodes'},
-      {condition: TopicCreationErrors.Conflict, message: 'A topic with the given identifier does already exist'},
-      {condition: TopicCreationErrors.NodeIdRequired, message: 'Service does not support instant nodes'},
-      {condition: '?!?!', message: 'Failed to create new topic: {"condition":"?!?!","type":"unknown"}'}
-    ].forEach((testParams) => {
-      it(`should show an error if it fails (${testParams.condition})`, fakeAsync(() => {
-        spyOn(topicCreationService, 'createTopic').and.callFake(() => {
-          return Promise.reject({condition: testParams.condition, type: 'unknown'});
-        });
-        // Fill in node id
-        const inputField = de.nativeElement.querySelector('#nodeID');
-        inputField.value = 'myNewTopic';
-        inputField.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
-        tick();
 
-        // Click submit
-        const submit = de.nativeElement.querySelector('button[type=submit]');
-        submit.click();
-        fixture.detectChanges();
-        tick();
+    it(`should show an error if it fails `, fakeAsync(() => {
+      topicCreationService.createTopic.and.callFake(() => {
+        return Promise.reject(new XmppError('A problem occurred', XmppErrorCondition.NotAcceptable));
+      });
+      // Fill in node id
+      const inputField = de.nativeElement.querySelector('#nodeID');
+      inputField.value = 'myNewTopic';
+      inputField.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      tick();
 
-        // Ensure the service has been called
-        expect(topicCreationService.createTopic).toHaveBeenCalledTimes(1);
+      // Click submit
+      const submit = de.nativeElement.querySelector('button[type=submit]');
+      submit.click();
+      fixture.detectChanges();
+      tick();
 
-        fixture.detectChanges();
-        tick();
-        const errorDiv = de.query(By.directive(ToastDirective)).nativeElement;
-        expect(errorDiv.innerText).toBe(testParams.message);
+      // Ensure the service has been called
+      expect(topicCreationService.createTopic).toHaveBeenCalledTimes(1);
 
-      }));
-    });
+      fixture.detectChanges();
+      tick();
+      const errorDiv = de.query(By.directive(ToastDirective)).nativeElement;
+      expect(errorDiv.innerText).toBe('A problem occurred');
 
+    }));
   });
+
 });

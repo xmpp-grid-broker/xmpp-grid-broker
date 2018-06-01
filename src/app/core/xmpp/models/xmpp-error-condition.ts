@@ -15,6 +15,7 @@ export enum XmppErrorCondition {
   NotAuthorized = 'not-authorized',
   PaymentRequired = 'payment-required',
   PolicyViolation = 'policy-violation',
+  RegistrationRequired = 'registration-required',
   Timeout = 'timeout',
   UnexpectedRequest = 'unexpected-request',
   Unsupported = 'unsupported',
