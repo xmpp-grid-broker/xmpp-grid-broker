@@ -5,11 +5,11 @@ import {PersistedItemsService} from '../persisted-items.service';
 import {FormsModule} from '@angular/forms';
 import {SharedModule} from '../../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
-import {NavigationService} from '../../../core';
+import {NavigationService, XmppError, XmppErrorCondition} from '../../../core';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 
-describe('NewPersistedItemComponent', () => {
+describe(NewPersistedItemComponent.name, () => {
   let component: NewPersistedItemComponent;
   let fixture: ComponentFixture<NewPersistedItemComponent>;
   let de: DebugElement;
@@ -102,33 +102,23 @@ describe('NewPersistedItemComponent', () => {
 
   }));
 
-  [
-    {error: {}, message: 'an unknown error occurred: {}!'},
-    {error: {condition: 'forbidden'}, message: 'You have not sufficient privileges to publish to this node'},
-    {error: {condition: 'feature-not-implemented'}, message: 'Node testing does not support item publication'},
-    {error: {condition: 'not-acceptable'}, message: 'Payload is too big'},
-    {error: {condition: 'bad-request'}, message: 'Bad Payload: The payload is not acceptable with the nodes configuration'},
-    {error: {message: 'Incomplete document'}, message: 'The given message is not a valid XML document'},
-  ].forEach(({error, message}) => {
-      it(`should show an error message when update is unsuccessful (${message})`, fakeAsync(() => {
-        persistedItemsService.publishItem.and.returnValue(Promise.reject(error));
+  it('should show an error message when update is unsuccessful', fakeAsync(() => {
+    persistedItemsService.publishItem.and.callFake(() => Promise.reject(new XmppError('Error Msg.', XmppErrorCondition.NotAuthorized)));
 
-        // provide a value
-        textArea.value = '<xml/>';
-        textArea.dispatchEvent(new Event('input'));
+    // provide a value
+    textArea.value = '<xml/>';
+    textArea.dispatchEvent(new Event('input'));
 
-        // Submit
-        submitButton.click();
+    // Submit
+    submitButton.click();
 
-        fixture.detectChanges();
-        tick();
-        fixture.detectChanges();
-        tick();
+    fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
 
-        expect(navigationService.goToPersistedItems).toHaveBeenCalledTimes(0);
-        expect(de.query(By.css('[xgbToast]')).nativeElement.innerHTML).toBe(message);
+    expect(navigationService.goToPersistedItems).toHaveBeenCalledTimes(0);
+    expect(de.query(By.css('[xgbToast]')).nativeElement.innerHTML).toBe('Error Msg.');
 
-      }));
-    }
-  );
+  }));
 });

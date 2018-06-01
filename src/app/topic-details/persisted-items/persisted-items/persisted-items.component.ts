@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CurrentTopicDetailService} from '../../current-topic-detail.service';
-import {LoadPersistedItemsErrors, PersistedItemsService} from '../persisted-items.service';
+import {PersistedItemsService} from '../persisted-items.service';
 import {IteratorListPager} from '../../../shared';
-import {NotificationService} from '../../../core';
-import {PersistedItem, Topic} from '../../../core';
+import {ErrorToString, NotificationService, PersistedItem, Topic} from '../../../core';
 
 @Component({
   selector: 'xgb-persisted-items',
@@ -27,7 +26,6 @@ export class PersistedItemsComponent implements OnInit {
   ngOnInit() {
     this.topic = this.detailsService.currentTopic();
     this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title));
-    this.persistedItemsList.useErrorMapper(PersistedItemsComponent.errorConditionToMessage);
   }
 
   async itemClicked(item: PersistedItem) {
@@ -69,7 +67,7 @@ export class PersistedItemsComponent implements OnInit {
 
   private setError(err) {
     this.persistedItemsList.hasError = true;
-    this.persistedItemsList.errorMessage = PersistedItemsComponent.errorConditionToMessage(err);
+    this.persistedItemsList.errorMessage = ErrorToString(err);
   }
 
   private async executeAndRefreshIterator(promise: Promise<void>) {
@@ -80,23 +78,6 @@ export class PersistedItemsComponent implements OnInit {
       this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title))
         .then(() => this.setError(err))
         .catch(() => this.setError(err));
-    }
-  }
-
-  private static errorConditionToMessage(error: any): string {
-    switch (error.condition) {
-      case LoadPersistedItemsErrors.FeatureNotImplemented:
-        return 'The XMPP server does not support persisted items or persisted items retrieval';
-      case LoadPersistedItemsErrors.NotAuthorized:
-        return 'You are not authorized to fetch the persisted items. Check your subscription and the access model of this node';
-      case LoadPersistedItemsErrors.PaymentRequired:
-        return 'Payment is required to retrieve items';
-      case LoadPersistedItemsErrors.Forbidden:
-        return 'You are blocked from retrieving persisted items';
-      case LoadPersistedItemsErrors.ItemNotFound:
-        return 'Node or one of it\'s associated persisted persisted item does not exist';
-      default:
-        return `An unknown error occurred: ${JSON.stringify(error)}!`;
     }
   }
 }
