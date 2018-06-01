@@ -1,4 +1,4 @@
-import {ErrorToString, JxtErrorToXmppError} from '../errors/index';
+import {ErrorToString, JxtErrorToXmppError} from './error-utils';
 import {XmppError, XmppErrorCondition} from './index';
 
 describe('XmppError', () => {
