@@ -21,7 +21,7 @@ export class TopicDetailsConfigurationService {
     ).catch(error => {
       throw JxtErrorToXmppError(error, {
         [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`,
-        [XmppErrorCondition.BadRequest]: `Missing topic identifier`,
+        [XmppErrorCondition.BadRequest]: 'Missing topic identifier',
         [XmppErrorCondition.FeatureNotImplemented]: 'The service does not support node configuration',
         [XmppErrorCondition.Forbidden]: `You have insufficient Privileges to configure topic ${topicIdentifier}`,
         [XmppErrorCondition.NotAllowed]: 'The topic has no configuration options'

@@ -90,7 +90,7 @@ describe(PersistedItemsComponent.name, () => {
   }));
 
 
-  it(`should render an error when an error occurs while loading`, fakeAsync(() => {
+  it('should render an error when an error occurs while loading', fakeAsync(() => {
     // return error from server
     persistedItemsService.persistedItems.and.callFake(function* () {
       throw new XmppError('Error Message', XmppErrorCondition.NotAcceptable);
@@ -206,7 +206,7 @@ describe(PersistedItemsComponent.name, () => {
 
   }));
 
-  it(`should show an error when lazy loading fails`, fakeAsync(() => {
+  it('should show an error when lazy loading fails', fakeAsync(() => {
     // return some persisted items
     persistedItemsService.persistedItems.and.callFake(function* () {
       yield new PersistedItem('001');
