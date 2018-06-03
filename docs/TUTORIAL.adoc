@@ -46,7 +46,67 @@ Secondly, add following configuration to you nginx setup (usually in `/etc/nginx
 
 [source]
 ----
-include::tutorial-resources/nginx.conf[]
+upstream openfire {
+    server openfire:7443 fail_timeout=0;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name xgb.localhost.redbackup.org;
+
+    ssl_certificate /etc/certs/host/xgb.localhost.redbackup.org/fullchain.pem;
+    ssl_certificate_key /etc/certs/host/xgb.localhost.redbackup.org/privkey.pem;
+
+    ssl_verify_client on;
+    ssl_client_certificate /etc/certs/ca-fullchain.pem;
+
+    access_log /var/log/nginx/${host}.access.log;
+    error_log /var/log/nginx/${host}.error.log info;
+
+    keepalive_timeout 6000;
+
+    # support up to ~20MB uploads
+    client_max_body_size 20M;
+
+    # security headers <1>
+    add_header Strict-Transport-Security max-age=15768000;
+    add_header Content-Security-Policy "default-src 'none'; script-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline';" always;
+    add_header 'Access-Control-Allow-Origin' 'xgb.localhost.redbackup.org' always;
+    add_header 'Access-Control-Allow-Methods' 'GET, PUT, POST, DELETE, HEAD, OPTIONS' always;
+
+    # Openfire BOSH
+    location /http-bind {
+        if ($request_method = 'OPTIONS') {
+            add_header 'Content-Type' 'text/plain; charset=utf-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+        proxy_set_header Host openfire;
+        proxy_set_header X-Forwarded-Host openfire;
+        proxy_set_header X-Forwarded-Server openfire;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_hide_header 'Content-Security-Policy';
+        proxy_hide_header 'Access-Control-Allow-Origin';
+        proxy_hide_header 'Access-Control-Allow-Methods';
+
+
+        proxy_ssl_certificate /etc/certs/client/admin@openfire/fullchain.pem;
+        proxy_ssl_certificate_key /etc/certs/client/admin@openfire/privkey.pem;
+        proxy_ssl_trusted_certificate /etc/certs/ca-fullchain.pem;
+        proxy_ssl_verify on;
+        proxy_ssl_session_reuse off;
+
+        proxy_pass https://openfire/http-bind;
+        break;
+    }
+    location / {
+      root /var/www/xgb.localhost.redbackup.org/;
+      try_files $uri $uri/ /index.html
+      break;
+    }
+}
 ----
 <1> See link:docs/SECURITY.md[Security Recommendations]
 
@@ -76,7 +136,13 @@ Create the configuration file `configuration.json` also in the web root folder `
 
 [source, json]
 ----
-include::./tutorial-resources/configuration.json[]
+{
+  "xmpp": {
+    "server":     "openfire",
+    "transport":  "bosh",
+    "boshURL":    "https://xgb.localhost.redbackup.org/http-bind"
+  }
+}
 ----
 All configuration options are documented in the link:INSTALL.md#Configuration[expert installation guide].
 
