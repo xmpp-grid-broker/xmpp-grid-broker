@@ -1,6 +1,7 @@
 = Tutorial setup with openfire and nginx
 :toc:
 
+image:tutorial-resources/depoyment_diagram.svg[Deployment Diagram,align="right"]
 
 == Requirements
 
