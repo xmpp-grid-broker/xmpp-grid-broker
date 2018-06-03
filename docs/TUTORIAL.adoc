@@ -46,7 +46,7 @@ Secondly, add following configuration to you nginx setup (usually in `/etc/nginx
 
 [source]
 ----
- \include::tutorial-resources/nginx.conf[]
+include::tutorial-resources/nginx.conf[]
 ----
 <1> See link:docs/SECURITY.md[Security Recommendations]
 
@@ -76,9 +76,8 @@ Create the configuration file `configuration.json` also in the web root folder `
 
 [source, json]
 ----
- \include::tutorial-resources/configuration.json[]
+include::./tutorial-resources/configuration.json[]
 ----
-
 All configuration options are documented in the link:INSTALL.md#Configuration[expert installation guide].
 
 
