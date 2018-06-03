@@ -1,7 +1,12 @@
 = Tutorial setup with openfire and nginx
 :toc:
 
-image:tutorial-resources/depoyment_diagram.svg[Deployment Diagram,align="right"]
+This tutorial guides you through the setup of a XMPP-Grid Broker with a openfire XMPP server and nginx web server.
+
+After this tutorial, your setup will look like the this:
+
+.Deployment Diagram of the finished XMPP-Grid Broker setup
+image::tutorial-resources/depoyment_diagram.svg[Deployment Diagram, width=300px]
 
 == Requirements
 
