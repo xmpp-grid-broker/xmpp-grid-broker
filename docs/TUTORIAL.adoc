@@ -1,0 +1,87 @@
+= Tutorial setup with openfire and nginx
+:toc:
+
+
+== Requirements
+
+This guide assumes you are using linux or mac os with the `openssl` binary installed.
+
+Also, we assume you have installed `openfire` and `nginx`, and they are reachable under following hostnames:
+
+|===
+| Application | Hostname
+
+|nginx server |`xgb.localhost.redbackup.org`
+|openfire server |`openfire`
+|===
+
+== Generate cerficates
+
+This tutorial requires 3 TLS certificates:
+
+* Hostname `openfire`
+* Hostname `xgb.localhost.redbackup.org`
+* Client certificate with the `xmppAddr` set to `admin@openfire`.
+
+We also use a custom certification authority (CA) to sign these certificates. For that purpose, we use a script which generates the custom CA and all required certificates in this repository.
+
+To generate the certificates run following steps in this repositorys root:
+
+[source, bash]
+----
+cd stack/certs
+rm -r keys # # <1>
+./generates.bash
+----
+<1> This removes all development certificates.
+
+
+If you would like to customise the certificate and CA configuration, you can do so by editing the files in `conf`. Note that the script generates additional certificates which are not required for this tutorial.
+
+== Setup nginx
+
+The first step is to copy the required certificates `certs/keys/host`, `certs/keys/client` as well as the CA public key from `certs/keys/ca-fullchain.pem` to the folder `/etc/certs` on your nginx server.
+
+Secondly, add following configuration to you nginx setup (usually in `/etc/nginx/`):
+
+[source]
+----
+ \include::tutorial-resources/nginx.conf[]
+----
+<1> See link:docs/SECURITY.md[Security Recommendations]
+
+== TODO: Setup openfire
+
+Go to the openfire administration interface under https://openfire:9091/ and add the configuration as described in the following screenshots.
+
+.Configure BOSH under _Server → Server Settings → HTTP Binding_
+image::tutorial-resources/tutorial_openfire_bosh.png[Openfire HTTP Binding]
+
+.Add your Client-TLS CA to _Server → TLS/SSL Certificates → Client Connections → Trust Store_
+image::tutorial-resources/tutorial_openfire_tls.png[Openfire TLS Certificates]
+
+
+.Require client certificate in HTTP binding under _Server -> Server Manager -> System Properties_: `httpbind.client.cert.policy` = `needed`
+image::tutorial-resources/tutorial_openfire_certpolicy.png[Openfire HTT Binding Cert Policy]
+
+
+.Allow Administrator User access to all Topics under `System Administrators` in _Server → PubSub → System Administrators_ (Don't forget to click `update` afterwards).
+image::tutorial-resources/tutorial_openfire_pubsubadmin.png[Openfire PubSub Administartor]
+
+== Setup XMPP-Grid Broker
+
+Add the https://github.com/xmpp-grid-broker/xmpp-grid-broker/releases[latest XMPP-Grid Broker release] on the nginx server in the web root folder under `/var/www/xgb.localhost.redbackup.org/`.
+
+Create the configuration file `configuration.json` also in the web root folder `/var/www/xgb.localhost.redbackup.org/` with following configuration:
+
+[source, json]
+----
+ \include::tutorial-resources/configuration.json[]
+----
+
+All configuration options are documented in the link:INSTALL.md#Configuration[expert installation guide].
+
+
+== That's it!
+
+To access the finished XMPP-Grid Broker setup, start all services and add the client certificate to your browser (in our example setup from `certs/keys/client/admin@openfire/admin@openfire.p12`).

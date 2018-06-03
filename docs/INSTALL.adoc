@@ -1,8 +1,12 @@
-= Installation Guide
+= Expert Installation Guide
 :toc:
 
 
 == Introduction
+
+The expert installation guide is targeted to users, who already have a running XMPP-Grid and would like to extend the Grid by this Broker application.
+
+If you would like to try out a XMPP-Grid, we recommend our link:TUTORIAL.adoc[tutorial with openfire and nginx].
 
 This guide uses the following example URLs and users to illustrate the installation.
 
