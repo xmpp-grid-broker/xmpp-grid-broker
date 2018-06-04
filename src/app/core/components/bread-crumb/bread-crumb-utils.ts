@@ -7,7 +7,8 @@ import {combineLatest} from 'rxjs/observable/combineLatest';
 
 export class BreadCrumbUtils {
   /**
-   * Replace all ":key" occurrences in {@param value}
+   * Creates an {@type OperatorFunction} accepting a map, that replaces all ":key" occurrences in {@param value}
+   * with the map-values.
    */
   public static placeParamsIn(value: string): OperatorFunction<Map<string, string>, string> {
     return map((params: Map<string, string>) => {
@@ -25,20 +26,21 @@ export class BreadCrumbUtils {
   }
 
   /**
-   * Converts a {@type ParamMap} into a real, iterable ${@type Map}
+   * Creates an {@type OperatorFunction} that converts a {@type ParamMap} into an instance of type ${@type Map}.
    */
   private static convertParamMapToMap(): OperatorFunction<ParamMap, Map<string, string>> {
     return map(paramMap => {
-      const realParameterMap = new Map();
+      const mapInstance = new Map();
       for (const key of paramMap.keys) {
-        realParameterMap.set(key, paramMap.get(key));
+        mapInstance.set(key, paramMap.get(key));
       }
-      return realParameterMap;
+      return mapInstance;
     });
   }
 
   /**
-   * Flattens a map array to a single map.
+   * Flattens the given array of maps to a single map.
+   * If a key is used in multiple maps, it will be yielded multiple times as well.
    */
   private static* flatten2dMapIterator<L, R>(maps: Map<L, R>[]): IterableIterator<[L, R]> {
     for (const singleMap of maps) {
@@ -55,7 +57,7 @@ export class BreadCrumbUtils {
   }
 
   /**
-   * Returns the full url with replaced parameters of a {@type ActivatedRoute}
+   * Returns the entire, absolute url with replaced parameters of a {@type ActivatedRoute}
    */
   public static getUrlFromRoute(currentRoute: ActivatedRoute): Observable<string> {
     // filter out root and empty path parts (usually only root route)
@@ -78,7 +80,7 @@ export class BreadCrumbUtils {
   }
 
   /**
-   * Get all url Parameters from a {@type ActivatedRoute}.
+   * returns an observable of a map, that contains all (recursive) url parameters from an {@type ActivatedRoute}.
    */
   public static getAllUrlParameters(currentRoute: ActivatedRoute): Observable<Map<string, string>> {
     // filter out root and empty path parts (usually only root route)
