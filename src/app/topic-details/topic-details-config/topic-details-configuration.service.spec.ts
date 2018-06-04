@@ -1,9 +1,9 @@
-import {LoadConfigurationFormErrorCodes, TopicDetailsConfigurationService} from '..';
-import {XmppService} from '../../core';
+import {TopicDetailsConfigurationService} from '..';
+import {XmppErrorCondition, XmppService} from '../../core';
 import {XmppIqType, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 
 
-describe('TopicDetailsConfigurationService', () => {
+describe(TopicDetailsConfigurationService.name, () => {
 
   let service: TopicDetailsConfigurationService;
   let xmppService: jasmine.SpyObj<XmppService>;
@@ -34,14 +34,14 @@ describe('TopicDetailsConfigurationService', () => {
 
     it('should reject the promise if sendIq fails', (done) => {
       xmppService.executeIqToPubsub.and.returnValue(
-        Promise.reject({condition: LoadConfigurationFormErrorCodes.Forbidden})
+        Promise.reject({condition: XmppErrorCondition.Forbidden})
       );
       service.loadConfigurationForm('testing')
         .then(() => {
           fail('Expected an error instead of a successful result!');
         })
         .catch((error) => {
-          expect(error.condition).toBe(LoadConfigurationFormErrorCodes.Forbidden);
+          expect(error.condition).toBe(XmppErrorCondition.Forbidden);
           done();
         });
     });

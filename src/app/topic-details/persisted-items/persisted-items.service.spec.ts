@@ -1,8 +1,8 @@
 import {PersistedItemsService} from './persisted-items.service';
-import {XmppService} from '../../core';
+import {XmppErrorCondition, XmppService} from '../../core';
 import {XmppIqType, PersistedItem} from '../../core';
 
-describe('PersistedItemsService', () => {
+describe(PersistedItemsService.name, () => {
   let service: PersistedItemsService;
 
   let xmppService: jasmine.SpyObj<XmppService>;
@@ -52,7 +52,7 @@ describe('PersistedItemsService', () => {
         const result = await service.loadPersistedItemContent('test-topic', new PersistedItem('001'));
         fail(`expected an error but got: ${result}`);
       } catch (e) {
-        expect(e.condition).toBe('example-error');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}!');
       }
     });
   });
@@ -159,7 +159,7 @@ describe('PersistedItemsService', () => {
         await service.deletePersistedItem('test-topic', new PersistedItem('001'));
         fail(`expected an error`);
       } catch (e) {
-        expect(e.condition).toBe('example-error');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}!');
       }
     });
   });
@@ -177,14 +177,14 @@ describe('PersistedItemsService', () => {
 
     it('should reject when executeIqToPubsub fails', async () => {
       xmppService.executeIqToPubsub.and.returnValue(Promise.reject(
-        {condition: 'example-error'}
+        {condition: XmppErrorCondition.NotAcceptable}
       ));
 
       try {
         await service.purgePersistedItem('test-topic');
         fail(`expected an error`);
       } catch (e) {
-        expect(e.condition).toBe('example-error');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"not-acceptable"}!');
       }
     });
   });
@@ -210,7 +210,7 @@ describe('PersistedItemsService', () => {
         await service.publishItem('test-topic', '<xml/>');
         fail(`expected an error`);
       } catch (e) {
-        expect(e.condition).toBe('example-error');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}!');
       }
     });
   });

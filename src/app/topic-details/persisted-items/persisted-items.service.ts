@@ -1,22 +1,5 @@
 import {Injectable} from '@angular/core';
-import {XmppService} from '../../core';
-import {PersistedItem, XmppIqType} from '../../core';
-
-export enum LoadPersistedItemsErrors {
-  FeatureNotImplemented = 'feature-not-implemented',
-  NotAuthorized = 'not-authorized',
-  PaymentRequired = 'payment-required',
-  Forbidden = 'forbidden',
-  ItemNotFound = 'item-not-found',
-}
-
-export enum PublishItemErrors {
-  Forbidden = 'forbidden',
-  FeatureNotImplemented = 'feature-not-implemented',
-  ItemNotFound = 'item-not-found',
-  NotAcceptable = 'not-acceptable',
-  BadRequest = 'bad-request'
-}
+import {JxtErrorToXmppError, PersistedItem, XmppErrorCondition, XmppIqType, XmppService} from '../../core';
 
 @Injectable()
 export class PersistedItemsService {
@@ -52,6 +35,18 @@ export class PersistedItemsService {
         const detailedItem = result.pubsub.retrieve.item;
         item.rawXML = detailedItem.rawXML;
         return item;
+      })
+      .catch((error) => {
+        throw JxtErrorToXmppError(error, {
+          [XmppErrorCondition.BadRequest]: 'Both, subscription id and jid are required to load an item',
+          [XmppErrorCondition.Forbidden]: 'You are blocked from retreiving persisted items',
+          [XmppErrorCondition.NotAcceptable]: `The given subscription id ${item.id} is invalid`,
+          [XmppErrorCondition.NotAuthorized]: `You must be subscribed to the topic ${topicIdentifier} to fetch this item`,
+          [XmppErrorCondition.NotAllowed]: `You must be whitelisted to the topic ${topicIdentifier} to fetch this item`,
+          [XmppErrorCondition.PaymentRequired]: 'Payment is required to fetch this item',
+          [XmppErrorCondition.FeatureNotImplemented]: 'Service does not support persisted items or the retrieval of persisted items',
+          [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`
+        });
       });
   }
 
@@ -109,7 +104,15 @@ export class PersistedItemsService {
       }
     };
 
-    return this.xmppService.executeIqToPubsub(detailedCmd);
+    return this.xmppService.executeIqToPubsub(detailedCmd)
+      .catch((error) => {
+        throw JxtErrorToXmppError(error, {
+          [XmppErrorCondition.FeatureNotImplemented]: 'Service does not support persisted items or their deletion',
+          [XmppErrorCondition.Forbidden]: 'You have sufficient privileges delete this item',
+          [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`,
+          [XmppErrorCondition.BadRequest]: 'Topic identifier and item id are required'
+        });
+      });
   }
 
   /**
@@ -123,7 +126,14 @@ export class PersistedItemsService {
       }
     };
 
-    return this.xmppService.executeIqToPubsub(detailedCmd);
+    return this.xmppService.executeIqToPubsub(detailedCmd)
+      .catch((error) => {
+        throw JxtErrorToXmppError(error, {
+          [XmppErrorCondition.FeatureNotImplemented]: 'Service does not support persisted items or purging',
+          [XmppErrorCondition.Forbidden]: 'You have sufficient privileges to purge',
+          [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`
+        });
+      });
   }
 
   public publishItem(topicIdentifier: string, rawXML: string): Promise<void> {
@@ -138,7 +148,16 @@ export class PersistedItemsService {
         }
       }
     };
-    return this.xmppService.executeIqToPubsub(cmd).then(() => {
-    });
+    return this.xmppService.executeIqToPubsub(cmd)
+      .then(() => {
+      }).catch((error) => {
+        throw JxtErrorToXmppError(error, {
+          [XmppErrorCondition.Forbidden]: 'You do not have sufficient privileges to publish to this topic',
+          [XmppErrorCondition.FeatureNotImplemented]: 'Item Publication Not Supported',
+          [XmppErrorCondition.ItemNotFound]: `Topic ${topicIdentifier} does not exist`,
+          [XmppErrorCondition.NotAcceptable]: 'The payload size exceeds a service-defined limit',
+          [XmppErrorCondition.BadRequest]: 'The payload does not match the configured namespace for this topic',
+        });
+      });
   }
 }

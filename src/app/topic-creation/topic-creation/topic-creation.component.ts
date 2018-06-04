@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {TopicCreationErrors, TopicCreationService} from '../topic-creation.service';
-import {NavigationService} from '../../core';
+import {TopicCreationService} from '../topic-creation.service';
+import {ErrorToString, NavigationService} from '../../core';
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
@@ -58,28 +58,11 @@ export class TopicCreationComponent implements OnInit {
     this.creationService.createTopic(this.formGroup.get('nodeID').value, configData)
       .then((topicIdentifier) =>
         this.navigationService.goToTopic(topicIdentifier)
-      ).catch((error) => {
-      this.formGroup.enable();
-      switch (error.condition) {
-        case TopicCreationErrors.FeatureNotImplemented:
-          this.formProcessing.done({errorMessage: 'Service does not support node creation'});
-          break;
-        case TopicCreationErrors.RegistrationRequired:
-          this.formProcessing.done({errorMessage: 'Service requires registration'});
-          break;
-        case TopicCreationErrors.Forbidden:
-          this.formProcessing.done({errorMessage: 'Requesting entity is prohibited from creating nodes'});
-          break;
-        case TopicCreationErrors.Conflict:
-          this.formProcessing.done({errorMessage: 'A topic with the given identifier does already exist'});
-          break;
-        case TopicCreationErrors.NodeIdRequired:
-          this.formProcessing.done({errorMessage: 'Service does not support instant nodes'});
-          break;
-        default:
-          this.formProcessing.done({errorMessage: `Failed to create new topic: ${JSON.stringify(error)}`});
-      }
-    });
+      )
+      .catch((error) => {
+        this.formGroup.enable();
+        this.formProcessing.done({errorMessage: ErrorToString(error)});
+      });
     return false;
   }
 

@@ -63,7 +63,6 @@ describe('TopicListComponent', () => {
 
   it('should show error screen when failed to load topics', fakeAsync(() => {
     component.topicList = new IteratorListPager<Topic>();
-    component.topicList.useErrorMapper((err) => `${err}`);
     component.topicList.useIterator(async function* (): AsyncIterableIterator<Topic> {
       throw new Error('a problem');
     }());

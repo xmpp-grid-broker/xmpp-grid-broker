@@ -4,28 +4,16 @@ import {CurrentTopicDetailService, PersistedItemsComponent, PersistedItemsServic
 import {SharedModule} from '../../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
-import {NotificationService} from '../../../core';
+import {NotificationService, XmppError, XmppErrorCondition} from '../../../core';
 import {LeafTopic, PersistedItem} from '../../../core';
 import {RouterTestingModule} from '@angular/router/testing';
 
-describe('PersistedItemsComponent', () => {
+describe(PersistedItemsComponent.name, () => {
   let component: PersistedItemsComponent;
   let fixture: ComponentFixture<PersistedItemsComponent>;
   let persistedItemsService: jasmine.SpyObj<PersistedItemsService>;
   let notificationService: jasmine.SpyObj<NotificationService>;
   let de: DebugElement;
-
-  const errorMap = [
-    {condition: 'feature-not-implemented', message: 'The XMPP server does not support persisted items or persisted items retrieval'},
-    {
-      condition: 'not-authorized', message: 'You are not authorized to fetch the persisted items. ' +
-      'Check your subscription and the access model of this node'
-    },
-    {condition: 'payment-required', message: 'Payment is required to retrieve items'},
-    {condition: 'forbidden', message: 'You are blocked from retrieving persisted items'},
-    {condition: 'item-not-found', message: 'Node or one of it\'s associated persisted persisted item does not exist'},
-    {condition: 'other', message: 'An unknown error occurred: {"condition":"other"}!'}
-  ];
 
   beforeEach(async(() => {
     persistedItemsService = jasmine.createSpyObj('PersistedItemsService', [
@@ -40,7 +28,7 @@ describe('PersistedItemsComponent', () => {
       declarations: [PersistedItemsComponent],
       imports: [RouterTestingModule, SharedModule],
       providers: [
-        {provide: CurrentTopicDetailService, useValue: currentTopicDetailService },
+        {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
         {provide: PersistedItemsService, useValue: persistedItemsService},
         {provide: NotificationService, useValue: notificationService},
       ]
@@ -101,25 +89,23 @@ describe('PersistedItemsComponent', () => {
     expect(de.queryAll(By.css('button[danger]')).length).toBe(0);
   }));
 
-  errorMap.forEach(({condition, message}) => {
 
-    it(`should render an error when an error occurs while loading (${condition})`, fakeAsync(() => {
-      // return error from server
-      persistedItemsService.persistedItems.and.callFake(function* () {
-        throw {condition};
-      });
+  it('should render an error when an error occurs while loading', fakeAsync(() => {
+    // return error from server
+    persistedItemsService.persistedItems.and.callFake(function* () {
+      throw new XmppError('Error Message', XmppErrorCondition.NotAcceptable);
+    });
 
-      // on init
-      fixture.detectChanges();
-      tick();
+    // on init
+    fixture.detectChanges();
+    tick();
 
-      // Loading complete
-      fixture.detectChanges();
-      tick();
+    // Loading complete
+    fixture.detectChanges();
+    tick();
 
-      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe(message);
-    }));
-  });
+    expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('Error Message');
+  }));
 
   it('should render purge all button when some items are loaded', fakeAsync(() => {
     // return some persisted items
@@ -220,48 +206,46 @@ describe('PersistedItemsComponent', () => {
 
   }));
 
-  errorMap.forEach(({condition, message}) => {
-    it(`should show an error when lazy loading fails (${condition})`, fakeAsync(() => {
-      // return some persisted items
-      persistedItemsService.persistedItems.and.callFake(function* () {
-        yield new PersistedItem('001');
-        yield new PersistedItem('002');
-        yield new PersistedItem('003');
-      });
-      persistedItemsService.loadPersistedItemContent.and.callFake(() => {
-        return Promise.reject({condition});
-      });
+  it('should show an error when lazy loading fails', fakeAsync(() => {
+    // return some persisted items
+    persistedItemsService.persistedItems.and.callFake(function* () {
+      yield new PersistedItem('001');
+      yield new PersistedItem('002');
+      yield new PersistedItem('003');
+    });
+    persistedItemsService.loadPersistedItemContent.and.callFake(() => {
+      return Promise.reject(new XmppError('Error Message', XmppErrorCondition.NotAcceptable));
+    });
 
-      // on init
-      fixture.detectChanges();
-      tick();
+    // on init
+    fixture.detectChanges();
+    tick();
 
-      // Loading complete
-      fixture.detectChanges();
-      tick();
+    // Loading complete
+    fixture.detectChanges();
+    tick();
 
-      // Click on the third header element
-      const secondElementTitle = de.queryAll(By.css('xgb-list-item .item-title'))[2];
-      secondElementTitle.nativeElement.click();
-      fixture.detectChanges();
-      tick();
+    // Click on the third header element
+    const secondElementTitle = de.queryAll(By.css('xgb-list-item .item-title'))[2];
+    secondElementTitle.nativeElement.click();
+    fixture.detectChanges();
+    tick();
 
-      // Spinner should be visible
-      expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
+    // Spinner should be visible
+    expect(de.query(By.css('xgb-spinner')).nativeElement).toBeDefined();
 
-      fixture.detectChanges();
-      tick();
+    fixture.detectChanges();
+    tick();
 
-      // Spinner should be gone
-      expect(de.queryAll(By.css('xgb-spinner')).length).toBe(0);
+    // Spinner should be gone
+    expect(de.queryAll(By.css('xgb-spinner')).length).toBe(0);
 
-      // Error should be visible - but no code element
-      const codeElements = de.queryAll(By.css('xgb-list-item .code'));
-      expect(codeElements.length).toBe(0);
-      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe(message);
+    // Error should be visible - but no code element
+    const codeElements = de.queryAll(By.css('xgb-list-item .code'));
+    expect(codeElements.length).toBe(0);
+    expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('Error Message');
 
-    }));
-  });
+  }));
 
   it('should show an error when lazy loading fails', fakeAsync(() => {
     // yield 25 items
@@ -364,7 +348,7 @@ describe('PersistedItemsComponent', () => {
       fixture.detectChanges();
       tick();
 
-      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('An unknown error occurred: {"condition":"unknown"}!');
+      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('An unknown error has occurred: {"condition":"unknown"}');
 
       expect(notificationService.confirm).toHaveBeenCalledTimes(1);
       expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(2);
@@ -422,7 +406,7 @@ describe('PersistedItemsComponent', () => {
 
       clickPurge();
 
-      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('An unknown error occurred: {"condition":"unknown"}!');
+      expect(de.query(By.css('[toast-error]')).nativeElement.innerHTML).toBe('An unknown error has occurred: {"condition":"unknown"}');
 
       expect(notificationService.confirm).toHaveBeenCalledTimes(1);
       expect(persistedItemsService.persistedItems).toHaveBeenCalledTimes(2);

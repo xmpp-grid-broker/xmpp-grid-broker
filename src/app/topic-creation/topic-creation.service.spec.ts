@@ -1,24 +1,16 @@
-import {TopicCreationErrors, TopicCreationService} from '.';
+import {TopicCreationService} from '.';
+import {XmppIqType, XmppService} from '../core/xmpp';
+import SpyObj = jasmine.SpyObj;
 
 
-describe('TopicCreationService', () => {
+describe(TopicCreationService.name, () => {
 
   let service: TopicCreationService;
-  let client, xmppService;
+  let xmppService: SpyObj<XmppService>;
   beforeEach(() => {
-    client = {
-      createNode: (jid, title, config, cb) => {
-        if (title !== true) {
-          cb(undefined, {});
-        } else {
-          cb(undefined, {pubsub: {create: 'generatedNodeID'}});
-        }
-      }, sendIq: () => {
-      }
-    };
-    xmppService = jasmine.createSpyObj('XmppService', {
-      'getClient': Promise.resolve(client),
-    });
+    xmppService = jasmine.createSpyObj(XmppService.name, [
+      'executeIqToPubsub'
+    ]);
     service = new TopicCreationService(xmppService);
   });
 
@@ -29,77 +21,62 @@ describe('TopicCreationService', () => {
 
   describe('when creating a new topic', () => {
 
-    it('should call `createTopic` on the client', (done) => {
-      spyOn(client, 'createNode').and.callThrough();
-      service.createTopic('testing', null)
-        .then((generatedTopicTitle) => {
-          expect(generatedTopicTitle).toBe('testing');
+    it('should call `xmppService` on the service', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({}));
+      const topicTitle = await service.createTopic('testing', null);
+      await expect(topicTitle).toBe('testing');
 
-          expect(client.createNode).toHaveBeenCalledTimes(1);
-          const args = client.createNode.calls.mostRecent().args;
-
-          expect(args[1]).toBe('testing');
-          expect(Object.keys(args[2]).length).toBe(0);
-
-          done();
-        }).catch((error) => {
-        fail(`Got Error instead of successful result: ${error}`);
-      });
+      await expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      await expect(cmd.type).toBe(XmppIqType.Set);
+      await expect(cmd.pubsub.create).toBe('testing');
     });
 
-    it('should call `createTopic` with `true` if the given value is false', (done) => {
-      spyOn(client, 'createNode').and.callThrough();
-      service.createTopic(null, null)
-        .then((generatedTopicTitle) => {
-          expect(generatedTopicTitle).toBe('generatedNodeID');
-          expect(client.createNode).toHaveBeenCalledTimes(1);
-          const args = client.createNode.calls.mostRecent().args;
-          expect(args[1]).toBe(true);
-          expect(Object.keys(args[2]).length).toBe(0);
-          done();
-        }).catch((error) => {
-        fail(`Got Error instead of successful result: ${error}`);
-      });
+    it('should set `create` to `true` if no topic identifier is provided', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsub: {create: 'generatedNodeID'}}));
+      const topicTitle = await service.createTopic(null, null);
+
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+      await expect(cmd.type).toBe(XmppIqType.Set);
+      await expect(cmd.pubsub.create).toBe(true);
+
     });
 
     it('should return an error object if it fails', (done) => {
-      spyOn(client, 'createNode').and.callFake((jid, title, config, cb) => {
-        cb({error: {condition: 'conflict'}});
-      });
+
+      xmppService.executeIqToPubsub.and.callFake(() => Promise.reject({condition: 'conflict'}));
+
       service.createTopic(null, null)
         .then(() => {
-          fail(`Expected an error instead of a successful result!`);
+          fail('Expected an error instead of a successful result!');
         })
         .catch((error) => {
-          expect(error.condition).toBe(TopicCreationErrors.Conflict);
+          expect(error.message).toBe('Node true does already exists');
           done();
         });
     });
   });
 
   describe('when loading the default configuration', () => {
-    it('should execute an IQ on the client', (done) => {
-      spyOn(client, 'sendIq').and.callFake((cmd, cb) => {
-        expect(cmd.type).toBe('get');
-        expect(cmd.pubsubOwner.default).toBe(true);
-        cb(undefined, {pubsubOwner: {default: {form: {fields: []}}}});
-      });
-      service.loadDefaultConfig()
-        .then(() => {
-          expect(client.sendIq).toHaveBeenCalledTimes(1);
-          done();
-        });
+    it('should execute an IQ on the client', async () => {
+      xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsubOwner: {default: {form: {fields: []}}}}));
+      const config = await service.loadDefaultConfig();
+      expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
+      const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
+
+      expect(cmd.type).toBe(XmppIqType.Get);
+      expect(cmd.pubsubOwner.default).toBe(true);
     });
+
     it('should reject the promise when sendIq fails', (done) => {
-      spyOn(client, 'sendIq').and.callFake((cmd, cb) => {
-        cb({error: {condition: 'not-implemented'}});
-      });
+      xmppService.executeIqToPubsub.and.callFake(() => Promise.reject({condition: 'feature-not-implemented'}));
+
       service.loadDefaultConfig()
         .then(() => {
-          fail(`Expected an error instead of a successful result!`);
+          fail('Expected an error instead of a successful result!');
         })
         .catch((error) => {
-          expect(error.condition).toBe('not-implemented');
+          expect(error.message).toBe('Service does not support node creation or loading the default node configuration');
           done();
         });
     });

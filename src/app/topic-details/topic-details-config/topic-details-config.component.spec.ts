@@ -1,6 +1,14 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {NavigationService, NotificationService} from '../../core';
-import {LeafTopic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
+import {
+  LeafTopic,
+  NavigationService,
+  NotificationService,
+  XmppDataForm,
+  XmppDataFormField,
+  XmppDataFormFieldType,
+  XmppError,
+  XmppErrorCondition
+} from '../../core';
 import {TopicDetailsConfigComponent} from '..';
 import {ToastDirective} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';
@@ -8,11 +16,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
-import {
-  LoadConfigurationFormErrorCodes,
-  TopicDeletionErrorCodes,
-  TopicDetailsConfigurationService
-} from './topic-details-configuration.service';
+import {TopicDetailsConfigurationService} from './topic-details-configuration.service';
 import {CurrentTopicDetailService} from '../';
 import createSpyObj = jasmine.createSpyObj;
 import SpyObj = jasmine.SpyObj;
@@ -56,7 +60,7 @@ class MockTopicDetailsService {
   }
 }
 
-describe('TopicDetailsConfigComponent', () => {
+describe(TopicDetailsConfigComponent.name, () => {
 
   let component: TopicDetailsConfigComponent;
   let fixture: ComponentFixture<TopicDetailsConfigComponent>;
@@ -77,7 +81,7 @@ describe('TopicDetailsConfigComponent', () => {
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],
         declarations: [TopicDetailsConfigComponent],
         providers: [{provide: TopicDetailsConfigurationService, useValue: mockService},
-        {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
+          {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
           {provide: NavigationService, useValue: navigationService},
           {provide: NotificationService, useValue: notificationService}
         ]
@@ -105,29 +109,21 @@ describe('TopicDetailsConfigComponent', () => {
     submitButton = (deBtn) ? deBtn.nativeElement : undefined;
   };
 
-  [
-    {condition: LoadConfigurationFormErrorCodes.Unsupported, message: 'Node configuration is not supported by the XMPP server'},
-    {condition: LoadConfigurationFormErrorCodes.Forbidden, message: 'Insufficient Privileges to configure node testing'},
-    {condition: LoadConfigurationFormErrorCodes.NotAllowed, message: 'There are no configuration options available'},
-    {condition: 'other', message: 'An unknown error occurred: {"condition":"other"}!'},
-  ].forEach(({condition, message}) => {
-    it('should show an error message when loading the for fails', fakeAsync(() => {
-      spyOn(mockService, 'loadConfigurationForm').and.callFake(() => {
-        return Promise.reject({condition});
-      });
-      waitUntilLoaded();
-      const notificationDivs = de.queryAll(By.directive(ToastDirective));
-      expect(notificationDivs.length).toBe(1);
-      expect(notificationDivs[0].nativeElement.innerText).toBe(
-        message
-      );
-      expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
-      expect(submitButton).toBeUndefined();
-    }));
-  });
+  it('should show an error message when loading the configuration form fails', fakeAsync(() => {
+    spyOn(mockService, 'loadConfigurationForm').and.callFake(() => {
+      return Promise.reject(new XmppError('This is an error', XmppErrorCondition.NotAcceptable));
+    });
+    waitUntilLoaded();
+    const notificationDivs = de.queryAll(By.directive(ToastDirective));
+    expect(notificationDivs.length).toBe(1);
+    expect(notificationDivs[0].nativeElement.innerText).toBe(
+      'This is an error'
+    );
+    expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
+    expect(submitButton).toBeUndefined();
+  }));
 
   describe('given some advanced fields', () => {
-
 
     beforeEach(fakeAsync(() => {
       waitUntilLoaded();
@@ -207,7 +203,7 @@ describe('TopicDetailsConfigComponent', () => {
 
     it('should show a confirm dialog when clicking delete', fakeAsync(() => {
       notificationService.confirm.and.returnValue(Promise.resolve(true));
-      const serviceCallSpy = spyOn(mockService, 'deleteTopic').and.callThrough();
+      spyOn(mockService, 'deleteTopic').and.callThrough();
 
       deleteTopicButton.nativeElement.click();
       fixture.detectChanges();
@@ -215,6 +211,7 @@ describe('TopicDetailsConfigComponent', () => {
 
       expect(notificationService.confirm).toHaveBeenCalledTimes(1);
     }));
+
     it('should not call the service and not redirect when delete was not confirmed', fakeAsync(() => {
       notificationService.confirm.and.returnValue(Promise.resolve(false));
       const serviceCallSpy = spyOn(mockService, 'deleteTopic').and.callThrough();
@@ -244,7 +241,7 @@ describe('TopicDetailsConfigComponent', () => {
     it('should not redirect when the delete service method fails', fakeAsync(() => {
       notificationService.confirm.and.returnValue(Promise.resolve(true));
       const serviceCallSpy = spyOn(mockService, 'deleteTopic')
-        .and.returnValue(Promise.reject({condition: TopicDeletionErrorCodes.Forbidden}));
+        .and.returnValue(Promise.reject({condition: XmppErrorCondition.Forbidden}));
 
       deleteTopicButton.nativeElement.click();
       fixture.detectChanges();
@@ -255,28 +252,23 @@ describe('TopicDetailsConfigComponent', () => {
       expect(navigationService.goToHome).toHaveBeenCalledTimes(0);
     }));
 
-    [
-      {condition: TopicDeletionErrorCodes.NotAllowed, message: 'You are not allowed to delete the root node testing!'},
-      {condition: TopicDeletionErrorCodes.Forbidden, message: 'Insufficient Privileges to delete node testing'},
-      {condition: 'other', message: 'An unknown error occurred: {"condition":"other"}!'},
-    ].forEach(({condition, message}) => {
-      it(`should render an error message when the delete service method fails (${condition})`, fakeAsync(() => {
-        notificationService.confirm.and.returnValue(Promise.resolve(true));
-        const serviceCallSpy = spyOn(mockService, 'deleteTopic')
-          .and.returnValue(Promise.reject({condition}));
 
-        deleteTopicButton.nativeElement.click();
-        fixture.detectChanges();
-        tick();
-        fixture.detectChanges();
-        tick();
+    it('should render an error message when the delete service method fails', fakeAsync(() => {
+      notificationService.confirm.and.returnValue(Promise.resolve(true));
+      spyOn(mockService, 'deleteTopic')
+        .and.returnValue(Promise.reject(new XmppError('Error Message', XmppErrorCondition.NotAcceptable)));
 
-        const notificationDivs = de.queryAll(By.directive(ToastDirective));
-        expect(notificationDivs.length).toBe(1);
-        expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
-        expect(notificationDivs[0].nativeElement.innerText).toBe(message);
-      }));
-    });
+      deleteTopicButton.nativeElement.click();
+      fixture.detectChanges();
+      tick();
+      fixture.detectChanges();
+      tick();
+
+      const notificationDivs = de.queryAll(By.directive(ToastDirective));
+      expect(notificationDivs.length).toBe(1);
+      expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
+      expect(notificationDivs[0].nativeElement.innerText).toBe('Error Message');
+    }));
 
   });
 
@@ -293,7 +285,7 @@ describe('TopicDetailsConfigComponent', () => {
 
 
     it('should show a message after success update', fakeAsync(() => {
-      const serviceSpy = spyOn(mockService, 'updateTopicConfiguration').and.callThrough();
+      spyOn(mockService, 'updateTopicConfiguration').and.callThrough();
 
       submitButton.click();
 
@@ -316,9 +308,8 @@ describe('TopicDetailsConfigComponent', () => {
     }));
 
     it('should show a message on error when submission fails', fakeAsync(() => {
-      const serviceSpy = spyOn(mockService, 'updateTopicConfiguration').and.callFake(() => Promise.reject({
-        condition: 'not-acceptable'
-      }));
+      spyOn(mockService, 'updateTopicConfiguration').and.callFake(() =>
+        Promise.reject(new XmppError('Error Message', XmppErrorCondition.NotAcceptable)));
 
       submitButton.click();
 
@@ -336,7 +327,7 @@ describe('TopicDetailsConfigComponent', () => {
       const notificationDivs = de.queryAll(By.directive(ToastDirective));
       expect(notificationDivs.length).toBe(1);
       expect(notificationDivs[0].nativeElement.innerText).toBe(
-        'Failed to update the configuration (Server responded with: {"condition":"not-acceptable"})'
+        'Error Message'
       );
       expect(notificationDivs[0].attributes['toast-error']).toBeDefined();
     }));

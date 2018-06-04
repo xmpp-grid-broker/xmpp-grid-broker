@@ -1,12 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {NavigationService, NotificationService} from '../../core';
-import {Topic, XmppDataForm} from '../../core';
+import {ErrorToString, NavigationService, NotificationService, Topic, XmppDataForm} from '../../core';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
-import {
-  LoadConfigurationFormErrorCodes,
-  TopicDeletionErrorCodes,
-  TopicDetailsConfigurationService
-} from './topic-details-configuration.service';
+import {TopicDetailsConfigurationService} from './topic-details-configuration.service';
 import {FormProcessingStatus} from '../../shared';
 
 @Component({
@@ -52,21 +47,7 @@ export class TopicDetailsConfigComponent implements OnInit {
         this.loadedForm = form;
         this.formProcessing.done();
       })
-      .catch((error) => {
-        switch (error.condition) {
-          case  LoadConfigurationFormErrorCodes.Unsupported:
-            this.formProcessing.done({errorMessage: `Node configuration is not supported by the XMPP server`});
-            break;
-          case  LoadConfigurationFormErrorCodes.Forbidden:
-            this.formProcessing.done({errorMessage: `Insufficient Privileges to configure node ${this.topic.title}`});
-            break;
-          case  LoadConfigurationFormErrorCodes.NotAllowed:
-            this.formProcessing.done({errorMessage: `There are no configuration options available`});
-            break;
-          default:
-            this.formProcessing.done({errorMessage: `An unknown error occurred: ${JSON.stringify(error)}!`});
-        }
-      });
+      .catch((error) => this.formProcessing.done({errorMessage: ErrorToString(error)}));
   }
 
   submit(submittedForm: XmppDataForm): void {
@@ -79,9 +60,7 @@ export class TopicDetailsConfigComponent implements OnInit {
         });
       })
       .catch((error) => {
-        this.formProcessing.done({
-          errorMessage: `Failed to update the configuration (Server responded with: ${JSON.stringify(error)})`
-        });
+        this.formProcessing.done({errorMessage: ErrorToString(error)});
       });
   }
 
@@ -104,20 +83,6 @@ export class TopicDetailsConfigComponent implements OnInit {
       .then(() => {
         this.navigationService.goToHome();
       })
-      .catch((error) => {
-        switch (error.condition) {
-          case  TopicDeletionErrorCodes.ItemNotFound:
-            this.formProcessing.done({errorMessage: `Node with NodeID ${this.topic.title} does not exist!`});
-            break;
-          case  TopicDeletionErrorCodes.Forbidden:
-            this.formProcessing.done({errorMessage: `Insufficient Privileges to delete node ${this.topic.title}`});
-            break;
-          case  TopicDeletionErrorCodes.NotAllowed:
-            this.formProcessing.done({errorMessage: `You are not allowed to delete the root node ${this.topic.title}!`});
-            break;
-          default:
-            this.formProcessing.done({errorMessage: `An unknown error occurred: ${JSON.stringify(error)}!`});
-        }
-      });
+      .catch((error) => this.formProcessing.done({errorMessage: ErrorToString(error)}));
   }
 }

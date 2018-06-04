@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
-import {Affiliation, JidAffiliation, Topic} from '../../core';
-import {NotificationService, XmppService} from '../../core';
+import {Affiliation, ErrorToString, JidAffiliation, NotificationService, Topic, XmppService} from '../../core';
 import {NgForm} from '@angular/forms';
-import {AffiliationManagementErrorCodes, TopicAffiliationsService} from './topic-affiliations.service';
+import {TopicAffiliationsService} from './topic-affiliations.service';
 
 @Component({
   selector: 'xgb-topic-affiliations',
@@ -71,7 +70,9 @@ export class TopicAffiliationsComponent implements OnInit {
         form.reset();
         this.refresh();
       })
-      .catch(this.handleFailedAffiliationAction);
+      .catch(error => {
+        this.errorMessage = ErrorToString(error);
+      });
   }
 
   changeAffiliation(affiliation: JidAffiliation, newAffiliation, selectBox) {
@@ -117,7 +118,9 @@ export class TopicAffiliationsComponent implements OnInit {
       .then(() => {
         this.refresh();
       })
-      .catch(this.handleFailedAffiliationAction);
+      .catch(error => {
+        this.errorMessage = ErrorToString(error);
+      });
   }
 
   private doChangeAffiliation(affiliation: JidAffiliation, newAffiliation) {
@@ -127,7 +130,9 @@ export class TopicAffiliationsComponent implements OnInit {
       .then(() => {
         this.refresh();
       })
-      .catch(this.handleFailedAffiliationAction);
+      .catch(error => {
+        this.errorMessage = ErrorToString(error);
+      });
   }
 
   private refresh() {
@@ -139,24 +144,9 @@ export class TopicAffiliationsComponent implements OnInit {
       })
       .catch((error) => {
         this.isLoaded = true;
-        this.handleFailedAffiliationAction(error);
+        this.errorMessage = ErrorToString(error);
       });
   }
 
-  private handleFailedAffiliationAction(error) {
-    if (error && error.condition) {
-      switch (error.condition) {
-        case AffiliationManagementErrorCodes.Unsupported:
-          this.errorMessage = 'Node or service does not support affiliation management';
-          break;
-        case AffiliationManagementErrorCodes.Forbidden:
-          this.errorMessage = 'You are not allowed to modify the affiliations because you are not owner';
-          break;
-        default:
-          this.errorMessage = `Unknown error "${error.condition}": ${JSON.stringify(error)}`;
-      }
-    } else {
-      this.errorMessage = `Unknown error: ${JSON.stringify(error)}`;
-    }
-  }
+
 }
