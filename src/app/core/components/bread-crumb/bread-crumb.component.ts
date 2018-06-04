@@ -4,9 +4,9 @@ import {XmppService} from '../../xmpp';
 import {ErrorLogService} from '../../errors';
 import {BreadCrumb, BreadCrumbs} from './bread-crumb';
 import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/of';
+import {distinctUntilChanged, filter, map} from 'rxjs/operators';
+import {of} from 'rxjs/observable/of';
+import {BreadCrumbUtils} from './bread-crumb-utils';
 
 @Component({
   selector: 'xgb-bread-crumb',
@@ -22,35 +22,32 @@ export class BreadCrumbComponent {
               private xmppService: XmppService,
               private errorLogService: ErrorLogService) {
     // noinspection SuspiciousInstanceOfGuard
-    this.breadcrumbs = this.router.events
-      .filter(event => event instanceof NavigationEnd)
-      .distinctUntilChanged()
-      .map(() => this.getBreadFromRoute(this.activatedRoute.root));
+    this.breadcrumbs = this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      distinctUntilChanged(),
+      map(() => this.activatedRoute.root),
+      map(route => this.getBreadCrumbs(route))
+    );
   }
 
   /**
    * Reconstructs BreadCrumbs recursively from tree path root
-   *
-   * @param {ActivatedRoute} route The root from where to reconstruct BreadCrumbs
-   * @param {string[]} parentUrlFragments URL fragments of the current path
    */
-  private getBreadFromRoute(route: ActivatedRoute, parentUrlFragments: string[] = []): BreadCrumbs {
-
-    // routeConfig is undefined on the root route
-    const urlFragments = route.routeConfig ? [...parentUrlFragments, route.routeConfig.path] : parentUrlFragments;
-    const url = this.substituteParamStrings(route, urlFragments.join('/'));
+  private getBreadCrumbs(route: ActivatedRoute): BreadCrumbs {
+    const url = BreadCrumbUtils.getUrlFromRoute(route);
 
     // ActiveRoute can only have one child
-    const crumbs = route.firstChild ? this.getBreadFromRoute(route.firstChild, urlFragments) : [];
+    const breadCrumbs = route.firstChild ? this.getBreadCrumbs(route.firstChild) : [];
 
     const isRouteConfigured = route.routeConfig && route.routeConfig.data && route.routeConfig.data['breadcrumb'] !== undefined;
     const crumb: any = isRouteConfigured ? route.routeConfig.data['breadcrumb'] : undefined;
 
     if (route === route.root) {
-      crumbs.unshift(new BreadCrumb(url, Observable.of(this.xmppService.getServerTitle())));
+      breadCrumbs.unshift(new BreadCrumb(url, of(this.xmppService.getServerTitle())));
 
     } else if (crumb && typeof crumb === 'string') {
-      crumbs.unshift(new BreadCrumb(url, this.substituteParamStrings(route, crumb)));
+      const crumbName = BreadCrumbUtils.getAllUrlParameters(route).pipe(BreadCrumbUtils.placeParamsIn(crumb));
+      breadCrumbs.unshift(new BreadCrumb(url, crumbName));
 
     } else if (crumb !== null) {
       this.errorLogService.warn(
@@ -59,19 +56,6 @@ export class BreadCrumbComponent {
       );
     }
 
-    return crumbs;
-  }
-
-  /**
-   * Substitutes all route parameters (e.g. :id) in the string text with the parameter
-   * value of the given route.
-   */
-  private substituteParamStrings(route: ActivatedRoute, text: string): Observable<string> {
-    return route.params.map(params => {
-      for (const paramKey of Object.keys(params)) {
-        text = text.replace(`:${paramKey}`, params[paramKey]);
-      }
-      return text;
-    });
+    return breadCrumbs;
   }
 }
