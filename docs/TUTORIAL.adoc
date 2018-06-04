@@ -1,7 +1,7 @@
-= Tutorial setup with openfire and nginx
+= Tutorial setup with Openfire and nginx
 :toc:
 
-This tutorial guides you through the setup of a XMPP-Grid Broker with an openfire XMPP server and nginx web server.
+This tutorial guides you through the setup of an XMPP-Grid Broker with an Openfire XMPP server and nginx web server.
 
 After this tutorial, your setup will look like the this:
 
@@ -10,34 +10,36 @@ image::tutorial-resources/depoyment_diagram.svg[Deployment Diagram, width=300px]
 
 == Requirements
 
-This guide assumes you are using linux or mac os with the `openssl` binary installed.
+This guide assumes you are using Linux or macOS with the `openssl` binary installed.
 
-Also, we assume you have installed and configured `openfire` and `nginx` to be reachable under following hostnames:
+Also, we assume you have installed and configured http://download.igniterealtime.org/openfire/docs/latest/documentation/install-guide.html[Openfire] and https://www.nginx.com/resources/wiki/start/topics/tutorials/install/[nginx]. In this tutorial, we use the following hostnames. You can replace the hostnames and ports to suit your needs.
 
 |===
 | Application | Hostname
 
 |nginx server |`xgb.localhost.redbackup.org`
-|openfire server |`openfire`
+|Openfire server |`openfire`
 |===
 
-As openfire administration user, which is also used by the XMPP-Grid Broker, this guide assumes `admin`.
+This guide assumes `admin` as Openfire administration user. It will be used by the XMPP-Grid Broker to configure the XMPP server.
 
-== Generate cerficates
+== Generate certificates
 
-This tutorial requires 3 TLS certificates:
+To get started, we need 3 TLS certificates for the following instances:
 
-* Hostname `openfire`
-* Hostname `xgb.localhost.redbackup.org`
-* Client certificate with the `xmppAddr` set to `admin@openfire`.
+* Host `openfire`
+* Host `xgb.localhost.redbackup.org`
+* Client certificate for the user `admin`
+** With the `xmppAddr` set to `admin@openfire` (as specified in https://tools.ietf.org/html/rfc6120[RFC 6120])
 
-We also use a custom certification authority (CA) to sign these certificates. For that purpose, we provide a script which generates the custom CA and all required certificates in this repository.
+We will use a custom certification authority (CA) to sign these certificates. For that purpose, you can use a script which generates the custom CA and all required certificates in this repository.
 
-To generate the certificates run following steps in this repositorys root:
+To generate the certificates run following steps:
 
 [source, bash]
 ----
-cd stack/certs
+git clone git@github.com:xmpp-grid-broker/xmpp-grid-broker.git
+cd xmpp-grid-broker/stack/certs
 rm -r keys # # <1>
 ./generate.bash
 ----
@@ -45,11 +47,11 @@ rm -r keys # # <1>
 
 In this tutorial, we refer to this certificate folder as `certs/`.
 
-If you would like to customise the certificate and CA configuration, you can do so by editing the files in `conf`. Note that the script generates additional certificates which are not required for this tutorial.
+If you would like to customise the certificate and CA configuration, you can do so by editing the files in `conf`. Note that the script generates additional certificates which are not used in this tutorial.
 
-== Setup openfire
+== Setup Openfire
 
-Go to the openfire administration interface under https://openfire:9091/ and add the configuration as described in the following screenshots.
+Go to the Openfire administration interface, in our example setup https://openfire:9091/, and modify configuration as described in the following screenshots.
 
 
 === Enable BOSH
@@ -116,9 +118,9 @@ image::tutorial-resources/openfire_pubsubadmin.png[Openfire PubSub Administartor
 
 == Setup nginx
 
-The first step is to copy the required certificates `certs/keys/host`, `certs/keys/client` as well as the CA public key from `certs/keys/ca-fullchain.pem` to the folder `/etc/certs` on your nginx server.
+The first step is to copy the certificates from `certs/keys/host`, `certs/keys/client` as well as the CA public key from `certs/keys/ca-fullchain.pem` to the folder `/etc/certs` on your nginx server.
 
-Secondly, add following configuration to you nginx setup (usually in `/etc/nginx/`):
+Secondly, add following configuration to your nginx setup, for example in `/etc/nginx/conf.d/xmpp-grid-broker.conf`.
 
 [source]
 ----
@@ -198,7 +200,7 @@ server {
 
 Add the https://github.com/xmpp-grid-broker/xmpp-grid-broker/releases[latest XMPP-Grid Broker release] on the nginx server in the web root folder under `/var/www/xgb.localhost.redbackup.org/`.
 
-Create the configuration file `configuration.json` also in the web root folder `/var/www/xgb.localhost.redbackup.org/` with following configuration:
+Create the configuration file `configuration.json` also in the web root folder `/var/www/xgb.localhost.redbackup.org/` with the following content:
 
 [source, json]
 ----
@@ -210,11 +212,14 @@ Create the configuration file `configuration.json` also in the web root folder `
   }
 }
 ----
+
 All configuration options are documented in the link:INSTALL.md#Configuration[expert installation guide].
 
 
 == That's it!
 
-To finish the XMPP-Grid Broker setup, start all services and add the CA and client certificate to your browser (in our example setup from `certs/keys/ca-fullchain.pem` and `certs/keys/client/admin@openfire/admin@openfire.p12`).
+To finish the XMPP-Grid Broker setup, restart nginx.
 
-Your XMPP-Grid Broker is now available under https://xgb.localhost.redbackup.org/.
+Next, add the CA and client certificate from `certs/keys/ca-fullchain.pem` and `certs/keys/client/admin@openfire/admin@openfire.p12` to your browser.  In Firefox, you can do this in the Preferences under `Privacy & Security` -> `View-Certificates` in the tab `Your Certificates` (client certificate) and `Authorities` (CA) respectively.
+
+The XMPP-Grid Broker application is now available under https://xgb.localhost.redbackup.org/.
