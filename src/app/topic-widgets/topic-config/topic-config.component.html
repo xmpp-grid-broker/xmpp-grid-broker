@@ -24,7 +24,7 @@
            xgbFormInput
            formControlName="pubsub#title"
            id="title"
-           placeholder="Enter Topic / Collection"
+           [placeholder]="'Enter ' + (!topic? 'Topic / Collection' : topic.isCollection()? 'Collection' : 'Topic') + ' Title'"
     >
   </xgb-form-field>
 
