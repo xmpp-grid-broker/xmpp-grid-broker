@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationService} from '../../core';
-import {Topic} from '../../models';
+import {Topic} from '../../core';
 import {ActivatedRoute} from '@angular/router';
 import {IteratorListPager} from '../../shared';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';

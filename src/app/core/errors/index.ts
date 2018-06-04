@@ -1,2 +1,3 @@
 export * from './error-log.service';
-export * from './error-utils';
+export * from './log-level';
+export * from './global-error-handler.service';

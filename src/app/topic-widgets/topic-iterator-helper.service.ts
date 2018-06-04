@@ -1,9 +1,9 @@
 import {XmppService} from '../core';
-import {CollectionTopic, XmppIqType, Topic} from '../models';
+import {CollectionTopic, XmppIqType, Topic} from '../core';
 import {Injectable} from '@angular/core';
 
 /**
- * This service provides commonly used functionallity
+ * This service provides commonly used functionality
  * to iterate (recursively) trough all children or parent
  * topics/collections (of a given topic).
  */

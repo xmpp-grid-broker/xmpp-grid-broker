@@ -3,7 +3,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 import {AffiliationManagementErrorCodes, CurrentTopicDetailService, TopicAffiliationsComponent, TopicAffiliationsService} from '..';
 import {SharedModule} from '../../shared/shared.module';
 import {DebugElement} from '@angular/core';
-import {Affiliation, JidAffiliation, LeafTopic} from '../../models';
+import {Affiliation, JidAffiliation, LeafTopic} from '../../core';
 import {NotificationService, XmppService} from '../../core';
 import {FormsModule} from '@angular/forms';
 

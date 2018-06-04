@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Subscription, Topic} from '../../../models';
+import {Subscription, Topic} from '../../../core';
 import {ErrorLogService, ErrorToString, NavigationService} from '../../../core';
 import {CurrentTopicDetailService} from '../../current-topic-detail.service';
 import {TopicSubscriptionService} from '../topic-subscription.service';

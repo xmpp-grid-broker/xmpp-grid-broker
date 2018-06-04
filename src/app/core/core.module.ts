@@ -1,33 +1,55 @@
 import {ErrorHandler, NgModule, Optional, SkipSelf} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
+import {RouterModule} from '@angular/router';
 import {
   AlertNotificationComponent,
-  ConfigService,
+  BreadCrumbComponent,
+  ConfigLoaderService,
   ConfirmNotificationComponent,
   ErrorLogService,
   ErrorPageComponent,
+  FeatureDetectionGuardService,
+  FeatureService,
   GlobalErrorHandlerService,
   HeaderComponent,
   NavigationService,
   NotificationService,
   XmppClientFactory,
-  XmppFeatureGuardService,
-  XmppFeatureService,
   XmppService
 } from '.';
-import {RouterModule} from '@angular/router';
 
+const EXPORTED_DECLARATIONS = [
+  HeaderComponent,
+  BreadCrumbComponent,
+  AlertNotificationComponent,
+  ConfirmNotificationComponent
+];
 
 @NgModule({
   imports: [CommonModule, RouterModule, HttpClientModule],
-  declarations: [HeaderComponent, ErrorPageComponent, AlertNotificationComponent, ConfirmNotificationComponent],
-  exports: [HeaderComponent, AlertNotificationComponent, ConfirmNotificationComponent],
-  entryComponents: [AlertNotificationComponent, ConfirmNotificationComponent],
+  declarations: [
+    ...EXPORTED_DECLARATIONS,
+    ErrorPageComponent
+  ],
+  exports: [
+    ...EXPORTED_DECLARATIONS
+  ],
+  entryComponents: [
+    AlertNotificationComponent,
+    ConfirmNotificationComponent
+  ],
   providers: [
     {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
-    NotificationService, NavigationService, XmppService, XmppClientFactory, XmppFeatureService, XmppFeatureGuardService,
-    ConfigService, ErrorLogService]
+    NotificationService,
+    NavigationService,
+    XmppService,
+    XmppClientFactory,
+    FeatureService,
+    FeatureDetectionGuardService,
+    ConfigLoaderService,
+    ErrorLogService
+  ]
 })
 export class CoreModule {
   constructor(@Optional() @SkipSelf() parentModule: CoreModule) {

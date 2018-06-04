@@ -3,7 +3,7 @@ import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
 import {NotificationService} from '../notifications';
 import {RawXmlStanzaAddOn} from './raw-xml-stanza';
-import {XmppConfig} from '../../models';
+import {XmppConfig} from '../config';
 
 enum XmppConnectionState {
   Down = 0,
@@ -163,9 +163,9 @@ export class XmppService {
    * connection to be available.
    */
   private connect(): void {
-      if (this._state === XmppConnectionState.Down) {
-        this._state = XmppConnectionState.Connecting;
-        this._client.connect();
-      }
+    if (this._state === XmppConnectionState.Down) {
+      this._state = XmppConnectionState.Connecting;
+      this._client.connect();
+    }
   }
 }

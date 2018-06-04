@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {XmppService} from '../../core';
-import {PersistedItem, XmppIqType} from '../../models';
+import {PersistedItem, XmppIqType} from '../../core';
 
 export enum LoadPersistedItemsErrors {
   FeatureNotImplemented = 'feature-not-implemented',

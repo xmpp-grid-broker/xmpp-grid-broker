@@ -3,7 +3,6 @@ import {CommonModule} from '@angular/common';
 import {
   ActionBarComponent,
   ActionButtonDirective,
-  BreadCrumbComponent,
   CollapsibleComponent,
   FormDirective,
   FormFieldComponent,
@@ -37,8 +36,7 @@ const EXPORTED_DECLARATIONS = [
   FormFieldComponent,
   SpinnerComponent,
   CollapsibleComponent,
-  NoDuplicatesAllowedDirective,
-  BreadCrumbComponent
+  NoDuplicatesAllowedDirective
 ];
 
 @NgModule({

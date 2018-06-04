@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
-import {Affiliation, JidAffiliation, Topic} from '../../models';
+import {Affiliation, JidAffiliation, Topic} from '../../core';
 import {NotificationService, XmppService} from '../../core';
 import {NgForm} from '@angular/forms';
 import {AffiliationManagementErrorCodes, TopicAffiliationsService} from './topic-affiliations.service';

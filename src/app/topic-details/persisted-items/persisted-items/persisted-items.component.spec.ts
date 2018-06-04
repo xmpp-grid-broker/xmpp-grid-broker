@@ -5,7 +5,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
 import {NotificationService} from '../../../core';
-import {LeafTopic, PersistedItem} from '../../../models';
+import {LeafTopic, PersistedItem} from '../../../core';
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe('PersistedItemsComponent', () => {
@@ -18,7 +18,7 @@ describe('PersistedItemsComponent', () => {
   const errorMap = [
     {condition: 'feature-not-implemented', message: 'The XMPP server does not support persisted items or persisted items retrieval'},
     {
-      condition: 'not-authorized', message: 'You are not authorized to fetch the persited items. ' +
+      condition: 'not-authorized', message: 'You are not authorized to fetch the persisted items. ' +
       'Check your subscription and the access model of this node'
     },
     {condition: 'payment-required', message: 'Payment is required to retrieve items'},

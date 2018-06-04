@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {XmppService} from '../../core';
-import {XmppDataForm, XmppIqType} from '../../models';
+import {XmppDataForm, XmppIqType} from '../../core';
 
 export enum LoadConfigurationFormErrorCodes {
   ItemNotFound = 'item-not-found',

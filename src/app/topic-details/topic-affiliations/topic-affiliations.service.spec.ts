@@ -1,6 +1,6 @@
 import {JID} from 'xmpp-jid';
 import {TopicAffiliationsService} from './topic-affiliations.service';
-import {Affiliation, XmppIqType, JidAffiliation} from '../../models';
+import {Affiliation, XmppIqType, JidAffiliation} from '../../core';
 import {XmppService} from '../../core';
 
 

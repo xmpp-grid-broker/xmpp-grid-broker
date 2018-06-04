@@ -47,13 +47,13 @@ export class IteratorListPager<T> {
   }
 
   private async loadNextPage(): Promise<T[]> {
-    const unresolvedItrs = [];
+    const unresolvedIterators = [];
     for (let i = 0; i < this.PAGE_SIZE; i++) {
-      unresolvedItrs.push(this.iterator.next());
+      unresolvedIterators.push(this.iterator.next());
     }
     const result = [];
-    const resolvedItrs = await Promise.all(unresolvedItrs);
-    for (const next of resolvedItrs) {
+    const resolvedIterators = await Promise.all(unresolvedIterators);
+    for (const next of resolvedIterators) {
       if (next.done) {
         this.hasMore = false;
         break;

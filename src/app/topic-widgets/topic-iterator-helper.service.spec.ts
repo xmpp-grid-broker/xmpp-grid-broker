@@ -2,7 +2,7 @@ import createSpyObj = jasmine.createSpyObj;
 import SpyObj = jasmine.SpyObj;
 import {TopicIteratorHelperService} from '.';
 import {XmppService} from '../core';
-import {LeafTopic} from '../models';
+import {LeafTopic} from '../core';
 
 describe(TopicIteratorHelperService.name, () => {
 

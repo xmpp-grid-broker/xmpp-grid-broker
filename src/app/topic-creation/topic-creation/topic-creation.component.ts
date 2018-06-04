@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TopicCreationErrors, TopicCreationService} from '../topic-creation.service';
 import {NavigationService} from '../../core';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {FormProcessingStatus} from '../../shared';
@@ -84,8 +84,7 @@ export class TopicCreationComponent implements OnInit {
   }
 
   private removeNodeTypeFromForm(form: XmppDataForm) {
-    const fields = form.fields;
-    return new XmppDataForm(fields.filter((field: XmppDataFormField) =>
+    return new XmppDataForm(form.fields.filter((field: XmppDataFormField) =>
       field.name !== 'pubsub#node_type'
     ));
   }

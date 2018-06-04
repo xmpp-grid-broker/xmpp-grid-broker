@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationService, NotificationService} from '../../core';
-import {Topic, XmppDataForm} from '../../models';
+import {Topic, XmppDataForm} from '../../core';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
 import {
   LoadConfigurationFormErrorCodes,

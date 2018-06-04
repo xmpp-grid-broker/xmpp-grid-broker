@@ -1,6 +1,6 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {NavigationService, NotificationService} from '../../core';
-import {LeafTopic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../models';
+import {LeafTopic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {TopicDetailsConfigComponent} from '..';
 import {ToastDirective} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';

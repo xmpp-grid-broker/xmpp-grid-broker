@@ -11,7 +11,7 @@ import {
   TopicDetailsConfigComponent,
   TopicSubscriptionComponent
 } from '.';
-import {XmppFeatureGuardService as XmppFeatureGuard} from '../core';
+import {FeatureDetectionGuardService as XmppFeatureGuard} from '../core';
 
 
 const routes: Routes = [

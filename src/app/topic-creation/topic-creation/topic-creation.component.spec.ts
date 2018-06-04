@@ -5,7 +5,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {TopicCreationComponent, TopicCreationErrors, TopicCreationService} from '..';
 import {NavigationService} from '../../core';
-import {XmppDataForm} from '../../models';
+import {XmppDataForm} from '../../core';
 import {DebugElement} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';

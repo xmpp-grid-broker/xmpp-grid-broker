@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ModifySubscriptionComponent, TopicSubscriptionService} from '..';
 import {SharedModule} from '../../../shared/shared.module';
 import {ErrorLogService, NavigationService} from '../../../core';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppError} from '../../../models';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppError} from '../../../core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../../topic-widgets/topic-widgets.module';
 
@@ -29,7 +29,7 @@ describe('ModifySubscriptionComponent', () => {
         {provide: NavigationService, useValue: navigationService},
         {
           provide: ActivatedRoute, useValue: {
-            snapshot: {params: {subId: 'testsub', jid: 'eva@example'}},
+            snapshot: {params: {subId: 'testSubscriptionId', jid: 'eva@example'}},
             parent: {snapshot: {params: {id: 'testing'}}}
           }
         },
@@ -97,7 +97,7 @@ describe('ModifySubscriptionComponent', () => {
     waitUntilLoaded();
 
     const subIdField = el.querySelector('#subId') as HTMLInputElement;
-    expect(subIdField.value).toBe('testsub');
+    expect(subIdField.value).toBe('testSubscriptionId');
     expect(subIdField.disabled).toBeTruthy();
 
   }));
@@ -128,7 +128,7 @@ describe('ModifySubscriptionComponent', () => {
     tick();
 
     expect(service.updateConfiguration).toHaveBeenCalledTimes(1);
-    expect(service.updateConfiguration).toHaveBeenCalledWith('testing', 'eva@example', 'testsub', new XmppDataForm([]));
+    expect(service.updateConfiguration).toHaveBeenCalledWith('testing', 'eva@example', 'testSubscriptionId', new XmppDataForm([]));
 
   }));
 

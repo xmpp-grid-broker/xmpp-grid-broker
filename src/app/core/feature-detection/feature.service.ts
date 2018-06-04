@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {ErrorLogService} from '../errors/';
-import {XmppService} from '../xmpp/';
-import {XmppIqType} from '../../models/';
+import {XmppIqType, XmppService} from '../xmpp/';
 
 @Injectable()
-export class XmppFeatureService {
+export class FeatureService {
   static readonly REQUIRED_PUBSUB_FEATURES = [
     'access-open', 'collections', 'config-node', 'create-and-configure', 'create-nodes', 'delete-nodes', 'get-pending', 'instant-nodes',
     'item-ids', 'meta-data', 'modify-affiliations', 'manage-subscriptions', 'multi-subscribe', 'outcast-affiliation', 'persistent-items',
@@ -22,7 +21,7 @@ export class XmppFeatureService {
    * If all required features are present, the list is empty
    */
   public getMissingRequiredFeatures(): Promise<string[]> {
-    return this.checkFeatures('pubsub', XmppFeatureService.REQUIRED_PUBSUB_FEATURES);
+    return this.checkFeatures('pubsub', FeatureService.REQUIRED_PUBSUB_FEATURES);
   }
 
   /**

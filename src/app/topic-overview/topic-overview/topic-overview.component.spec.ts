@@ -6,7 +6,7 @@ import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
 import {NavigationService, XmppService} from '../../core';
-import {LeafTopic} from '../../models';
+import {LeafTopic} from '../../core';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
 

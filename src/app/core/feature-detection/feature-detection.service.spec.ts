@@ -1,17 +1,17 @@
 import {XmppService} from '../xmpp/';
-import {ErrorLogService} from '../errors/index';
-import {XmppFeatureService} from './xmpp-feature.service';
+import {ErrorLogService} from '../errors/';
+import {FeatureService} from './feature.service';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
 
 
-describe(XmppFeatureService.name, () => {
-  let service: XmppFeatureService;
+describe(FeatureService.name, () => {
+  let service: FeatureService;
   let errorLogService: jasmine.SpyObj<ErrorLogService>;
 
   const PUBSUB_IQ_DISCOVERY_RESULT = {
     discoInfo: {
-      features: XmppFeatureService.REQUIRED_PUBSUB_FEATURES
+      features: FeatureService.REQUIRED_PUBSUB_FEATURES
         .map(feature => `http://jabber.org/protocol/pubsub#${feature}`)
     }
   };
@@ -23,7 +23,7 @@ describe(XmppFeatureService.name, () => {
     xmppService = createSpyObj(XmppService.name, ['executeIqToPubsub', 'getServerTitle']);
     xmppService.getServerTitle.and.returnValue('openfire');
     errorLogService = jasmine.createSpyObj(ErrorLogService.name, ['warn']);
-    service = new XmppFeatureService(xmppService, errorLogService);
+    service = new FeatureService(xmppService, errorLogService);
   });
 
   it('should detect a supported feature', done => {
