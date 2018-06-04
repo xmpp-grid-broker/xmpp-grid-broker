@@ -93,7 +93,7 @@ describe(BreadCrumbComponent.name, () => {
     expect(errorLogService.warn).toHaveBeenCalledTimes(0);
   }));
 
-  it('should substitute multiple parameter values', fakeAsync(() => {
+  it('should substitute multiple parameter values in the label', fakeAsync(() => {
     router.navigateByUrl('topics/details/12/subscription/xyz');
     waitUntilLoaded();
 
@@ -103,6 +103,19 @@ describe(BreadCrumbComponent.name, () => {
     expect(breadcrumbs[1].innerHTML.trim()).toBe('Topic 12');
     expect(breadcrumbs[2].innerHTML.trim()).toBe('Subscription xyz');
   }));
+
+
+  it('should substitute multiple parameter values in the url', fakeAsync(() => {
+    router.navigateByUrl('topics/details/12/subscription/xyz');
+    waitUntilLoaded();
+
+    const breadcrumbs = el.querySelectorAll('.breadcrumb-item > a');
+    expect(breadcrumbs.length).toBe(3);
+    expect(breadcrumbs[0]['href'].endsWith('/')).toBe(true);
+    expect(breadcrumbs[1]['href'].endsWith('/topics/details/12')).toBe(true);
+    expect(breadcrumbs[2]['href'].endsWith('/topics/details/12/subscription/xyz')).toBe(true);
+  }));
+
   it('should report a warning if a breadcrumb value is undefined', fakeAsync(() => {
     router.navigateByUrl('topics/details/123/undef');
     waitUntilLoaded();
