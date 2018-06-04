@@ -1,12 +1,16 @@
-= Installation Guide
+= Expert Installation Guide
 :toc:
 
 
 == Introduction
 
-This guide uses the following example URLs and users to illustrate the installation.
+The expert installation guide is targeted to users, who have already set up an XMPP-Grid and want to configure it using this broker application.
+
+For new users, we recommend our link:TUTORIAL.adoc[tutorial with Openfire and nginx].
 
 === URLs
+
+This guide uses the following example URLs and users to illustrate the installation.
 
 |===
 |XMPP-Grid Broker hosting server |`xgb.example.com`
@@ -49,7 +53,7 @@ A minimal configuration example can be found in this repository under link:../st
 === Configuration Options
 
 * `xmpp`: Object containing the XMPP server connection configuration.
-** `server`: the address of the xmpp server to connect to, e.g. `xmpp.example.com`
+** `server`: the xmpp server domain, e.g. `xmpp.example.com`
 ** `boshURL`: BOSH-Endpoint URL, e.g. `https://bosh.example.com/http-bind`
 ** `wsURL`: WebSocket-Endpoint URL, e.g. `wss://bosh.example.com/ws`
 ** `transport`: Should be the string `bosh` for a BOSH endpoint or `websocket` for a WebSocket endpoint.
