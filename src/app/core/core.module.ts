@@ -5,7 +5,7 @@ import {RouterModule} from '@angular/router';
 import {
   AlertNotificationComponent,
   BreadCrumbComponent,
-  ConfigLoaderService,
+  ConfigService,
   ConfirmNotificationComponent,
   ErrorLogService,
   ErrorPageComponent,
@@ -47,7 +47,7 @@ const EXPORTED_DECLARATIONS = [
     XmppClientFactory,
     FeatureService,
     FeatureDetectionGuardService,
-    ConfigLoaderService,
+    ConfigService,
     ErrorLogService
   ]
 })

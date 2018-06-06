@@ -51,7 +51,8 @@ export class XmppConfig {
 }
 
 export class Config {
-  constructor(readonly xmpp: XmppConfig) {}
+  constructor(readonly xmpp: XmppConfig, readonly pageSize: number) {
+  }
 
   /**
    * Build a Config from untyped json Object.
@@ -66,6 +67,6 @@ export class Config {
       }
     }
 
-    return new Config(XmppConfig.fromJson(json.xmpp));
+    return new Config(XmppConfig.fromJson(json.xmpp), json.pageSize || 10);
   }
 }

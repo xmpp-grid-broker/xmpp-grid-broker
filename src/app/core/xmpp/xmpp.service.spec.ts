@@ -18,7 +18,7 @@ describe(XmppService.name, () => {
     notificationService = createSpyObj(NotificationService.name, ['alert']);
 
     const xmppConfig = new XmppConfig('openfire', XmppTransport.Bosh, undefined, 'localhost');
-    const config = new Config(xmppConfig);
+    const config = new Config(xmppConfig, 10);
 
     service = new XmppService(xmppClientFactory, notificationService);
     service.initialize(config);
