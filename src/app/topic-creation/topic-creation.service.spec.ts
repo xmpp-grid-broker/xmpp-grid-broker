@@ -1,5 +1,5 @@
-import {XmppIqType, XmppService} from '../core/xmpp';
 import {TopicCreationService} from '.';
+import {XmppIqType, XmppService} from '../core/xmpp';
 
 
 describe(TopicCreationService.name, () => {

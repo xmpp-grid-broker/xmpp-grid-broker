@@ -6,6 +6,18 @@ import {Topic} from '../xmpp';
 @Injectable()
 export class NavigationService {
 
+  constructor(private router: Router) {
+  }
+
+  private static topicUrl(topic: string | Topic): string {
+    // The topic title might contain a "/" character, so prior URI encoding is required.
+    if (topic instanceof Topic) {
+      return `/topics/details/${encodeURIComponent(topic.title)}`;
+    } else {
+      return `/topics/details/${encodeURIComponent(topic)}`;
+    }
+  }
+
   public goToUrl(url: string): void {
     // noinspection JSIgnoredPromiseFromCall
     this.router.navigateByUrl(url);
@@ -39,21 +51,8 @@ export class NavigationService {
     this.goToUrl(`${NavigationService.topicUrl(topic)}/items`);
   }
 
-  private static topicUrl(topic: string | Topic): string {
-    // The topic title might contain a "/" character, so prior URI encoding is required.
-    if (topic instanceof Topic) {
-      return `/topics/details/${encodeURIComponent(topic.title)}`;
-    } else {
-      return `/topics/details/${encodeURIComponent(topic)}`;
-    }
-  }
-
   public goToHome(): void {
     this.goToUrl('/');
-  }
-
-
-  constructor(private router: Router) {
   }
 
 
