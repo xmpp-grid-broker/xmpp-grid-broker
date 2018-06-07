@@ -1,8 +1,12 @@
-import {UrlAddressableComponent} from './urlAddressableComponent';
 import {by, ElementFinder} from 'protractor';
 import {Locatable} from './locatable';
+import {UrlAddressableComponent} from './urlAddressableComponent';
 
 export abstract class Tab extends UrlAddressableComponent implements Locatable {
+
+  protected constructor(public parentElement: Locatable) {
+    super();
+  }
 
   abstract get linkText(): string;
 
@@ -16,9 +20,5 @@ export abstract class Tab extends UrlAddressableComponent implements Locatable {
 
   get linkElement(): ElementFinder {
     return this.tabBarLocator.element(by.linkText(this.linkText));
-  }
-
-  protected constructor(public parentElement: Locatable) {
-    super();
   }
 }

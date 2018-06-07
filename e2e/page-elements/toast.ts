@@ -1,6 +1,6 @@
-import {Locatable} from './locatable';
 import {browser, by, ElementArrayFinder, ElementFinder, ExpectedConditions} from 'protractor';
 import {toPromise} from '../helpers';
+import {Locatable} from './locatable';
 
 export class ToastContent {
   constructor(
@@ -11,6 +11,9 @@ export class ToastContent {
 }
 
 export class Toast implements Locatable {
+
+  constructor(public parentElement: Locatable) {
+  }
 
   get locator(): ElementFinder {
     return this.parentElement.locator;
@@ -31,9 +34,6 @@ export class Toast implements Locatable {
         const success = await this.elementHasClass(toastElement, 'toast-success');
         return new ToastContent(text, success);
       })));
-  }
-
-  constructor(public parentElement: Locatable) {
   }
 
   private elementHasClass(element: ElementFinder, cls: string): Promise<boolean> {

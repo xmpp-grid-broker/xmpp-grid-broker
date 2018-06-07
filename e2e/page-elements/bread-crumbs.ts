@@ -3,6 +3,9 @@ import {Locatable} from './locatable';
 
 export class BreadCrumbs implements Locatable {
 
+  constructor(readonly parentElement: Locatable) {
+  }
+
   get locator(): ElementFinder {
     return this.parentElement.locator.element(by.tagName('xgb-bread-crumb'));
   }
@@ -19,8 +22,5 @@ export class BreadCrumbs implements Locatable {
   async length(): Promise<number> {
     const list = await this.crumbElements;
     return list.length;
-  }
-
-  constructor(readonly parentElement: Locatable) {
   }
 }

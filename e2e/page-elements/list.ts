@@ -3,6 +3,9 @@ import {Locatable} from './locatable';
 
 export class List implements Locatable {
 
+  constructor(readonly parentElement: Locatable) {
+  }
+
   get locator(): ElementFinder {
     return this.parentElement.locator.element(by.tagName('xgb-list'));
   }
@@ -19,8 +22,5 @@ export class List implements Locatable {
   async length(): Promise<number> {
     const list = await this.listElements;
     return list.length;
-  }
-
-  constructor(readonly parentElement: Locatable) {
   }
 }
