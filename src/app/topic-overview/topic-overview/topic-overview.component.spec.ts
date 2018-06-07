@@ -7,20 +7,18 @@ import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
 import {Config, ConfigService, NavigationService, XmppService} from '../../core';
 import {LeafTopic} from '../../core';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
 
 describe(TopicOverviewComponent.name, () => {
 
   let component: TopicOverviewComponent;
   let fixture: ComponentFixture<TopicOverviewComponent>;
   let de: HTMLElement;
-  let mockTopicOverviewService: SpyObj<TopicOverviewService>;
-  let mockXmppService: SpyObj<XmppService>;
+  let mockTopicOverviewService: jasmine.SpyObj<TopicOverviewService>;
+  let mockXmppService: jasmine.SpyObj<XmppService>;
 
   function setup(route: string) {
-    mockTopicOverviewService = createSpyObj('TopicOverviewService', ['rootTopics', 'allTopics', 'allCollections']);
-    mockXmppService = createSpyObj('XmppService', ['getServerTitle']);
+    mockTopicOverviewService = jasmine.createSpyObj('TopicOverviewService', ['rootTopics', 'allTopics', 'allCollections']);
+    mockXmppService = jasmine.createSpyObj('XmppService', ['getServerTitle']);
 
     mockXmppService.getServerTitle.and.returnValue('xmpp.hsr.ch');
 

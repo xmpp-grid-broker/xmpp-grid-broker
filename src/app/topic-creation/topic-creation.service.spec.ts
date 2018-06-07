@@ -1,12 +1,11 @@
 import {TopicCreationService} from '.';
 import {XmppIqType, XmppService} from '../core/xmpp';
-import SpyObj = jasmine.SpyObj;
 
 
 describe(TopicCreationService.name, () => {
 
   let service: TopicCreationService;
-  let xmppService: SpyObj<XmppService>;
+  let xmppService: jasmine.SpyObj<XmppService>;
   beforeEach(() => {
     xmppService = jasmine.createSpyObj(XmppService.name, [
       'executeIqToPubsub'

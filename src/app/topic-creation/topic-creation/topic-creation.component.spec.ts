@@ -8,16 +8,14 @@ import {NavigationService, XmppError, XmppErrorCondition} from '../../core';
 import {DebugElement} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
 
 describe(TopicCreationComponent.name, () => {
 
   let component: TopicCreationComponent;
   let fixture: ComponentFixture<TopicCreationComponent>;
   let de: DebugElement;
-  let topicCreationService: SpyObj<TopicCreationService>;
-  let navigationService: SpyObj<NavigationService>;
+  let topicCreationService: jasmine.SpyObj<TopicCreationService>;
+  let navigationService: jasmine.SpyObj<NavigationService>;
 
   const waitUntilLoaded = () => {
     fixture.detectChanges();
@@ -28,8 +26,8 @@ describe(TopicCreationComponent.name, () => {
 
 
   beforeEach(fakeAsync(() => {
-      topicCreationService = createSpyObj(TopicCreationService.name, ['loadDefaultConfig', 'createTopic']);
-      navigationService = createSpyObj(NavigationService.name, ['goToTopic']);
+      topicCreationService = jasmine.createSpyObj(TopicCreationService.name, ['loadDefaultConfig', 'createTopic']);
+      navigationService = jasmine.createSpyObj(NavigationService.name, ['goToTopic']);
 
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],

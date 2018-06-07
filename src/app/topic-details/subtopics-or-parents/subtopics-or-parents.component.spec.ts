@@ -6,7 +6,6 @@ import {CollectionTopic, Config, ConfigService, Topic} from '../../core';
 import {NavigationService} from '../../core';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {IteratorListPager} from '../../shared';
-import createSpyObj = jasmine.createSpyObj;
 
 
 describe(SubtopicsOrParentsComponent.name, () => {
@@ -24,9 +23,9 @@ describe(SubtopicsOrParentsComponent.name, () => {
       }
     };
 
-    navigationService = createSpyObj(NavigationService.name, ['goToTopic']);
-    service = createSpyObj(SubtopicsOrParentsService.name, ['subtopics', 'parents']);
-    detailsService = createSpyObj(CurrentTopicDetailService.name, ['currentTopic']);
+    navigationService = jasmine.createSpyObj(NavigationService.name, ['goToTopic']);
+    service = jasmine.createSpyObj(SubtopicsOrParentsService.name, ['subtopics', 'parents']);
+    detailsService = jasmine.createSpyObj(CurrentTopicDetailService.name, ['currentTopic']);
     const configService = jasmine.createSpyObj(ConfigService.name, ['getConfig']);
     configService.getConfig.and.returnValue(new Config(undefined, 10));
 

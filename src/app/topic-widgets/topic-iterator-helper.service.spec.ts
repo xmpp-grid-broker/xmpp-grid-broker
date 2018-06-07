@@ -1,16 +1,14 @@
-import createSpyObj = jasmine.createSpyObj;
-import SpyObj = jasmine.SpyObj;
 import {TopicIteratorHelperService} from '.';
 import {XmppService} from '../core';
 import {LeafTopic} from '../core';
 
 describe(TopicIteratorHelperService.name, () => {
 
-  let xmppService: SpyObj<XmppService>;
+  let xmppService: jasmine.SpyObj<XmppService>;
   let service: TopicIteratorHelperService;
 
   beforeEach(() => {
-    xmppService = createSpyObj('XmppService', ['executeIqToPubsub']);
+    xmppService = jasmine.createSpyObj('XmppService', ['executeIqToPubsub']);
     service = new TopicIteratorHelperService(xmppService);
 
     xmppService.executeIqToPubsub.and.callFake((cmd) => {
