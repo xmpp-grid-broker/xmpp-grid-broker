@@ -1,13 +1,15 @@
+import {DebugElement} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {ToastDirective} from '../../shared';
-import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
+import {By} from '@angular/platform-browser';
+import {ActivatedRoute} from '@angular/router';
+
 import {TopicCreationComponent, TopicCreationService} from '..';
 import {NavigationService, XmppError, XmppErrorCondition} from '../../core';
-import {DebugElement} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {By} from '@angular/platform-browser';
+import {ToastDirective} from '../../shared';
+
+import {SharedModule} from '../../shared/shared.module';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 
 describe(TopicCreationComponent.name, () => {
 
