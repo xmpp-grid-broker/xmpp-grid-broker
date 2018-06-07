@@ -27,9 +27,6 @@ export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key:
 
 /**
  * Safely converts the given error into a human readable error.
- *
- * @param error
- * @constructor
  */
 export function ErrorToString(error: any): string {
   if (error instanceof XmppError) {

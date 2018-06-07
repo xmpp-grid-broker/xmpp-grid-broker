@@ -5,6 +5,9 @@ import {ConfigService} from '../config/';
 import {NotificationService} from '../notifications/';
 import {FeatureService} from './feature.service';
 
+/**
+ * Angular Guard that loads the config and verifies all required features are present.
+ */
 @Injectable()
 export class FeatureDetectionGuardService implements CanActivate {
   // noinspection TypeScriptFieldCanBeMadeReadonly

@@ -1,5 +1,5 @@
 /**
- * All possible Xmpp error conditions used in xep-0060.
+ * All possible XMPP error conditions used in xep-0060.
  */
 export enum XmppErrorCondition {
   BadRequest = 'bad-request',

@@ -1,5 +1,5 @@
 /**
- * Represents the state of a subscription.
+ * Represents the state of a subscription as defied in xep-0060.
  */
 export enum SubscriptionState {
   // noinspection JSUnusedGlobalSymbols

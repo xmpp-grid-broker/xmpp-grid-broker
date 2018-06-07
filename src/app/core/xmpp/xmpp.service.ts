@@ -45,6 +45,12 @@ export class XmppService {
               private notificationService: NotificationService) {
   }
 
+  /**
+   * Must be called before any other method is called.
+   * The config is required but is lazily loaded.
+   *
+   * Using promises instead would made the handling quite complicated.
+   */
   public initialize(config) {
     this._config = config.xmpp;
     this._client = this._getClientInstance(this._config);

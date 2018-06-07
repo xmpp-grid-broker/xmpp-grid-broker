@@ -3,6 +3,11 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../../environments';
 import {LogLevel} from './log-level';
 
+/**
+ * This service is intended to be used instead of
+ * `console.log` to improve it's testability and control
+ * the log level.
+ */
 @Injectable()
 export class ErrorLogService {
   readonly logLevel: LogLevel;

@@ -3,6 +3,11 @@ import {Router} from '@angular/router';
 
 import {Topic} from '../xmpp';
 
+/**
+ * Service used to navigate.
+ * This is the preferred way of navigating as this makes
+ * changes to urls in the future much simpler.
+ */
 @Injectable()
 export class NavigationService {
 

@@ -2,6 +2,9 @@ export abstract class Topic {
   protected constructor(public title: string) {
   }
 
+  /**
+   * Creates a new topic from the discovery info as received by stanza.
+   */
   static fromDiscoInfo(discoInfo: any): Topic {
     const topicTitle = discoInfo.node;
     const topicType = discoInfo.identities[0]['type'];

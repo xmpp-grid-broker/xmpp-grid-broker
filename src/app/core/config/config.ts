@@ -1,8 +1,16 @@
+/**
+ * Possible XMPP transports supported by stanza.
+ */
 export enum XmppTransport {
   Bosh = 'bosh',
   WebSocket = 'websocket'
 }
 
+/**
+ * XMPP specific configuration. Will be passed
+ * directly into stanza.io.
+ * More configuration options can be found in the stanza documentation.
+ */
 export class XmppConfig {
   // noinspection JSUnusedGlobalSymbols
   constructor(
@@ -22,9 +30,7 @@ export class XmppConfig {
   }
 
   /**
-   * Build a XmppConfig from untyped json Object.
-   * @param json
-   * @returns {XmppConfig}
+   * Creates a typed {@type XmppConfig} object from untyped json object.
    */
   static fromJson(json: any): XmppConfig {
     const requiredFieldNames = ['transport', 'server'];
@@ -51,14 +57,15 @@ export class XmppConfig {
   }
 }
 
+/**
+ * Main configuration object for the broker application.
+ */
 export class Config {
   constructor(readonly xmpp: XmppConfig, readonly pageSize: number) {
   }
 
   /**
-   * Build a Config from untyped json Object.
-   * @param json
-   * @returns {Config}
+   * Creates a typed {@type Config} object from a plain json object.
    */
   static fromJson(json: any): Config {
     const requiredFieldNames = ['xmpp'];
