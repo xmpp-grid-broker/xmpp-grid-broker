@@ -76,7 +76,6 @@ describe(SubtopicsOrParentsComponent.name, () => {
   }));
 
   it('should redirect when topic is clicked', fakeAsync(() => {
-    const iteratorSpy = spyOn(pager, 'useIterator').and.callThrough();
     detailsService.currentTopic.and.returnValue(new CollectionTopic('testing'));
     service.parents.and.callFake(async function* () {
       yield new CollectionTopic('coll1');

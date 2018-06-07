@@ -33,7 +33,7 @@ describe(TopicCreationService.name, () => {
 
     it('should set `create` to `true` if no topic identifier is provided', async () => {
       xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsub: {create: 'generatedNodeID'}}));
-      const topicTitle = await service.createTopic(null, null);
+      await service.createTopic(null, null);
 
       const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
       await expect(cmd.type).toBe(XmppIqType.Set);
@@ -59,7 +59,7 @@ describe(TopicCreationService.name, () => {
   describe('when loading the default configuration', () => {
     it('should execute an IQ on the client', async () => {
       xmppService.executeIqToPubsub.and.returnValue(Promise.resolve({pubsubOwner: {default: {form: {fields: []}}}}));
-      const config = await service.loadDefaultConfig();
+      await service.loadDefaultConfig();
       expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(1);
       const cmd = xmppService.executeIqToPubsub.calls.mostRecent().args[0];
 

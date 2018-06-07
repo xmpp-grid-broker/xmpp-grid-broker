@@ -40,7 +40,7 @@ export class PersistedItemsService {
       .catch((error) => {
         throw JxtErrorToXmppError(error, {
           [XmppErrorCondition.BadRequest]: 'Both, subscription id and jid are required to load an item',
-          [XmppErrorCondition.Forbidden]: 'You are blocked from retreiving persisted items',
+          [XmppErrorCondition.Forbidden]: 'You are blocked from retrieving persisted items',
           [XmppErrorCondition.NotAcceptable]: `The given subscription id ${item.id} is invalid`,
           [XmppErrorCondition.NotAuthorized]: `You must be subscribed to the topic ${topicIdentifier} to fetch this item`,
           [XmppErrorCondition.NotAllowed]: `You must be whitelisted to the topic ${topicIdentifier} to fetch this item`,

@@ -143,7 +143,7 @@ export class TopicSubscriptionService {
       }
     };
     return this.xmppService.executeIqToPubsub(cmd)
-      .then((result) => {
+      .then(() => {
         }
       ).catch((err) => {
         throw JxtErrorToXmppError(err, {

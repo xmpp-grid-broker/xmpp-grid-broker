@@ -3,12 +3,6 @@ import {Injectable} from '@angular/core';
 import {JidAffiliation, JxtErrorToXmppError, XmppErrorCondition, XmppIqType} from '../../core';
 import {XmppService} from '../../core/xmpp';
 
-export enum AffiliationManagementErrorCodes {
-  ItemNotFound = 'item-not-found',
-  Unsupported = 'unsupported',
-  Forbidden = 'forbidden'
-}
-
 @Injectable()
 export class TopicAffiliationsService {
   constructor(private xmppService: XmppService) {

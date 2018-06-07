@@ -49,12 +49,13 @@ class MockTopicDetailsService {
     ]));
   }
 
-  // noinspection JSMethodCanBeStatic, JSMethodCanBeStatic
-  updateTopicConfiguration(identifier, form): Promise<XmppDataForm> {
+  // noinspection JSMethodCanBeStatic
+  updateTopicConfiguration(): Promise<XmppDataForm> {
     return this.loadConfigurationForm();
   }
 
-  deleteTopic(topicIdentifier: string): Promise<void> {
+  // noinspection JSMethodCanBeStatic
+  deleteTopic(): Promise<void> {
     return Promise.resolve();
   }
 }
