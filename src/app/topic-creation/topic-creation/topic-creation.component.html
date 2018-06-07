@@ -13,6 +13,7 @@
                   fieldHelp="The unique identifier for a node within the context of a pubsub service. If left empty and the server supports instant nodes, the identifier is automatically generated.">
     <input type="text"
            xgbFormInput
+           xgbSetFocus
            formControlName="nodeID"
            id="nodeID"
            [placeholder]="'Enter ' + (isNewCollection ? 'Collection': 'Topic') + ' identifier'"

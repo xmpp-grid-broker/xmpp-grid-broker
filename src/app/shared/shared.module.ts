@@ -16,7 +16,8 @@ import {
   SpinnerComponent,
   TabComponent,
   TabsComponent,
-  ToastDirective
+  ToastDirective,
+  SetFocusDirective
 } from '.';
 import {RouterModule} from '@angular/router';
 
@@ -36,7 +37,8 @@ const EXPORTED_DECLARATIONS = [
   FormFieldComponent,
   SpinnerComponent,
   CollapsibleComponent,
-  NoDuplicatesAllowedDirective
+  NoDuplicatesAllowedDirective,
+  SetFocusDirective
 ];
 
 @NgModule({
