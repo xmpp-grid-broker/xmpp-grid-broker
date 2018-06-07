@@ -1,4 +1,10 @@
+import {DebugElement} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
+
+import {TopicDetailsConfigComponent} from '..';
+import {CurrentTopicDetailService} from '../';
 import {
   LeafTopic,
   NavigationService,
@@ -9,15 +15,10 @@ import {
   XmppError,
   XmppErrorCondition
 } from '../../core';
-import {TopicDetailsConfigComponent} from '..';
 import {ToastDirective} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
 import {TopicDetailsConfigurationService} from './topic-details-configuration.service';
-import {CurrentTopicDetailService} from '../';
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,

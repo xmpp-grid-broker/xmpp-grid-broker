@@ -1,6 +1,5 @@
 import {TopicDetailsConfigurationService} from '..';
-import {XmppErrorCondition, XmppService} from '../../core';
-import {XmppIqType, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppErrorCondition, XmppIqType, XmppService} from '../../core';
 
 
 describe(TopicDetailsConfigurationService.name, () => {

@@ -25,7 +25,7 @@ describe(SubtopicsOrParentsService.name, () => {
       service.subtopics('topicName');
 
       expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledTimes(1);
-      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith( 'topicName', true);
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith('topicName', true);
     });
   });
 
@@ -43,7 +43,7 @@ describe(SubtopicsOrParentsService.name, () => {
       service.parents('topicName');
 
       expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledTimes(1);
-      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledWith( 'topicName', true);
+      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledWith('topicName', true);
     });
   });
 });

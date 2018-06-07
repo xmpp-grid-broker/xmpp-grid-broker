@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {NgForm} from '@angular/forms';
-import {TopicSubscriptionService} from '../topic-subscription.service';
+import {ActivatedRoute} from '@angular/router';
+
 import {ErrorLogService, ErrorToString, NavigationService} from '../../../core';
+import {TopicSubscriptionService} from '../topic-subscription.service';
 
 @Component({
   selector: 'xgb-new-topic-subscription',

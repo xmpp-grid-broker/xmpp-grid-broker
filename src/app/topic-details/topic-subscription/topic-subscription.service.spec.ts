@@ -1,7 +1,15 @@
-import {TopicSubscriptionService} from '..';
-import {XmppService} from '../../core';
-import {Subscription, SubscriptionState, XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppErrorCondition} from '../../core';
 import {JID} from 'xmpp-jid';
+
+import {TopicSubscriptionService} from '..';
+import {
+  Subscription,
+  SubscriptionState,
+  XmppDataForm,
+  XmppDataFormField,
+  XmppDataFormFieldType,
+  XmppErrorCondition,
+  XmppService
+} from '../../core';
 
 describe(TopicSubscriptionService.name, () => {
   let service: TopicSubscriptionService;

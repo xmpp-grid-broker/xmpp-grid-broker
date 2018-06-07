@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {JxtErrorToXmppError, XmppService} from '../../core';
-import {Subscription, XmppDataForm, XmppErrorCondition, XmppIqType} from '../../core';
 
+import {JxtErrorToXmppError, Subscription, XmppDataForm, XmppErrorCondition, XmppIqType, XmppService} from '../../core';
 
 @Injectable()
 export class TopicSubscriptionService {
@@ -53,7 +52,8 @@ export class TopicSubscriptionService {
       }
     };
     return this.xmppService.executeIqToPubsub(cmd)
-      .then(() => {})
+      .then(() => {
+      })
       .catch((err) => {
         throw JxtErrorToXmppError(err, {
             [XmppErrorCondition.BadRequest]: `You are not allowed to subscribe ${jid} to ${topicIdentifier}`,
@@ -88,7 +88,8 @@ export class TopicSubscriptionService {
       }
     };
     return this.xmppService.executeIqToPubsub(cmd)
-      .then(() => {})
+      .then(() => {
+      })
       .catch((err) => {
         throw JxtErrorToXmppError(err, {
             [XmppErrorCondition.BadRequest]: `The subscription id ${subscription.subid} is invalid!`,

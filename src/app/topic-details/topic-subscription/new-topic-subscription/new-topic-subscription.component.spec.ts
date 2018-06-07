@@ -1,12 +1,11 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-
+import {FormsModule} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+
 import {TopicSubscriptionService} from '..';
+import {ErrorLogService, NavigationService, XmppError, XmppErrorCondition} from '../../../core';
 import {SharedModule} from '../../../shared/shared.module';
 import {NewTopicSubscriptionComponent} from './new-topic-subscription.component';
-import {FormsModule} from '@angular/forms';
-import {ErrorLogService, NavigationService} from '../../../core';
-import {XmppError, XmppErrorCondition} from '../../../core';
 
 describe(NewTopicSubscriptionComponent.name, () => {
   let component: NewTopicSubscriptionComponent;

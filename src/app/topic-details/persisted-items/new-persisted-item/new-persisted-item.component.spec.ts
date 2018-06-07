@@ -1,13 +1,13 @@
+import {DebugElement} from '@angular/core';
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-
-import {NewPersistedItemComponent} from './new-persisted-item.component';
-import {PersistedItemsService} from '../persisted-items.service';
 import {FormsModule} from '@angular/forms';
-import {SharedModule} from '../../../shared/shared.module';
+import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import {NavigationService, XmppError, XmppErrorCondition} from '../../../core';
-import {DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
+import {SharedModule} from '../../../shared/shared.module';
+import {PersistedItemsService} from '../persisted-items.service';
+import {NewPersistedItemComponent} from './new-persisted-item.component';
+
 
 describe(NewPersistedItemComponent.name, () => {
   let component: NewPersistedItemComponent;

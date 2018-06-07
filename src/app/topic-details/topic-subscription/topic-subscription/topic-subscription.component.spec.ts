@@ -1,9 +1,8 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {CurrentTopicDetailService, TopicSubscriptionComponent, TopicSubscriptionService} from '../..';
+import {ErrorLogService, LeafTopic, NavigationService, Subscription, SubscriptionState, XmppError} from '../../../core';
 import {SharedModule} from '../../../shared/shared.module';
-import {LeafTopic, Subscription, SubscriptionState, XmppError} from '../../../core';
-import {ErrorLogService, NavigationService} from '../../../core';
 
 describe(TopicSubscriptionComponent.name, () => {
   let component: TopicSubscriptionComponent;

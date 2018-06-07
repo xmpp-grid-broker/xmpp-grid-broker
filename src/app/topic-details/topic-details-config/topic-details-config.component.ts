@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
+
 import {ErrorToString, NavigationService, NotificationService, Topic, XmppDataForm} from '../../core';
+import {FormProcessingStatus} from '../../shared';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
 import {TopicDetailsConfigurationService} from './topic-details-configuration.service';
-import {FormProcessingStatus} from '../../shared';
 
 @Component({
   selector: 'xgb-topic-details-config',

@@ -1,6 +1,5 @@
-import {XmppService} from '../core';
-import {XmppIqType} from '../core';
 import {CurrentTopicDetailService} from '.';
+import {XmppIqType, XmppService} from '../core';
 
 describe(CurrentTopicDetailService.name, () => {
 

@@ -11,7 +11,9 @@
   <xgb-list>
     <xgb-list-item *ngFor="let item of persistedItemsPager.items">
       <div class="item-title" (click)="itemClicked(item)">{{item.id}}</div>
-      <xgb-list-action><button xgbActionButton (click)="removeItem(item)">remove</button></xgb-list-action>
+      <xgb-list-action>
+        <button xgbActionButton (click)="removeItem(item)">remove</button>
+      </xgb-list-action>
       <xgb-list-body *ngIf="toggleMap[item.id]">
         <div *ngIf="item.rawXML; else itemSpinner">
           <pre class="code">{{item.rawXML}}</pre>

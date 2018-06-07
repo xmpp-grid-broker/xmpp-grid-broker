@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+
 import {JxtErrorToXmppError, PersistedItem, XmppErrorCondition, XmppIqType, XmppService} from '../../core';
 
 @Injectable()
