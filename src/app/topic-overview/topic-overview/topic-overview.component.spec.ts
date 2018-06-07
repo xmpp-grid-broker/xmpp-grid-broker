@@ -1,12 +1,12 @@
-import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
-import {RouterTestingModule} from '@angular/router/testing';
-import {TopicOverviewComponent, TopicOverviewService} from '..';
-import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {SharedModule} from '../../shared/shared.module';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
-import {Config, ConfigService, NavigationService, XmppService} from '../../core';
-import {LeafTopic} from '../../core';
+import {RouterTestingModule} from '@angular/router/testing';
+
+import {TopicOverviewComponent, TopicOverviewService} from '..';
+import {Config, ConfigService, LeafTopic, NavigationService, XmppService} from '../../core';
+
+import {SharedModule} from '../../shared/shared.module';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 
 describe(TopicOverviewComponent.name, () => {
 
