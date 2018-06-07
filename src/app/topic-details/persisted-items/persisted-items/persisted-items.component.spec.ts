@@ -4,8 +4,7 @@ import {CurrentTopicDetailService, PersistedItemsComponent, PersistedItemsServic
 import {SharedModule} from '../../../shared/shared.module';
 import {By} from '@angular/platform-browser';
 import {DebugElement} from '@angular/core';
-import {NotificationService, XmppError, XmppErrorCondition} from '../../../core';
-import {LeafTopic, PersistedItem} from '../../../core';
+import {Config, ConfigService, LeafTopic, NotificationService, PersistedItem, XmppError, XmppErrorCondition} from '../../../core';
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe(PersistedItemsComponent.name, () => {
@@ -24,6 +23,10 @@ describe(PersistedItemsComponent.name, () => {
     notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
     const currentTopicDetailService = jasmine.createSpyObj('CurrentTopicDetailService', ['currentTopic']);
     currentTopicDetailService.currentTopic.and.returnValue(new LeafTopic('testing'));
+
+    const configService = jasmine.createSpyObj(ConfigService.name, ['getConfig']);
+    configService.getConfig.and.returnValue(new Config(undefined, 10));
+
     TestBed.configureTestingModule({
       declarations: [PersistedItemsComponent],
       imports: [RouterTestingModule, SharedModule],
@@ -31,6 +34,7 @@ describe(PersistedItemsComponent.name, () => {
         {provide: CurrentTopicDetailService, useValue: currentTopicDetailService},
         {provide: PersistedItemsService, useValue: persistedItemsService},
         {provide: NotificationService, useValue: notificationService},
+        {provide: ConfigService, useValue: configService},
       ]
     });
   }));

@@ -104,22 +104,22 @@ describe(PersistedItemsService.name, () => {
 
     it('should fetch all items using paging (rsm)', async () => {
 
-      // Generate 25 fake results
+      // Generate 125 fake results
       const items = [];
-      for (let i = 1; i <= 25; i++) {
+      for (let i = 1; i <= 125; i++) {
         items.push({name: `item ${i}`});
       }
 
       // setup the executeIqToPubsub to return them in tranches of 10
       xmppService.executeIqToPubsub.and.returnValues(
-        createDiscoItemsResponse(items, 0, 10),
-        createDiscoItemsResponse(items, 10, 20),
-        createDiscoItemsResponse(items, 20, 25)
+        createDiscoItemsResponse(items, 0, 50),
+        createDiscoItemsResponse(items, 50, 100),
+        createDiscoItemsResponse(items, 100, 125)
       );
 
       // Verify that the service yields them all in a sequence
       const iterator = service.persistedItems('test-topic');
-      for (let i = 1; i <= 25; i++) {
+      for (let i = 1; i <= 125; i++) {
         expect((await iterator.next()).value.id).toBe(`item ${i}`);
       }
       expect((await iterator.next()).done).toBeTruthy();
@@ -127,14 +127,14 @@ describe(PersistedItemsService.name, () => {
       // verify calls rsm calls are correct
       expect(xmppService.executeIqToPubsub).toHaveBeenCalledTimes(3);
       let args = xmppService.executeIqToPubsub.calls.argsFor(0);
-      await expect(args[0].discoItems.rsm.max).toBe(10);
+      await expect(args[0].discoItems.rsm.max).toBe(50);
       await expect(args[0].discoItems.rsm.after).toBe(undefined);
       args = xmppService.executeIqToPubsub.calls.argsFor(1);
-      await expect(args[0].discoItems.rsm.max).toBe(10);
-      await expect(args[0].discoItems.rsm.after).toBe('item 10');
+      await expect(args[0].discoItems.rsm.max).toBe(50);
+      await expect(args[0].discoItems.rsm.after).toBe('item 50');
       args = xmppService.executeIqToPubsub.calls.argsFor(2);
-      await expect(args[0].discoItems.rsm.max).toBe(10);
-      await expect(args[0].discoItems.rsm.after).toBe('item 20');
+      await expect(args[0].discoItems.rsm.max).toBe(50);
+      await expect(args[0].discoItems.rsm.after).toBe('item 100');
     });
   });
   describe('when calling loadPersistedItemContent', () => {
