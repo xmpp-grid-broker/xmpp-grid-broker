@@ -4,6 +4,6 @@ import {Component} from '@angular/core';
   selector: 'xgb-list-action',
   template: '<ng-content></ng-content>'
 })
-export class ListActionComponent  {
+export class ListActionComponent {
 
 }

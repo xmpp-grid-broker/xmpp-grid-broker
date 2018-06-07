@@ -1,4 +1,5 @@
 import {Component, ContentChildren, QueryList} from '@angular/core';
+
 import {TabComponent} from './tab.component';
 
 @Component({
@@ -11,7 +12,7 @@ import {TabComponent} from './tab.component';
     </ul>
   `
 })
-export class TabsComponent  {
+export class TabsComponent {
 
   @ContentChildren(TabComponent) tabs: QueryList<TabComponent>;
 
