@@ -7,7 +7,7 @@ export class PersistedItemsService {
    * The number of items to fetch at a time from
    * the xmpp server (result management page size).
    */
-  private PAGE_SIZE = 10;
+  private PAGE_SIZE = 50;
 
   constructor(private xmppService: XmppService) {
   }

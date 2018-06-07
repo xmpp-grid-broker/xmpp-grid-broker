@@ -10,7 +10,7 @@ import {Injectable} from '@angular/core';
 @Injectable()
 export class TopicIteratorHelperService {
   // The internally used page size, meaning how many nodes to load at a time using result set management
-  private readonly PAGE_SIZE = 10;
+  private readonly PAGE_SIZE = 50;
 
   constructor(private xmppService: XmppService) {
   }

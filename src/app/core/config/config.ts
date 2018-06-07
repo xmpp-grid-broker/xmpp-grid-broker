@@ -67,6 +67,6 @@ export class Config {
       }
     }
 
-    return new Config(XmppConfig.fromJson(json.xmpp), json.pageSize || 10);
+    return new Config(XmppConfig.fromJson(json.xmpp), json.pageSize || 20);
   }
 }

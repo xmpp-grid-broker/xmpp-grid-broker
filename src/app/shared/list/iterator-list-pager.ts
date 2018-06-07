@@ -15,8 +15,9 @@ export class IteratorListPager<T> {
 
   private iterator: AsyncIterableIterator<T>;
   private errorHandler: (error: any) => string;
-  private readonly PAGE_SIZE = 10;
 
+  constructor(private readonly PAGE_SIZE: number) {
+  }
 
   public useIterator(iterator: AsyncIterableIterator<T>): Promise<void> {
     this.iterator = iterator;

@@ -8,7 +8,7 @@
     </div>
   </xgb-list>
   <xgb-spinner *ngIf="!topicList.hasError && !topicList.isLoaded"></xgb-spinner>
-  <div *ngIf="topicList.hasMore" style="text-align: center;">
+  <div *ngIf="topicList.hasMore" class="has-more">
     <button xgbActionButton (click)="topicList.loadMore()">load more</button>
   </div>
 </ng-container>

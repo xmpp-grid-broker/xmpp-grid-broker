@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NavigationService} from '../../core';
+import {ConfigService, NavigationService, PersistedItem} from '../../core';
 import {Topic} from '../../core';
 import {ActivatedRoute} from '@angular/router';
 import {IteratorListPager} from '../../shared';
@@ -12,21 +12,23 @@ import {SubtopicsOrParentsService} from './subtopics-or-parents.service';
 })
 export class SubtopicsOrParentsComponent implements OnInit {
 
-  iterator = new IteratorListPager<Topic>();
+  topicPager: IteratorListPager<Topic>;
   topic: Topic;
 
   constructor(private route: ActivatedRoute,
               private navigationService: NavigationService,
               private service: SubtopicsOrParentsService,
-              private detailsService: CurrentTopicDetailService) {
+              private detailsService: CurrentTopicDetailService,
+              configService: ConfigService) {
+    this.topicPager = new IteratorListPager<Topic>(configService.getConfig().pageSize);
   }
 
   ngOnInit() {
     this.topic = this.detailsService.currentTopic();
     if (this.route.snapshot.data.subtopics) {
-      this.iterator.useIterator(this.service.subtopics(this.topic.title));
+      this.topicPager.useIterator(this.service.subtopics(this.topic.title));
     } else {
-      this.iterator.useIterator(this.service.parents(this.topic.title));
+      this.topicPager.useIterator(this.service.parents(this.topic.title));
     }
 
   }
