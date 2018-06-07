@@ -4,7 +4,7 @@ import {JidMultiComponent} from '..';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 
-describe('JidMultiComponent', () => {
+describe(JidMultiComponent.name, () => {
   let component: JidMultiComponent;
   let fixture: ComponentFixture<JidMultiComponent>;
 

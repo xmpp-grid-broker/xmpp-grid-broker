@@ -5,7 +5,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {LeafTopic, Subscription, SubscriptionState, XmppError} from '../../../core';
 import {ErrorLogService, NavigationService} from '../../../core';
 
-describe('TopicSubscriptionComponent', () => {
+describe(TopicSubscriptionComponent.name, () => {
   let component: TopicSubscriptionComponent;
   let fixture: ComponentFixture<TopicSubscriptionComponent>;
   let el: HTMLElement;

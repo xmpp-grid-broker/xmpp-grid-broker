@@ -2,7 +2,7 @@ import {XmppService} from '../core';
 import {XmppIqType} from '../core';
 import {CurrentTopicDetailService} from '.';
 
-describe('CurrentTopicDetailService', () => {
+describe(CurrentTopicDetailService.name, () => {
 
   let service: CurrentTopicDetailService;
   let xmppService: jasmine.SpyObj<XmppService>;

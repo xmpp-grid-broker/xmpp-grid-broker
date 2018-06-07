@@ -5,7 +5,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {XmppDataFormFieldType} from '../../core';
 
-describe('TopicChooserComponent', () => {
+describe(TopicChooserComponent.name, () => {
   let component: TopicChooserComponent;
   let fixture: ComponentFixture<TopicChooserComponent>;
 

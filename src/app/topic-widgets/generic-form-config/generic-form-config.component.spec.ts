@@ -59,7 +59,7 @@ const TEST_FIELD_JID_SINGLE = new XmppDataFormField(
   'The address (JID) of the subscriber'
 );
 
-describe('GenericFormConfigComponent', () => {
+describe(GenericFormConfigComponent.name, () => {
 
   let component: GenericFormConfigComponent;
   let fixture: ComponentFixture<GenericFormConfigComponent>;

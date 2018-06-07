@@ -6,7 +6,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {LeafTopic, Topic} from '../../core';
 
 
-describe('TopicListComponent', () => {
+describe(TopicListComponent.name, () => {
 
   let component: TopicListComponent;
   let fixture: ComponentFixture<TopicListComponent>;

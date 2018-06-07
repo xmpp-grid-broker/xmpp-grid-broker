@@ -8,7 +8,7 @@ import {FormsModule} from '@angular/forms';
 import {ErrorLogService, NavigationService} from '../../../core';
 import {XmppError, XmppErrorCondition} from '../../../core';
 
-describe('NewTopicSubscriptionComponent', () => {
+describe(NewTopicSubscriptionComponent.name, () => {
   let component: NewTopicSubscriptionComponent;
   let fixture: ComponentFixture<NewTopicSubscriptionComponent>;
   let el: HTMLElement;

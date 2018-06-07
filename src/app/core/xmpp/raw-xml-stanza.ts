@@ -21,8 +21,7 @@ export function RawXmlStanzaAddOn(_, JXT) {
   };
 
 
-  JXT.withPubsubItem(function (Item) {
-
+  JXT.withPubsubItem((Item) => {
     JXT.add(Item, 'rawXML', XMLExtension);
   });
 }

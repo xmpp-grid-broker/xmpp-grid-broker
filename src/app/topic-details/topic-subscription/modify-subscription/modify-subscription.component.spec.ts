@@ -8,7 +8,7 @@ import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppError} from 
 import {ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../../topic-widgets/topic-widgets.module';
 
-describe('ModifySubscriptionComponent', () => {
+describe(ModifySubscriptionComponent.name, () => {
   let component: ModifySubscriptionComponent;
   let fixture: ComponentFixture<ModifySubscriptionComponent>;
   let el: HTMLElement;

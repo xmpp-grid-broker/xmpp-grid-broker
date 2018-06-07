@@ -3,7 +3,7 @@ import {XmppService} from '../../core';
 import {Subscription, SubscriptionState, XmppDataForm, XmppDataFormField, XmppDataFormFieldType, XmppErrorCondition} from '../../core';
 import {JID} from 'xmpp-jid';
 
-describe('TopicSubscriptionService', () => {
+describe(TopicSubscriptionService.name, () => {
   let service: TopicSubscriptionService;
 
   let xmppService: jasmine.SpyObj<XmppService>;

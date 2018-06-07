@@ -10,7 +10,7 @@ import {LeafTopic} from '../../core';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
 
-describe('TopicOverviewComponent', () => {
+describe(TopicOverviewComponent.name, () => {
 
   let component: TopicOverviewComponent;
   let fixture: ComponentFixture<TopicOverviewComponent>;
@@ -48,7 +48,7 @@ describe('TopicOverviewComponent', () => {
   }
 
 
-  describe('given /topics/root as path ', function () {
+  describe('given /topics/root as path ', () => {
     beforeEach(() => {
       setup('root');
       mockTopicOverviewService.rootTopics.and.callFake(function* () {
@@ -74,7 +74,7 @@ describe('TopicOverviewComponent', () => {
 
   });
 
-  describe('given /topics/all as path', function () {
+  describe('given /topics/all as path', () => {
     beforeEach(() => {
       setup('all');
       mockTopicOverviewService.rootTopics.and.callFake(function* () {
@@ -87,7 +87,7 @@ describe('TopicOverviewComponent', () => {
     }));
   });
 
-  describe('given /topics/collections as path', function () {
+  describe('given /topics/collections as path', () => {
     beforeEach(() => {
       setup('collections');
       mockTopicOverviewService.allCollections.and.callFake(function* () {

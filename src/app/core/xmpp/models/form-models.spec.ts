@@ -1,7 +1,7 @@
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './form-models';
 import {FormControl, FormGroup} from '@angular/forms';
 
-describe('XmppDataFormField', () => {
+describe(XmppDataFormField.name, () => {
   describe('when calling toJSON', () => {
     it('should return key and name as an object', () => {
       const field = new XmppDataFormField(XmppDataFormFieldType.textSingle, 'title', 'fooBaa');
@@ -58,7 +58,7 @@ describe('XmppDataFormField', () => {
   });
 });
 
-describe('XmppDataForm', () => {
+describe(XmppDataForm.name, () => {
   describe('when calling toJSON on a Form with 2 fields', () => {
     let field1: XmppDataFormField;
     let field2: XmppDataFormField;
