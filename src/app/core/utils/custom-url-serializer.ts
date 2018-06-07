@@ -17,7 +17,7 @@ export class CustomUrlSerializer implements UrlSerializer {
     this.defaultUrlSerializer = new DefaultUrlSerializer();
   }
 
-  parse(url: string): UrlTree {
+  public parse(url: string): UrlTree {
     // Generate a new url tree
     const tree = this.defaultUrlSerializer.parse(url);
 
@@ -36,7 +36,7 @@ export class CustomUrlSerializer implements UrlSerializer {
     return tree;
   }
 
-  serialize(tree: UrlTree): any {
+  public serialize(tree: UrlTree): any {
 
     const serialized = this.segmentToUrl(tree.root);
     if (serialized === '') {

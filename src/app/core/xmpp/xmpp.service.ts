@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
+import {JID} from 'xmpp-jid';
+
+import {XmppConfig} from '../config';
 import {NotificationService} from '../notifications';
 import {RawXmlStanzaAddOn} from './raw-xml-stanza';
-import {XmppConfig} from '../config';
 
 enum XmppConnectionState {
   Down = 0,

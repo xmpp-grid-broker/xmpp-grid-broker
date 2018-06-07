@@ -1,4 +1,5 @@
 export enum LogLevel {
+  // noinspection JSUnusedGlobalSymbols
   None = 0,
   Error = 1,
   Warn = 2,

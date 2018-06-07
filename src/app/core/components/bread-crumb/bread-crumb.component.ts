@@ -1,13 +1,13 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
-import {distinctUntilChanged, filter, map} from 'rxjs/operators';
 import {of} from 'rxjs/observable/of';
+import {distinctUntilChanged, filter, map} from 'rxjs/operators';
+import {ErrorLogService} from '../../errors';
 
 import {XmppService} from '../../xmpp';
-import {ErrorLogService} from '../../errors';
 import {BreadCrumb, BreadCrumbs} from './bread-crumb';
-import {getUrlFromRoute, placeParamsIn, getAllUrlParameters} from './bread-crumb-utils';
+import {getAllUrlParameters, getUrlFromRoute, placeParamsIn} from './bread-crumb-utils';
 
 /**
  * Component that renders bread crumbs based on the

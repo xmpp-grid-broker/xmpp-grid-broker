@@ -1,5 +1,5 @@
-import {XmppError} from './xmpp-error';
 import {XmppErrorCondition} from './models';
+import {XmppError} from './xmpp-error';
 
 /**
  * Maps the given error object into an XmppError.

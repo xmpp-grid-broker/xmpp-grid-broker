@@ -4,6 +4,7 @@ export enum XmppTransport {
 }
 
 export class XmppConfig {
+  // noinspection JSUnusedGlobalSymbols
   constructor(
     readonly server: string,
     readonly transport: XmppTransport,

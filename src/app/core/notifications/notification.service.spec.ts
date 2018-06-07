@@ -1,9 +1,6 @@
-import {NotificationService} from './notification.service';
-import {AlertNotificationComponent} from './alert-notification';
-import {ConfirmNotificationComponent} from './confirm-notification';
 import {ComponentFactoryResolver, ViewContainerRef} from '@angular/core';
-import createSpyObj = jasmine.createSpyObj;
-import SpyObj = jasmine.SpyObj;
+
+import {AlertNotificationComponent, ConfirmNotificationComponent, NotificationService} from '.';
 
 class FakeComponentRef {
   instance: any;
@@ -29,17 +26,17 @@ class FakeComponentRef {
 
 describe(NotificationService.name, () => {
   let service: NotificationService;
-  let componentFactoryResolverSpy: SpyObj<ComponentFactoryResolver>;
+  let componentFactoryResolverSpy: jasmine.SpyObj<ComponentFactoryResolver>;
   let fakeComponentRef: FakeComponentRef;
-  let rootViewContainerSpy: SpyObj<ViewContainerRef>;
+  let rootViewContainerSpy: jasmine.SpyObj<ViewContainerRef>;
 
   beforeEach(() => {
-    componentFactoryResolverSpy = createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
+    componentFactoryResolverSpy = jasmine.createSpyObj('ComponentFactoryResolver', ['resolveComponentFactory']);
     componentFactoryResolverSpy.resolveComponentFactory.and.callFake((component) => {
       fakeComponentRef = new FakeComponentRef(component);
       return fakeComponentRef;
     });
-    rootViewContainerSpy = createSpyObj('ViewContainerRef', ['insert']);
+    rootViewContainerSpy = jasmine.createSpyObj('ViewContainerRef', ['insert']);
     service = new NotificationService(componentFactoryResolverSpy);
     service.setRootViewContainerRef(rootViewContainerSpy);
   });

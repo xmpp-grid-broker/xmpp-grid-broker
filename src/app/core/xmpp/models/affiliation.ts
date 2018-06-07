@@ -3,6 +3,7 @@
  * defined in xep-0060.
  */
 export enum Affiliation {
+  // noinspection JSUnusedGlobalSymbols
   Owner = 'owner',
   Publisher = 'publisher',
   PublishOnly = 'publish-only',

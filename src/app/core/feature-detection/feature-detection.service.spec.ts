@@ -1,8 +1,6 @@
-import {XmppService} from '../xmpp/';
 import {ErrorLogService} from '../errors/';
+import {XmppService} from '../xmpp/';
 import {FeatureService} from './feature.service';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
 
 
 describe(FeatureService.name, () => {
@@ -17,10 +15,10 @@ describe(FeatureService.name, () => {
   };
   PUBSUB_IQ_DISCOVERY_RESULT.discoInfo.features.push('http://jabber.org/protocol/pubsub');
 
-  let xmppService: SpyObj<XmppService>;
+  let xmppService: jasmine.SpyObj<XmppService>;
 
   beforeEach(() => {
-    xmppService = createSpyObj(XmppService.name, ['executeIqToPubsub', 'getServerTitle']);
+    xmppService = jasmine.createSpyObj(XmppService.name, ['executeIqToPubsub', 'getServerTitle']);
     xmppService.getServerTitle.and.returnValue('openfire');
     errorLogService = jasmine.createSpyObj(ErrorLogService.name, ['warn']);
     service = new FeatureService(xmppService, errorLogService);

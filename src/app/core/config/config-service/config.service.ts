@@ -1,8 +1,9 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Config} from '../config';
-import {XmppService} from '../../xmpp';
+import {Injectable} from '@angular/core';
 import {environment} from '../../../../environments';
+import {XmppService} from '../../xmpp';
+
+import {Config} from '../config';
 
 @Injectable()
 export class ConfigService {

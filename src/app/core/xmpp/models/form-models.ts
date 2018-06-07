@@ -11,10 +11,7 @@ export enum XmppDataFormFieldType {
   listMulti = 'list-multi',
   listSingle = 'list-single',
 
-  jidSingle = 'jid-single',
-  // others, that will are currently ignored...
-  fixed = 'fixed',
-  textPrivate = 'text-private',
+  jidSingle = 'jid-single'
 }
 
 export class ListOption {

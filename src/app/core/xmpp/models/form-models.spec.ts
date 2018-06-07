@@ -1,5 +1,6 @@
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './form-models';
 import {FormControl, FormGroup} from '@angular/forms';
+
+import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from './form-models';
 
 describe(XmppDataFormField.name, () => {
   describe('when calling toJSON', () => {

@@ -1,8 +1,9 @@
 import {ComponentFixture, fakeAsync, TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import {Observable} from 'rxjs/Observable';
+
 
 import {ErrorPageComponent} from './';
 

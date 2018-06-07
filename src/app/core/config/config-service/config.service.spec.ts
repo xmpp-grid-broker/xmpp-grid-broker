@@ -1,13 +1,8 @@
 import {Observable} from 'rxjs/Observable';
-import {Config, XmppConfig, XmppTransport} from '../config';
-import {ConfigService} from './config.service';
+
+import {Config, ConfigService, XmppConfig, XmppTransport} from '../';
 import {XmppService} from '../../xmpp';
 
-
-class FakeErrorResponse {
-  constructor(readonly message: string, status: number, statusText: string) {
-  }
-}
 
 class FakeHttpClient {
   constructor(public fake_url: string, public fake_result: any = {}) {
@@ -18,7 +13,7 @@ class FakeHttpClient {
       return Observable.of({});
     } else {
       return new Observable(({next, error}) => {
-        return error(new FakeErrorResponse('not found', 404, 'not found'));
+        return error({message: 'not found', status: 404, statusText: 'not found'});
       });
     }
   }
@@ -54,7 +49,7 @@ describe(ConfigService.name, () => {
     spyOn(httpClient, 'get').and.callFake(() => Observable.of(JSON_CONFIG));
     service = new ConfigService(httpClient, xmppService);
 
-    service.loadConfig().then(config => {
+    service.loadConfig().then(() => {
       expect(httpClient.get).toHaveBeenCalledWith(httpClient.fake_url);
       done();
     }).catch(err => fail(err));
@@ -77,7 +72,7 @@ describe(ConfigService.name, () => {
     service = new ConfigService(httpClient, xmppService);
 
     expect(service.getConfig()).toBe(undefined);
-    service.loadConfig().then(config => {
+    service.loadConfig().then(() => {
       expect(service.getConfig()).toBeDefined();
       done();
     }).catch(err => fail(err));

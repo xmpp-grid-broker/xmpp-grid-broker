@@ -1,9 +1,9 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
 import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {ErrorLogService, XmppService} from '../../';
 
 import {BreadCrumbComponent} from './bread-crumb.component';
-import {ErrorLogService, XmppService} from '../../';
 
 describe(BreadCrumbComponent.name, () => {
 

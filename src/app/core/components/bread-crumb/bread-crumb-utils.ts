@@ -1,9 +1,10 @@
-import {OperatorFunction} from 'rxjs/interfaces';
-import {map} from 'rxjs/operators';
 import {ActivatedRoute, ParamMap} from '@angular/router';
+
+import {OperatorFunction} from 'rxjs/interfaces';
 import {Observable} from 'rxjs/Observable';
-import {of} from 'rxjs/observable/of';
 import {combineLatest} from 'rxjs/observable/combineLatest';
+import {of} from 'rxjs/observable/of';
+import {map} from 'rxjs/operators';
 
 
 /**

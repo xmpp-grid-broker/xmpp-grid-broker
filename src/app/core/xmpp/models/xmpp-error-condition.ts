@@ -9,7 +9,6 @@ export enum XmppErrorCondition {
   Gone = 'gone',
   InternalServerError = 'internal-server-error',
   ItemNotFound = 'item-not-found',
-  JidMalformed = 'jid-malformed',
   NotAcceptable = 'not-acceptable',
   NotAllowed = 'not-allowed',
   NotAuthorized = 'not-authorized',

@@ -1,21 +1,18 @@
+import {XmppClientFactory, XmppIqType, XmppService} from '.';
 import {Config, XmppConfig, XmppTransport} from '../config';
-import {XmppIqType} from './models';
-import {XmppClientFactory, XmppService} from '.';
 import {NotificationService} from '../notifications';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
 
 describe(XmppService.name, () => {
   let client: any;
   let service: XmppService;
-  let notificationService: SpyObj<NotificationService>;
+  let notificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
     client = new FakeClient();//tslint:disable-line
-    const xmppClientFactory = createSpyObj(XmppClientFactory.name, ['createClient']);
+    const xmppClientFactory = jasmine.createSpyObj(XmppClientFactory.name, ['createClient']);
     xmppClientFactory.createClient.and.returnValue(client);
 
-    notificationService = createSpyObj(NotificationService.name, ['alert']);
+    notificationService = jasmine.createSpyObj(NotificationService.name, ['alert']);
 
     const xmppConfig = new XmppConfig('openfire', XmppTransport.Bosh, undefined, 'localhost');
     const config = new Config(xmppConfig, 10);
@@ -143,6 +140,7 @@ class FakeClient {
     this.handlers.set(event, handlers);
   }
 
+  // noinspection JSUnusedGlobalSymbols
   off(event: string, action: () => any) {
 
     if (this.handlers.has(event)) {
@@ -160,6 +158,7 @@ class FakeClient {
     }
   }
 
+  // noinspection JSMethodCanBeStatic
   sendIq(cmd, cb) {
     cb(undefined, {});
   }

@@ -30,8 +30,6 @@ export abstract class Topic {
   }
 }
 
-export type Topics = Array<Topic>;
-
 export class CollectionTopic extends Topic {
   constructor(public title: string) {
     super(title);

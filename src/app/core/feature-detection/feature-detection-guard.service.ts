@@ -1,8 +1,9 @@
+import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
-import {ConfigService} from '../config/config-service';
+
+import {ConfigService} from '../config/';
 import {NotificationService} from '../notifications/';
 import {FeatureService} from './feature.service';
-import {Injectable} from '@angular/core';
 
 @Injectable()
 export class FeatureDetectionGuardService implements CanActivate {
@@ -16,6 +17,7 @@ export class FeatureDetectionGuardService implements CanActivate {
     this.checkWasSuccessfulOnce = false;
   }
 
+  // noinspection JSUnusedLocalSymbols
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> | boolean {
     if (this.checkWasSuccessfulOnce) {
       return true;
