@@ -1,11 +1,12 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
 
 import {FormFieldNamePipe, GenericFormConfigComponent, JidMultiComponent} from '..';
 import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {FormFieldComponent} from '../../shared';
+
 import {SharedModule} from '../../shared/shared.module';
-import {By} from '@angular/platform-browser';
-import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(
   XmppDataFormFieldType.textSingle,

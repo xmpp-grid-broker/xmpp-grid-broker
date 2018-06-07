@@ -1,6 +1,5 @@
 import {TopicIteratorHelperService} from '.';
-import {XmppService} from '../core';
-import {LeafTopic} from '../core';
+import {LeafTopic, XmppService} from '../core';
 
 describe(TopicIteratorHelperService.name, () => {
 

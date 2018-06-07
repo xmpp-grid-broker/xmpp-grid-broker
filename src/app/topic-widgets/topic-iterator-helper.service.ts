@@ -1,6 +1,6 @@
-import {XmppService} from '../core';
-import {CollectionTopic, XmppIqType, Topic} from '../core';
 import {Injectable} from '@angular/core';
+
+import {CollectionTopic, Topic, XmppIqType, XmppService} from '../core';
 
 /**
  * This service provides commonly used functionality

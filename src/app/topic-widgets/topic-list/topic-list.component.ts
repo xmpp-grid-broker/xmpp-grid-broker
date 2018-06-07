@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+
 import {Topic} from '../../core';
 import {IteratorListPager} from '../../shared';
 

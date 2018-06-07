@@ -1,9 +1,9 @@
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
-import {TopicListComponent} from './topic-list.component';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+
+import {LeafTopic, Topic} from '../../core';
 import {IteratorListPager} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';
-import {LeafTopic, Topic} from '../../core';
+import {TopicListComponent} from './topic-list.component';
 
 
 describe(TopicListComponent.name, () => {
@@ -97,7 +97,7 @@ describe(TopicListComponent.name, () => {
     waitUntilLoaded();
 
     const topics = de.querySelectorAll('xgb-list xgb-list-item .list-item-title');
-    expect(topics[0].textContent).toBe('Topic #1');
-    expect(topics[1].textContent).toBe('Topic #2');
+    expect(topics[0].textContent.trim()).toBe('Topic #1');
+    expect(topics[1].textContent.trim()).toBe('Topic #2');
   }));
 });
