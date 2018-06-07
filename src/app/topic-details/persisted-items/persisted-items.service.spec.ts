@@ -52,7 +52,7 @@ describe(PersistedItemsService.name, () => {
         const result = await service.loadPersistedItemContent('test-topic', new PersistedItem('001'));
         fail(`expected an error but got: ${result}`);
       } catch (e) {
-        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}!');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}');
       }
     });
   });
@@ -159,7 +159,7 @@ describe(PersistedItemsService.name, () => {
         await service.deletePersistedItem('test-topic', new PersistedItem('001'));
         fail(`expected an error`);
       } catch (e) {
-        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}!');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}');
       }
     });
   });
@@ -184,7 +184,7 @@ describe(PersistedItemsService.name, () => {
         await service.purgePersistedItem('test-topic');
         fail(`expected an error`);
       } catch (e) {
-        expect(e.message).toBe('An unknown error has occurred: {"condition":"not-acceptable"}!');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"not-acceptable"}');
       }
     });
   });
@@ -210,7 +210,7 @@ describe(PersistedItemsService.name, () => {
         await service.publishItem('test-topic', '<xml/>');
         fail(`expected an error`);
       } catch (e) {
-        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}!');
+        expect(e.message).toBe('An unknown error has occurred: {"condition":"example-error"}');
       }
     });
   });

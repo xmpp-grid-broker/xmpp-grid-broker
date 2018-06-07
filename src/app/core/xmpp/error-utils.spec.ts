@@ -75,7 +75,7 @@ describe('JxtErrorToXmppError', () => {
 
     const mappedError = JxtErrorToXmppError(error, errorMapping);
 
-    await expect(mappedError.message).toBe('An unknown error has occurred: {"condition":"unknown"}!');
+    await expect(mappedError.message).toBe('An unknown error has occurred: {"condition":"unknown"}');
     await expect(mappedError.condition).toBeUndefined();
   });
 
@@ -85,7 +85,7 @@ describe('JxtErrorToXmppError', () => {
 
     const mappedError = JxtErrorToXmppError(error, errorMapping);
 
-    await expect(mappedError.message).toBe('An unknown error has occurred: null!');
+    await expect(mappedError.message).toBe('An unknown error has occurred: null');
     await expect(mappedError.condition).toBeUndefined();
   });
   it('should handle undefined errors', async () => {
@@ -94,7 +94,7 @@ describe('JxtErrorToXmppError', () => {
 
     const mappedError = JxtErrorToXmppError(error, errorMapping);
 
-    await expect(mappedError.message).toBe('An unknown error has occurred: undefined!');
+    await expect(mappedError.message).toBe('An unknown error has occurred: undefined');
     await expect(mappedError.condition).toBeUndefined();
   });
   it('should handle Errors', async () => {
@@ -103,7 +103,7 @@ describe('JxtErrorToXmppError', () => {
 
     const mappedError = JxtErrorToXmppError(error, errorMapping);
 
-    await expect(mappedError.message).toBe('An unknown error has occurred: Sth. went wrong!');
+    await expect(mappedError.message).toBe('An unknown error has occurred: Sth. went wrong');
     await expect(mappedError.condition).toBeUndefined();
   });
 
