@@ -1,6 +1,6 @@
 <ng-container *ngIf="!errorMessage && isLoaded">
   <xgb-action-bar>
-    <button xgbActionButton  (click)="newSubscription()">New Subscription</button>
+    <button xgbActionButton (click)="newSubscription()">New Subscription</button>
   </xgb-action-bar>
   <xgb-list>
     <xgb-list-item *ngFor="let subscription of subscriptions">

@@ -1,7 +1,7 @@
-import {NavigationService} from './navigation.service';
 import {LeafTopic} from '../xmpp';
+import {NavigationService} from './navigation.service';
 
-describe('NavigationService', () => {
+describe(NavigationService.name, () => {
 
   let service: NavigationService;
   let mockRouter;

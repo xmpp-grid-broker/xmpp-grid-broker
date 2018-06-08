@@ -1,6 +1,6 @@
-import {Form, List, Locatable, Spinner, Tab, Toast, UrlAddressableComponent} from '../page-elements';
 import {by, element, ElementFinder} from 'protractor';
 import {toPromise} from '../helpers';
+import {Form, List, Locatable, Spinner, Tab, Toast, UrlAddressableComponent} from '../page-elements';
 
 type TopicDetailsTab = TopicDetailsConfigurationTab | TopicDetailsAffiliationTab;
 
@@ -12,13 +12,13 @@ export class AffiliationListElement {
   ) {
   }
 
-  public clickRemoveButton(): Promise<void> {
-    return toPromise(this.removeButton.click());
-  }
-
   get affiliationText(): Promise<string> {
     return toPromise(this.affiliation.element(by.css('option[selected]')).getText())
       .then((text) => text.trim());
+  }
+
+  public clickRemoveButton(): Promise<void> {
+    return toPromise(this.removeButton.click());
   }
 
   public setAffiliation(affiliation: 'Owner' | 'Publisher' | 'PublishOnly' | 'Member' | 'Outcast'): Promise<void> {
@@ -29,6 +29,10 @@ export class AffiliationListElement {
 }
 
 export class TopicDetailsConfigurationTab extends Tab {
+  constructor(readonly topicId: string, parentElement: Locatable) {
+    super(parentElement);
+  }
+
   get landingUrl(): string {
     return `/topics/details/${encodeURIComponent(this.topicId)}/configuration`;
   }
@@ -49,13 +53,13 @@ export class TopicDetailsConfigurationTab extends Tab {
     return toPromise(this.locator.element(by.cssContainingText('button[type=submit]', 'Update'))
       .click());
   }
-
-  constructor(readonly topicId: string, parentElement: Locatable) {
-    super(parentElement);
-  }
 }
 
 export class TopicDetailsAffiliationTab extends Tab {
+  constructor(readonly topicId: string, parentElement: Locatable) {
+    super(parentElement);
+  }
+
   get landingUrl(): string {
     return `/topics/details/${encodeURIComponent(this.topicId)}/affiliations`;
   }
@@ -78,28 +82,12 @@ export class TopicDetailsAffiliationTab extends Tab {
     );
   }
 
-  public getListObjectsByJid(jid: string): Promise<AffiliationListElement[]> {
-    return this.listObjects
-      .then(affiliations => {
-        return affiliations.filter(affiliation => affiliation.jid === jid);
-      });
-  }
-
   get firstAffiliation(): Promise<AffiliationListElement> {
     return this.listObjects.then(list => list[0]);
   }
 
   get form(): Form {
     return new Form(this);
-  }
-
-  public formSubmit(): Promise<void> {
-    return toPromise(this.locator.element(by.cssContainingText('button[type=submit]', 'add'))
-      .click());
-  }
-
-  constructor(readonly topicId: string, parentElement: Locatable) {
-    super(parentElement);
   }
 
   private static async listElementToObjectMapper(listElement: ElementFinder): Promise<AffiliationListElement> {
@@ -113,19 +101,31 @@ export class TopicDetailsAffiliationTab extends Tab {
       removeButton);
   }
 
+  public getListObjectsByJid(jid: string): Promise<AffiliationListElement[]> {
+    return this.listObjects
+      .then(affiliations => {
+        return affiliations.filter(affiliation => affiliation.jid === jid);
+      });
+  }
+
+  public formSubmit(): Promise<void> {
+    return toPromise(this.locator.element(by.cssContainingText('button[type=submit]', 'add'))
+      .click());
+  }
+
 }
 
 export class TopicDetailsPage extends UrlAddressableComponent implements Locatable {
+  constructor(readonly topicId: string) {
+    super();
+  }
+
   get landingUrl(): string {
     return `/topics/details/${encodeURIComponent(this.topicId)}`;
   }
 
   get locator(): ElementFinder {
     return element(by.tagName('xgb-topic-details'));
-  }
-
-  constructor(readonly topicId: string) {
-    super();
   }
 
   private _tab: TopicDetailsTab = undefined;
@@ -147,7 +147,7 @@ export class TopicDetailsPage extends UrlAddressableComponent implements Locatab
     return Spinner.waitOnNone()
       .then(() => Spinner.waitOnNone()) // wait for topic to be loaded
       .then(() => {
-      this.tab = tab;
-    });
+        this.tab = tab;
+      });
   }
 }

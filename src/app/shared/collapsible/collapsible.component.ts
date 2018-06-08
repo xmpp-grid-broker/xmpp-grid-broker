@@ -1,5 +1,9 @@
 import {Component, Input} from '@angular/core';
 
+/**
+ * Just a wrapper that can be collapsed and expanded by clicking
+ * on it.
+ */
 @Component({
   selector: 'xgb-collapsible',
   templateUrl: './collapsible.component.html',

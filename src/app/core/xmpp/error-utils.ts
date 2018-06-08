@@ -1,5 +1,5 @@
-import {XmppError} from './xmpp-error';
 import {XmppErrorCondition} from './models';
+import {XmppError} from './xmpp-error';
 
 /**
  * Maps the given error object into an XmppError.
@@ -27,9 +27,6 @@ export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key:
 
 /**
  * Safely converts the given error into a human readable error.
- *
- * @param error
- * @constructor
  */
 export function ErrorToString(error: any): string {
   if (error instanceof XmppError) {

@@ -1,11 +1,15 @@
 import {by, element, ElementFinder} from 'protractor';
 import {List, Locatable, Spinner, Tab, UrlAddressableComponent} from '../page-elements';
-import {CreateTopicPage} from './create-topic.po';
 import {CreateCollectionPage} from './create-collection.po';
+import {CreateTopicPage} from './create-topic.po';
 
 type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 
 export class TopicOverviewRootCollectionsTab extends Tab {
+  constructor(parentElement: Locatable) {
+    super(parentElement);
+  }
+
   get list(): List {
     return new List(this);
   }
@@ -22,13 +26,13 @@ export class TopicOverviewRootCollectionsTab extends Tab {
     return 'Root Topics';
   }
 
+}
+
+export class TopicOverviewAllTopicsTab extends Tab {
   constructor(parentElement: Locatable) {
     super(parentElement);
   }
 
-}
-
-export class TopicOverviewAllTopicsTab extends Tab {
   get list(): List {
     return new List(this);
   }
@@ -40,13 +44,13 @@ export class TopicOverviewAllTopicsTab extends Tab {
   get linkText(): string {
     return 'All Topics';
   }
-
-  constructor(parentElement: Locatable) {
-    super(parentElement);
-  }
 }
 
 export class TopicOverviewAllCollectionsTab extends Tab {
+  constructor(parentElement: Locatable) {
+    super(parentElement);
+  }
+
   get list(): List {
     return new List(this);
   }
@@ -57,10 +61,6 @@ export class TopicOverviewAllCollectionsTab extends Tab {
 
   get linkText(): string {
     return 'All Collections';
-  }
-
-  constructor(parentElement: Locatable) {
-    super(parentElement);
   }
 }
 
@@ -87,6 +87,14 @@ export class TopicsOverviewPage extends UrlAddressableComponent implements Locat
     this._tab = tab;
   }
 
+  private get newTopicButton(): ElementFinder {
+    return element(by.cssContainingText('button', 'New Topic'));
+  }
+
+  private get newCollectionButton(): ElementFinder {
+    return element(by.cssContainingText('button', 'New Collection'));
+  }
+
   async navigateToTab(tab: TopicsOverviewTab): Promise<void> {
     await tab.linkElement.click();
     return Spinner.waitOnNone().then(() => {
@@ -106,14 +114,6 @@ export class TopicsOverviewPage extends UrlAddressableComponent implements Locat
     await Spinner.waitOnNone();
 
     return new CreateCollectionPage();
-  }
-
-  private get newTopicButton(): ElementFinder {
-    return element(by.cssContainingText('button', 'New Topic'));
-  }
-
-  private get newCollectionButton(): ElementFinder {
-    return element(by.cssContainingText('button', 'New Collection'));
   }
 
 }

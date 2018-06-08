@@ -1,11 +1,11 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {TopicChooserComponent} from './topic-chooser.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
-import {XmppDataFormFieldType} from '../../core';
 
-describe('TopicChooserComponent', () => {
+import {XmppDataFormFieldType} from '../../core';
+import {TopicChooserComponent} from './topic-chooser.component';
+
+describe(TopicChooserComponent.name, () => {
   let component: TopicChooserComponent;
   let fixture: ComponentFixture<TopicChooserComponent>;
 

@@ -1,6 +1,5 @@
 import {SubtopicsOrParentsService} from '..';
 import {TopicIteratorHelperService} from '../../topic-widgets';
-import createSpyObj = jasmine.createSpyObj;
 
 describe(SubtopicsOrParentsService.name, () => {
 
@@ -14,7 +13,7 @@ describe(SubtopicsOrParentsService.name, () => {
 
   describe('when calling subtopics', () => {
     it('should just return the result of the call to the helper service', () => {
-      const fakeResult = createSpyObj('AsyncIterableIterator', ['next']);
+      const fakeResult = jasmine.createSpyObj('AsyncIterableIterator', ['next']);
       iteratorHelper.createChildTopicsIterator.and.returnValue(fakeResult);
 
       const result = service.subtopics('topicName');
@@ -26,13 +25,13 @@ describe(SubtopicsOrParentsService.name, () => {
       service.subtopics('topicName');
 
       expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledTimes(1);
-      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith( 'topicName', true);
+      expect(iteratorHelper.createChildTopicsIterator).toHaveBeenCalledWith('topicName', true);
     });
   });
 
   describe('when calling parents', () => {
     it('should just return the result of the call to the helper service', () => {
-      const fakeResult = createSpyObj('AsyncIterableIterator', ['next']);
+      const fakeResult = jasmine.createSpyObj('AsyncIterableIterator', ['next']);
       iteratorHelper.createParentsTopicsIterator.and.returnValue(fakeResult);
 
       const result = service.parents('topicName');
@@ -44,7 +43,7 @@ describe(SubtopicsOrParentsService.name, () => {
       service.parents('topicName');
 
       expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledTimes(1);
-      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledWith( 'topicName', true);
+      expect(iteratorHelper.createParentsTopicsIterator).toHaveBeenCalledWith('topicName', true);
     });
   });
 });

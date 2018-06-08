@@ -1,10 +1,10 @@
+import {browser} from 'protractor';
 import {
   TopicOverviewAllCollectionsTab,
   TopicOverviewAllTopicsTab,
   TopicOverviewRootCollectionsTab,
   TopicsOverviewPage
 } from './page-objects';
-import {browser} from 'protractor';
 
 
 describe('TopicOverview', () => {

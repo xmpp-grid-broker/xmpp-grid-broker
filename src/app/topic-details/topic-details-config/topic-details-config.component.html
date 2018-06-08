@@ -1,7 +1,9 @@
 <xgb-spinner *ngIf="formProcessing.processing"></xgb-spinner>
 
 <div *ngIf="!formProcessing.processing && formProcessing.error" xgbToast toast-error>{{formProcessing.error}}</div>
-<div *ngIf="!formProcessing.processing && formProcessing.success" xgbToast toast-success>{{formProcessing.success}}</div>
+<div *ngIf="!formProcessing.processing && formProcessing.success" xgbToast toast-success>
+  {{formProcessing.success}}
+</div>
 
 <xgb-topic-config *ngIf="initialFormLoaded && !formProcessing.processing"
                   [topic]="topic"

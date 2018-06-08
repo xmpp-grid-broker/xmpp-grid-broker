@@ -1,33 +1,66 @@
 import {ErrorToString} from '../../core';
 
 /**
- * This class abstracts the loading and error handling
- * to simplify the usage of the a paged list ("load more").
- *
- * It accepts an async iterator of for the type T that will be rendered.
+ * This class abstracts paging, loading and error handling
+ * to simplify the usage of lists.
  */
 export class IteratorListPager<T> {
+  /**
+   * set to true, if not in the process of loading.
+   */
   isLoaded = false;
+
+  /**
+   * set to true if an error has occurred while loading
+   * elements.
+   * Check error for more details.
+   */
   hasError = false;
+
+  /**
+   * Detailed error message that is set when an error has occurred while loading
+   * elements.
+   */
   errorMessage: string;
+
+  /**
+   * All items loaded that shall be displayed.
+   */
   items: T[];
+
+  /**
+   * set to true if more elements can be loaded.
+   * Evaluated from the the underlying iterator.
+   */
   hasMore: boolean;
 
+  /**
+   * The iterator used to fetch (more) elements.
+   */
   private iterator: AsyncIterableIterator<T>;
-  private errorHandler: (error: any) => string;
 
+  /**
+   * @param {number} PAGE_SIZE the number of elements to load in at once.
+   */
   constructor(private readonly PAGE_SIZE: number) {
   }
 
+  /**
+   * Use the given iterator to load (more) elements.
+   * The returned promise must not necessarily be handled
+   * as error handling is the responsibility of this class.
+   */
   public useIterator(iterator: AsyncIterableIterator<T>): Promise<void> {
     this.iterator = iterator;
     this.items = [];
     this.hasMore = false;
     this.errorMessage = undefined;
-    this.errorHandler = ErrorToString;
     return this.loadMore();
   }
 
+  /**
+   * Load the next page of elements.
+   */
   public loadMore(): Promise<void> {
     this.isLoaded = false;
     this.hasError = false;
@@ -38,7 +71,7 @@ export class IteratorListPager<T> {
       })
       .catch((error) => {
         this.hasError = true;
-        this.errorMessage = this.errorHandler(error);
+        this.errorMessage = ErrorToString(error);
       });
   }
 

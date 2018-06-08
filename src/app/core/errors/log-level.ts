@@ -1,4 +1,8 @@
+/**
+ * Log level to be used in conjunction with the {@type ErrorLogService}
+ */
 export enum LogLevel {
+  // noinspection JSUnusedGlobalSymbols
   None = 0,
   Error = 1,
   Warn = 2,

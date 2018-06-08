@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {JxtErrorToXmppError, XmppService} from '../core';
-import {XmppIqType, Topic, XmppErrorCondition} from '../core';
+
+import {JxtErrorToXmppError, Topic, XmppErrorCondition, XmppIqType, XmppService} from '../core';
 
 /**
  * This service is used to pass topics
@@ -14,10 +14,10 @@ import {XmppIqType, Topic, XmppErrorCondition} from '../core';
 @Injectable()
 export class CurrentTopicDetailService {
 
+  private _topic: Topic;
+
   constructor(private xmppService: XmppService) {
   }
-
-  private _topic: Topic;
 
   /**
    * This method can be used from the tabs

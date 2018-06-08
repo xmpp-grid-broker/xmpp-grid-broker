@@ -5,6 +5,9 @@ import {Directive, ElementRef} from '@angular/core';
  * This directive can be applied to buttons or links
  * to style them as action buttons.
  *
+ * The following (optional) properties can be applied as variants:
+ * * `primary`
+ * * `danger`
  */
 @Directive({
   selector: '[xgbActionButton]'

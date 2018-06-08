@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ConfigService, NavigationService, PersistedItem} from '../../core';
-import {Topic} from '../../core';
 import {ActivatedRoute} from '@angular/router';
+
+import {ConfigService, NavigationService, Topic} from '../../core';
 import {IteratorListPager} from '../../shared';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
 import {SubtopicsOrParentsService} from './subtopics-or-parents.service';

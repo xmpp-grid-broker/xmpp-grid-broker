@@ -1,5 +1,6 @@
 import {Component, forwardRef, Input} from '@angular/core';
 import {ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
+
 import {XmppDataFormFieldType} from '../../core';
 
 /**
@@ -21,21 +22,18 @@ export class TopicChooserComponent implements ControlValueAccessor {
 
   @Input()
   public type: XmppDataFormFieldType;
-
-  get maxNoOfTopicsReached() {
-    return this.type === XmppDataFormFieldType.textSingle && this.topics.length === 1;
-  }
-
   topics: string[] = [];
-
   form: FormGroup;
-
   private _propagateChange: any;
 
   constructor() {
     this.form = new FormGroup({
       'topic': new FormControl('', [Validators.required])
     });
+  }
+
+  get maxNoOfTopicsReached() {
+    return this.type === XmppDataFormFieldType.textSingle && this.topics.length === 1;
   }
 
   onSubmit() {

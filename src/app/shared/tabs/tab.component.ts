@@ -1,5 +1,9 @@
 import {Component, Input} from '@angular/core';
 
+/**
+ * A tab entry.
+ * See {@type TabsComponent}.
+ */
 @Component({
   selector: 'xgb-tab',
   template: ``

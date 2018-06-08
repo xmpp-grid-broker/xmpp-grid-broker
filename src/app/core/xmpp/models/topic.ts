@@ -2,6 +2,9 @@ export abstract class Topic {
   protected constructor(public title: string) {
   }
 
+  /**
+   * Creates a new topic from the discovery info as received by stanza.
+   */
   static fromDiscoInfo(discoInfo: any): Topic {
     const topicTitle = discoInfo.node;
     const topicType = discoInfo.identities[0]['type'];
@@ -29,8 +32,6 @@ export abstract class Topic {
     return this instanceof LeafTopic; //tslint:disable-line
   }
 }
-
-export type Topics = Array<Topic>;
 
 export class CollectionTopic extends Topic {
   constructor(public title: string) {

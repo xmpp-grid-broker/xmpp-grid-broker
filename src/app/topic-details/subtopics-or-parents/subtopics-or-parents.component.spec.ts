@@ -1,12 +1,10 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ActivatedRoute} from '@angular/router';
 
 import {CurrentTopicDetailService, SubtopicsOrParentsComponent, SubtopicsOrParentsService} from '..';
-import {ActivatedRoute} from '@angular/router';
-import {CollectionTopic, Config, ConfigService, Topic} from '../../core';
-import {NavigationService} from '../../core';
-import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
+import {CollectionTopic, Config, ConfigService, NavigationService, Topic} from '../../core';
 import {IteratorListPager} from '../../shared';
-import createSpyObj = jasmine.createSpyObj;
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 
 
 describe(SubtopicsOrParentsComponent.name, () => {
@@ -24,9 +22,9 @@ describe(SubtopicsOrParentsComponent.name, () => {
       }
     };
 
-    navigationService = createSpyObj(NavigationService.name, ['goToTopic']);
-    service = createSpyObj(SubtopicsOrParentsService.name, ['subtopics', 'parents']);
-    detailsService = createSpyObj(CurrentTopicDetailService.name, ['currentTopic']);
+    navigationService = jasmine.createSpyObj(NavigationService.name, ['goToTopic']);
+    service = jasmine.createSpyObj(SubtopicsOrParentsService.name, ['subtopics', 'parents']);
+    detailsService = jasmine.createSpyObj(CurrentTopicDetailService.name, ['currentTopic']);
     const configService = jasmine.createSpyObj(ConfigService.name, ['getConfig']);
     configService.getConfig.and.returnValue(new Config(undefined, 10));
 
@@ -78,7 +76,6 @@ describe(SubtopicsOrParentsComponent.name, () => {
   }));
 
   it('should redirect when topic is clicked', fakeAsync(() => {
-    const iteratorSpy = spyOn(pager, 'useIterator').and.callThrough();
     detailsService.currentTopic.and.returnValue(new CollectionTopic('testing'));
     service.parents.and.callFake(async function* () {
       yield new CollectionTopic('coll1');

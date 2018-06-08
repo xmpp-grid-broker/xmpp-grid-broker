@@ -1,10 +1,10 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
-import {JidMultiComponent} from '..';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 
-describe('JidMultiComponent', () => {
+import {JidMultiComponent} from '..';
+
+describe(JidMultiComponent.name, () => {
   let component: JidMultiComponent;
   let fixture: ComponentFixture<JidMultiComponent>;
 
@@ -92,7 +92,7 @@ describe('JidMultiComponent', () => {
       expect(arg.length).toBe(3);
       expect(arg[0]).toBe('a@example.com');
       expect(arg[1]).toBe('b@example.com');
-     expect(arg[2]).toBe('c@example.com');
+      expect(arg[2]).toBe('c@example.com');
       done();
     });
 

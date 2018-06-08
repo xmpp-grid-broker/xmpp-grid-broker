@@ -1,5 +1,5 @@
 /**
- * All possible Xmpp error conditions used in xep-0060.
+ * All possible XMPP error conditions used in xep-0060.
  */
 export enum XmppErrorCondition {
   BadRequest = 'bad-request',
@@ -9,7 +9,6 @@ export enum XmppErrorCondition {
   Gone = 'gone',
   InternalServerError = 'internal-server-error',
   ItemNotFound = 'item-not-found',
-  JidMalformed = 'jid-malformed',
   NotAcceptable = 'not-acceptable',
   NotAllowed = 'not-allowed',
   NotAuthorized = 'not-authorized',

@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
+
+import {ConfigService, ErrorToString, NotificationService, PersistedItem, Topic} from '../../../core';
+import {IteratorListPager} from '../../../shared';
 import {CurrentTopicDetailService} from '../../current-topic-detail.service';
 import {PersistedItemsService} from '../persisted-items.service';
-import {IteratorListPager} from '../../../shared';
-import {ConfigService, ErrorToString, NotificationService, PersistedItem, Topic} from '../../../core';
 
 @Component({
   selector: 'xgb-persisted-items',

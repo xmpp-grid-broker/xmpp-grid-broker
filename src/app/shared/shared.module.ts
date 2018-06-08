@@ -1,5 +1,7 @@
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {NgModule} from '@angular/core';
+import {RouterModule} from '@angular/router';
+
 import {
   ActionBarComponent,
   ActionButtonDirective,
@@ -13,13 +15,12 @@ import {
   ListComponent,
   ListItemComponent,
   NoDuplicatesAllowedDirective,
+  SetFocusDirective,
   SpinnerComponent,
   TabComponent,
   TabsComponent,
-  ToastDirective,
-  SetFocusDirective
+  ToastDirective
 } from '.';
-import {RouterModule} from '@angular/router';
 
 const EXPORTED_DECLARATIONS = [
   ListComponent,

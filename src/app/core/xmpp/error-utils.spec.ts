@@ -1,7 +1,7 @@
 import {ErrorToString, JxtErrorToXmppError} from './error-utils';
 import {XmppError, XmppErrorCondition} from './index';
 
-describe('XmppError', () => {
+describe(XmppError.name, () => {
   // (See https://github.com/Microsoft/TypeScript/wiki/Breaking-Changes#extending-built-ins-like-error-array-and-map-may-no-longer-work)
   it('XmppError instance should be instance of XmppError', async () => {
     const instance = new XmppError('msg', XmppErrorCondition.BadRequest);
@@ -10,7 +10,7 @@ describe('XmppError', () => {
   });
 });
 
-describe('ErrorToString', () => {
+describe(ErrorToString.name, () => {
   it('should return the XmppError message', async () => {
     const instance = new XmppError('msg', XmppErrorCondition.BadRequest);
 
@@ -48,7 +48,7 @@ describe('ErrorToString', () => {
 });
 
 
-describe('JxtErrorToXmppError', () => {
+describe(JxtErrorToXmppError.name, () => {
 
   it('should map acceding to the provided spec', async () => {
     const error = {

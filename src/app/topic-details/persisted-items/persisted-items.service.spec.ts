@@ -1,6 +1,5 @@
+import {PersistedItem, XmppErrorCondition, XmppIqType, XmppService} from '../../core';
 import {PersistedItemsService} from './persisted-items.service';
-import {XmppErrorCondition, XmppService} from '../../core';
-import {XmppIqType, PersistedItem} from '../../core';
 
 describe(PersistedItemsService.name, () => {
   let service: PersistedItemsService;

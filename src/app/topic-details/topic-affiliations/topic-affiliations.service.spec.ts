@@ -1,10 +1,10 @@
 import {JID} from 'xmpp-jid';
+
+import {Affiliation, JidAffiliation, XmppIqType, XmppService} from '../../core';
 import {TopicAffiliationsService} from './topic-affiliations.service';
-import {Affiliation, XmppIqType, JidAffiliation} from '../../core';
-import {XmppService} from '../../core';
 
 
-describe('TopicDetailsConfigurationService', () => {
+describe(TopicAffiliationsService.name, () => {
 
   let service: TopicAffiliationsService;
   let xmppService: jasmine.SpyObj<XmppService>;

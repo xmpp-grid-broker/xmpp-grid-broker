@@ -1,7 +1,11 @@
 import {ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, Output} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
+
 import {Topic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 
+/**
+ * A component that provides a specific form to create and configure a topic/collection.
+ */
 @Component({
   selector: 'xgb-topic-config',
   templateUrl: './topic-config.component.html'
@@ -16,14 +20,6 @@ export class TopicConfigComponent implements DoCheck {
    * The label of the submit button.
    */
   @Input() public submitLabel: string;
-
-  /**
-   * The xmpp data for as loaded from the server.
-   */
-  @Input()
-  public set xmppDataForm(form: XmppDataForm) {
-    this.installForm(form);
-  }
 
   /**
    * Event to bind to when the form is submitted.
@@ -58,9 +54,17 @@ export class TopicConfigComponent implements DoCheck {
   formGroup: FormGroup;
   XmppDataFormFieldType = XmppDataFormFieldType;
 
+  constructor(private cd: ChangeDetectorRef) {
+  }
+
   private _xmppDataForm: XmppDataForm;
 
-  constructor(private cd: ChangeDetectorRef) {
+  /**
+   * The xmpp data for as loaded from the server.
+   */
+  @Input()
+  public set xmppDataForm(form: XmppDataForm) {
+    this.installForm(form);
   }
 
   onFormSubmit(): void {

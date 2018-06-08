@@ -1,15 +1,26 @@
 import {Injectable} from '@angular/core';
+
 import {ErrorLogService} from '../errors/';
 import {XmppIqType, XmppService} from '../xmpp/';
 
+/**
+ * Service that queries the xmpp server for all required features.
+ */
 @Injectable()
 export class FeatureService {
+  /**
+   * Set of required features to be queried with service discovery.
+   */
   static readonly REQUIRED_PUBSUB_FEATURES = [
     'access-open', 'collections', 'config-node', 'create-and-configure', 'create-nodes', 'delete-nodes', 'get-pending', 'instant-nodes',
     'item-ids', 'meta-data', 'modify-affiliations', 'manage-subscriptions', 'multi-subscribe', 'outcast-affiliation', 'persistent-items',
     'presence-notifications', 'publish', 'publisher-affiliation', 'purge-nodes', 'retract-items', 'retrieve-affiliations',
     'retrieve-default', 'retrieve-items', 'retrieve-subscriptions', 'subscribe', 'subscription-options'
   ];
+
+  /**
+   * map used to cache protocol features.
+   */
   private _protocolFeatures: Map<string, Promise<string[]>> = new Map();
 
   constructor(private xmppService: XmppService, private errorLogService: ErrorLogService) {

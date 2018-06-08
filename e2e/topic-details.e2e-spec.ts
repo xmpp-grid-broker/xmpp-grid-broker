@@ -1,6 +1,6 @@
 import {browser} from 'protractor';
-import {TopicDetailsAffiliationTab, TopicDetailsConfigurationTab, TopicDetailsPage} from './page-objects';
 import {Spinner, ToastContent} from './page-elements';
+import {TopicDetailsAffiliationTab, TopicDetailsConfigurationTab, TopicDetailsPage} from './page-objects';
 
 
 describe('TopicDetails', () => {

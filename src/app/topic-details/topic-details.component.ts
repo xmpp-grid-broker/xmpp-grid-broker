@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
-import {ErrorToString} from '../core';
-import {Topic} from '../core';
-import {CurrentTopicDetailService} from './current-topic-detail.service';
 import {Subscription} from 'rxjs/Subscription';
+
+import {ErrorToString, Topic} from '../core';
+import {CurrentTopicDetailService} from './current-topic-detail.service';
 
 
 @Component({

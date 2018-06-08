@@ -1,10 +1,14 @@
 import {Directive, ElementRef} from '@angular/core';
 
-
 /**
- * This directive can be applied to buttons or links
- * to style them as action buttons.
+ * A directive to be applied to containers containing
+ * error/success messages.
  *
+ * Variations:
+ *
+ * * Default
+ * * Success (add attribute `toast-success`)
+ * * Error (add attribute `toast-error`)
  */
 @Directive({
   selector: '[xgbToast]'

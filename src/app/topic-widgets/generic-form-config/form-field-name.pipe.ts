@@ -1,8 +1,8 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
 /**
- * Variable (names) in DataForms (XEP-0004) can be namespaced.
- * This pipe gets rid of the namespace to improve readability.
+ * Variable (names) in DataForms (XEP-0004) are usually namespaced.
+ * This pipe gets rid of the namespace to improve readability for the user.
  *
  * Eg. `pubsub#max_items` -> `max_items`
  */

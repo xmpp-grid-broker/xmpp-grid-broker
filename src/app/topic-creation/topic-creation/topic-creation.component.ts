@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {TopicCreationService} from '../topic-creation.service';
-import {ErrorToString, NavigationService} from '../../core';
-import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+
+import {NavigationService, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {FormProcessingStatus} from '../../shared';
 import {TopicConfigComponent} from '../../topic-widgets';
+import {TopicCreationService} from '../topic-creation-service';
 
 @Component({
   selector: 'xgb-topic-creation',
@@ -37,7 +37,7 @@ export class TopicCreationComponent implements OnInit {
     this.formProcessing.begin();
     this.creationService.loadDefaultConfig()
       .then((form) => {
-        this.defaultConfigForm = this.removeNodeTypeFromForm(form);
+        this.defaultConfigForm = TopicCreationComponent.removeNodeTypeFromForm(form);
         this.formProcessing.done();
       })
       .catch(() => {
@@ -61,12 +61,12 @@ export class TopicCreationComponent implements OnInit {
       )
       .catch((error) => {
         this.formGroup.enable();
-        this.formProcessing.done({errorMessage: ErrorToString(error)});
+        this.formProcessing.done({error});
       });
     return false;
   }
 
-  private removeNodeTypeFromForm(form: XmppDataForm) {
+  private static removeNodeTypeFromForm(form: XmppDataForm) {
     return new XmppDataForm(form.fields.filter((field: XmppDataFormField) =>
       field.name !== 'pubsub#node_type'
     ));

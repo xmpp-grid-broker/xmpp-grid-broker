@@ -1,8 +1,9 @@
 import {Observable} from 'rxjs/Observable';
 
 export class BreadCrumb {
-  constructor(readonly url: Observable<string>, readonly name?: Observable<string>) {
+  constructor(readonly url: Observable<string>,
+              readonly label?: Observable<string>) {
   }
 }
 
-export type BreadCrumbs = Array<BreadCrumb>;
+export type BreadCrumbs = BreadCrumb[];

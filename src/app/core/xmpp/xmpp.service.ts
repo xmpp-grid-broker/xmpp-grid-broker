@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {JID} from 'xmpp-jid';
 import {Client, createClient} from 'stanza.io';
+import {JID} from 'xmpp-jid';
+
+import {XmppConfig} from '../config';
 import {NotificationService} from '../notifications';
 import {RawXmlStanzaAddOn} from './raw-xml-stanza';
-import {XmppConfig} from '../config';
 
 enum XmppConnectionState {
   Down = 0,
@@ -44,6 +45,12 @@ export class XmppService {
               private notificationService: NotificationService) {
   }
 
+  /**
+   * Must be called before any other method is called.
+   * The config is required but is lazily loaded.
+   *
+   * Using promises instead would made the handling quite complicated.
+   */
   public initialize(config) {
     this._config = config.xmpp;
     this._client = this._getClientInstance(this._config);

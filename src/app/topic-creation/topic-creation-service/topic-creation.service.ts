@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
-import {JxtErrorToXmppError, XmppDataForm, XmppErrorCondition, XmppIqType, XmppService} from '../core';
 import {JXT} from 'stanza.io';
+
+import {JxtErrorToXmppError, XmppDataForm, XmppErrorCondition, XmppIqType, XmppService} from '../../core/';
 
 @Injectable()
 export class TopicCreationService {

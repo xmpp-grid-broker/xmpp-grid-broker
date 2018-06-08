@@ -1,23 +1,22 @@
+import {DebugElement} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {ToastDirective} from '../../shared';
-import {SharedModule} from '../../shared/shared.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
+import {By} from '@angular/platform-browser';
+import {ActivatedRoute} from '@angular/router';
+
 import {TopicCreationComponent, TopicCreationService} from '..';
 import {NavigationService, XmppError, XmppErrorCondition} from '../../core';
-import {DebugElement} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {By} from '@angular/platform-browser';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
+import {ToastDirective} from '../../shared';
+import {SharedModule} from '../../shared/shared.module';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 
 describe(TopicCreationComponent.name, () => {
 
   let component: TopicCreationComponent;
   let fixture: ComponentFixture<TopicCreationComponent>;
   let de: DebugElement;
-  let topicCreationService: SpyObj<TopicCreationService>;
-  let navigationService: SpyObj<NavigationService>;
+  let topicCreationService: jasmine.SpyObj<TopicCreationService>;
+  let navigationService: jasmine.SpyObj<NavigationService>;
 
   const waitUntilLoaded = () => {
     fixture.detectChanges();
@@ -28,8 +27,8 @@ describe(TopicCreationComponent.name, () => {
 
 
   beforeEach(fakeAsync(() => {
-      topicCreationService = createSpyObj(TopicCreationService.name, ['loadDefaultConfig', 'createTopic']);
-      navigationService = createSpyObj(NavigationService.name, ['goToTopic']);
+      topicCreationService = jasmine.createSpyObj(TopicCreationService.name, ['loadDefaultConfig', 'createTopic']);
+      navigationService = jasmine.createSpyObj(NavigationService.name, ['goToTopic']);
 
       TestBed.configureTestingModule({
         imports: [SharedModule, FormsModule, ReactiveFormsModule, TopicWidgetsModule],

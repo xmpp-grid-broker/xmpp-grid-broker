@@ -1,19 +1,17 @@
-import {BreadCrumbComponent} from './bread-crumb.component';
-import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ErrorLogService, XmppService} from '../../';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
+import {RouterTestingModule} from '@angular/router/testing';
+
+import {ErrorLogService, XmppService} from '../../';
+import {BreadCrumbComponent} from './bread-crumb.component';
 
 describe(BreadCrumbComponent.name, () => {
 
   let component: BreadCrumbComponent;
   let fixture: ComponentFixture<BreadCrumbComponent>;
   let el: HTMLElement;
-  let xmppService: SpyObj<XmppService>;
-  let errorLogService: SpyObj<ErrorLogService>;
+  let xmppService: jasmine.SpyObj<XmppService>;
+  let errorLogService: jasmine.SpyObj<ErrorLogService>;
   let router: Router;
 
   const waitUntilLoaded = () => {
@@ -24,7 +22,7 @@ describe(BreadCrumbComponent.name, () => {
   };
 
   beforeEach(fakeAsync(() => {
-    const mockComponent = createSpyObj('root', ['ngOnInit']);
+    const mockComponent = jasmine.createSpyObj('root', ['ngOnInit']);
     const routes = [
       {path: '', component: mockComponent, data: {breadcrumb: null}},
       {path: 'topics/all', component: mockComponent, data: {breadcrumb: 'All Topics'}},
@@ -38,9 +36,9 @@ describe(BreadCrumbComponent.name, () => {
       },
     ];
 
-    xmppService = createSpyObj(XmppService.name, ['getServerTitle']);
+    xmppService = jasmine.createSpyObj(XmppService.name, ['getServerTitle']);
     xmppService.getServerTitle.and.returnValue('xmpp.hsr.ch');
-    errorLogService = createSpyObj(ErrorLogService.name, ['warn']);
+    errorLogService = jasmine.createSpyObj(ErrorLogService.name, ['warn']);
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes(routes)],

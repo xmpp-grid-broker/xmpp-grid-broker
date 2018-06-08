@@ -1,11 +1,10 @@
-import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-
-import {AffiliationManagementErrorCodes, CurrentTopicDetailService, TopicAffiliationsComponent, TopicAffiliationsService} from '..';
-import {SharedModule} from '../../shared/shared.module';
 import {DebugElement} from '@angular/core';
-import {Affiliation, JidAffiliation, LeafTopic, XmppError, XmppErrorCondition} from '../../core';
-import {NotificationService, XmppService} from '../../core';
+import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
+
+import {CurrentTopicDetailService, TopicAffiliationsComponent, TopicAffiliationsService} from '..';
+import {Affiliation, JidAffiliation, LeafTopic, NotificationService, XmppError, XmppErrorCondition, XmppService} from '../../core';
+import {SharedModule} from '../../shared/shared.module';
 
 describe(TopicAffiliationsComponent.name, () => {
   let component: TopicAffiliationsComponent;
@@ -359,7 +358,7 @@ describe(TopicAffiliationsComponent.name, () => {
   describe('given an error when loading the affiliations', () => {
 
     it('should hide the spinner whe the error is received', fakeAsync(() => {
-      loadJidAffiliationsResult = Promise.reject({condition: AffiliationManagementErrorCodes.Forbidden});
+      loadJidAffiliationsResult = Promise.reject({condition: XmppErrorCondition.Forbidden});
       setup();
 
       // Spinner is currently present...

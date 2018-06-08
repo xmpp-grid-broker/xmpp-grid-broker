@@ -1,4 +1,9 @@
+import {DebugElement} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {By} from '@angular/platform-browser';
+
+import {CurrentTopicDetailService, TopicDetailsConfigComponent} from '..';
 import {
   LeafTopic,
   NavigationService,
@@ -9,17 +14,10 @@ import {
   XmppError,
   XmppErrorCondition
 } from '../../core';
-import {TopicDetailsConfigComponent} from '..';
 import {ToastDirective} from '../../shared';
 import {SharedModule} from '../../shared/shared.module';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {DebugElement} from '@angular/core';
-import {By} from '@angular/platform-browser';
 import {TopicDetailsConfigurationService} from './topic-details-configuration.service';
-import {CurrentTopicDetailService} from '../';
-import createSpyObj = jasmine.createSpyObj;
-import SpyObj = jasmine.SpyObj;
 
 const FORM_TYPE = new XmppDataFormField(
   XmppDataFormFieldType.hidden,
@@ -50,12 +48,13 @@ class MockTopicDetailsService {
     ]));
   }
 
-  // noinspection JSMethodCanBeStatic, JSMethodCanBeStatic
-  updateTopicConfiguration(identifier, form): Promise<XmppDataForm> {
+  // noinspection JSMethodCanBeStatic
+  updateTopicConfiguration(): Promise<XmppDataForm> {
     return this.loadConfigurationForm();
   }
 
-  deleteTopic(topicIdentifier: string): Promise<void> {
+  // noinspection JSMethodCanBeStatic
+  deleteTopic(): Promise<void> {
     return Promise.resolve();
   }
 }
@@ -67,13 +66,13 @@ describe(TopicDetailsConfigComponent.name, () => {
   let de: DebugElement;
   let mockService: MockTopicDetailsService;
   let submitButton: HTMLElement;
-  let navigationService: SpyObj<NavigationService>;
-  let notificationService: SpyObj<NotificationService>;
+  let navigationService: jasmine.SpyObj<NavigationService>;
+  let notificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(fakeAsync(() => {
       mockService = new MockTopicDetailsService();
-      navigationService = createSpyObj('NavigationService', ['goToHome']);
-      notificationService = createSpyObj('NotificationService', ['confirm']);
+      navigationService = jasmine.createSpyObj('NavigationService', ['goToHome']);
+      notificationService = jasmine.createSpyObj('NotificationService', ['confirm']);
       const currentTopicDetailService = jasmine.createSpyObj('CurrentTopicDetailService', ['currentTopic']);
       currentTopicDetailService.currentTopic.and.returnValue(new LeafTopic('testing'));
 

@@ -1,2 +1,2 @@
 export * from './topic-creation';
-export * from './topic-creation.service';
+export * from './topic-creation-service';

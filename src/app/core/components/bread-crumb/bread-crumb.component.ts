@@ -1,13 +1,18 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {XmppService} from '../../xmpp';
-import {ErrorLogService} from '../../errors';
-import {BreadCrumb, BreadCrumbs} from './bread-crumb';
 import {Observable} from 'rxjs/Observable';
-import {distinctUntilChanged, filter, map} from 'rxjs/operators';
 import {of} from 'rxjs/observable/of';
-import {BreadCrumbUtils} from './bread-crumb-utils';
+import {distinctUntilChanged, filter, map} from 'rxjs/operators';
 
+import {ErrorLogService} from '../../errors';
+import {XmppService} from '../../xmpp';
+import {BreadCrumb, BreadCrumbs} from './bread-crumb';
+import {getAllUrlParameters, getUrlFromRoute, placeParamsIn} from './bread-crumb-utils';
+
+/**
+ * Component that renders bread crumbs based on the
+ * values of the currently active route.
+ */
 @Component({
   selector: 'xgb-bread-crumb',
   templateUrl: './bread-crumb.component.html',
@@ -15,6 +20,10 @@ import {BreadCrumbUtils} from './bread-crumb-utils';
   encapsulation: ViewEncapsulation.None
 })
 export class BreadCrumbComponent {
+  /**
+   * Observable of the current bread crumbs.
+   * Is updated whenever the URL changes.
+   */
   breadcrumbs: Observable<BreadCrumbs>;
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -34,7 +43,7 @@ export class BreadCrumbComponent {
    * Reconstructs BreadCrumbs recursively from tree path root
    */
   private getBreadCrumbs(route: ActivatedRoute): BreadCrumbs {
-    const url = BreadCrumbUtils.getUrlFromRoute(route);
+    const url = getUrlFromRoute(route);
 
     // ActiveRoute can only have one child
     const breadCrumbs = route.firstChild ? this.getBreadCrumbs(route.firstChild) : [];
@@ -46,8 +55,8 @@ export class BreadCrumbComponent {
       breadCrumbs.unshift(new BreadCrumb(url, of(this.xmppService.getServerTitle())));
 
     } else if (crumb && typeof crumb === 'string') {
-      const crumbName = BreadCrumbUtils.getAllUrlParameters(route).pipe(BreadCrumbUtils.placeParamsIn(crumb));
-      breadCrumbs.unshift(new BreadCrumb(url, crumbName));
+      const crumbLabel = getAllUrlParameters(route).pipe(placeParamsIn(crumb));
+      breadCrumbs.unshift(new BreadCrumb(url, crumbLabel));
 
     } else if (crumb !== null) {
       this.errorLogService.warn(

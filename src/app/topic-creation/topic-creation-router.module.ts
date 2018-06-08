@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+
 import {TopicCreationComponent} from '.';
 import {FeatureDetectionGuardService as XmppFeatureGuard} from '../core';
-
 
 const routes: Routes = [
   {

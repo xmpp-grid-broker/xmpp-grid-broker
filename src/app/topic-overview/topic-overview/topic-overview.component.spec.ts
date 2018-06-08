@@ -1,26 +1,24 @@
-import {async, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {ComponentFixture} from '@angular/core/testing/src/component_fixture';
-import {RouterTestingModule} from '@angular/router/testing';
-import {TopicOverviewComponent, TopicOverviewService} from '..';
-import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
-import {SharedModule} from '../../shared/shared.module';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
-import {Config, ConfigService, NavigationService, XmppService} from '../../core';
-import {LeafTopic} from '../../core';
-import SpyObj = jasmine.SpyObj;
-import createSpyObj = jasmine.createSpyObj;
+import {RouterTestingModule} from '@angular/router/testing';
 
-describe('TopicOverviewComponent', () => {
+import {TopicOverviewComponent, TopicOverviewService} from '..';
+import {Config, ConfigService, LeafTopic, NavigationService, XmppService} from '../../core';
+
+import {SharedModule} from '../../shared/shared.module';
+import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
+
+describe(TopicOverviewComponent.name, () => {
 
   let component: TopicOverviewComponent;
   let fixture: ComponentFixture<TopicOverviewComponent>;
   let de: HTMLElement;
-  let mockTopicOverviewService: SpyObj<TopicOverviewService>;
-  let mockXmppService: SpyObj<XmppService>;
+  let mockTopicOverviewService: jasmine.SpyObj<TopicOverviewService>;
+  let mockXmppService: jasmine.SpyObj<XmppService>;
 
   function setup(route: string) {
-    mockTopicOverviewService = createSpyObj('TopicOverviewService', ['rootTopics', 'allTopics', 'allCollections']);
-    mockXmppService = createSpyObj('XmppService', ['getServerTitle']);
+    mockTopicOverviewService = jasmine.createSpyObj('TopicOverviewService', ['rootTopics', 'allTopics', 'allCollections']);
+    mockXmppService = jasmine.createSpyObj('XmppService', ['getServerTitle']);
 
     mockXmppService.getServerTitle.and.returnValue('xmpp.hsr.ch');
 
@@ -48,7 +46,7 @@ describe('TopicOverviewComponent', () => {
   }
 
 
-  describe('given /topics/root as path ', function () {
+  describe('given /topics/root as path ', () => {
     beforeEach(() => {
       setup('root');
       mockTopicOverviewService.rootTopics.and.callFake(function* () {
@@ -74,7 +72,7 @@ describe('TopicOverviewComponent', () => {
 
   });
 
-  describe('given /topics/all as path', function () {
+  describe('given /topics/all as path', () => {
     beforeEach(() => {
       setup('all');
       mockTopicOverviewService.rootTopics.and.callFake(function* () {
@@ -87,7 +85,7 @@ describe('TopicOverviewComponent', () => {
     }));
   });
 
-  describe('given /topics/collections as path', function () {
+  describe('given /topics/collections as path', () => {
     beforeEach(() => {
       setup('collections');
       mockTopicOverviewService.allCollections.and.callFake(function* () {
