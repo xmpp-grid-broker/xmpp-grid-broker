@@ -3,6 +3,9 @@ import {FormControl, FormGroup} from '@angular/forms';
 
 import {Topic, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 
+/**
+ * A component that provides a specific form to create and configure a topic/collection.
+ */
 @Component({
   selector: 'xgb-topic-config',
   templateUrl: './topic-config.component.html'

@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 
-import {ErrorToString, NavigationService, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
+import {NavigationService, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {FormProcessingStatus} from '../../shared';
 import {TopicConfigComponent} from '../../topic-widgets';
-import {TopicCreationService} from '../topic-creation.service';
+import {TopicCreationService} from '../topic-creation-service';
 
 @Component({
   selector: 'xgb-topic-creation',
@@ -61,7 +61,7 @@ export class TopicCreationComponent implements OnInit {
       )
       .catch((error) => {
         this.formGroup.enable();
-        this.formProcessing.done({errorMessage: ErrorToString(error)});
+        this.formProcessing.done({error});
       });
     return false;
   }

@@ -3,6 +3,10 @@ import {FormControl, FormGroup} from '@angular/forms';
 
 import {XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 
+/**
+ * A component that renders any given {@type XmppDataForm} (see xep-0004)
+ * using generic for elements.
+ */
 @Component({
   selector: 'xgb-generic-form-config',
   templateUrl: './generic-form-config.component.html',

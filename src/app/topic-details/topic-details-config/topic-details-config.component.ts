@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 
-import {ErrorToString, NavigationService, NotificationService, Topic, XmppDataForm} from '../../core';
+import {NavigationService, NotificationService, Topic, XmppDataForm} from '../../core';
 import {FormProcessingStatus} from '../../shared';
 import {CurrentTopicDetailService} from '../current-topic-detail.service';
 import {TopicDetailsConfigurationService} from './topic-details-configuration.service';
@@ -48,7 +48,7 @@ export class TopicDetailsConfigComponent implements OnInit {
         this.loadedForm = form;
         this.formProcessing.done();
       })
-      .catch((error) => this.formProcessing.done({errorMessage: ErrorToString(error)}));
+      .catch((error) => this.formProcessing.done({error}));
   }
 
   submit(submittedForm: XmppDataForm): void {
@@ -61,7 +61,7 @@ export class TopicDetailsConfigComponent implements OnInit {
         });
       })
       .catch((error) => {
-        this.formProcessing.done({errorMessage: ErrorToString(error)});
+        this.formProcessing.done({error});
       });
   }
 
@@ -84,6 +84,6 @@ export class TopicDetailsConfigComponent implements OnInit {
       .then(() => {
         this.navigationService.goToHome();
       })
-      .catch((error) => this.formProcessing.done({errorMessage: ErrorToString(error)}));
+      .catch((error) => this.formProcessing.done({error}));
   }
 }

@@ -67,7 +67,7 @@ export class XmppDataFormField {
   }
 
   /**
-   * Converts this instance into a plain js obect to be used by stanza.
+   * Converts this instance into a plain js object to be used by stanza.
    */
   toJSON(): object {
     return {
@@ -99,7 +99,7 @@ export class XmppDataForm {
   }
 
   /**
-   * Conversts the given plain json value as received from
+   * Converts the given plain json value as received from
    * stanza.io into a {@type XmppDataForm}.
    */
   static fromJSON(jsonForm: any) {

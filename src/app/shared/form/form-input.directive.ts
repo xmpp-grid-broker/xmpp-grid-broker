@@ -2,7 +2,7 @@ import {Directive, ElementRef, HostListener, Input, OnChanges} from '@angular/co
 
 /**
  * This directive can be applied to all form elements
- * in order to apply the xgb UI to them.
+ * in order to apply the styling to them.
  *
  * Additionally, if the `hasError` attribute is set,
  * the field is marked as invalid if hasError changes to `true`.
