@@ -1,5 +1,5 @@
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
-import {ConfigLoaderService} from '../config/config-loader';
+import {ConfigService} from '../config/config-service';
 import {NotificationService} from '../notifications/';
 import {FeatureService} from './feature.service';
 import {Injectable} from '@angular/core';
@@ -11,7 +11,7 @@ export class FeatureDetectionGuardService implements CanActivate {
 
 
   constructor(private xmppFeatureService: FeatureService,
-              private configService: ConfigLoaderService,
+              private configService: ConfigService,
               private notificationService: NotificationService) {
     this.checkWasSuccessfulOnce = false;
   }

@@ -5,6 +5,7 @@ import {NavigationService, XmppService} from '../../core';
 import {Topic} from '../../core';
 import {TopicOverviewService} from '../topic-overview-service';
 import {IteratorListPager} from '../../shared';
+import {ConfigService} from 'app/core/config';
 
 
 @Component({
@@ -13,14 +14,16 @@ import {IteratorListPager} from '../../shared';
 })
 export class TopicOverviewComponent implements OnInit {
 
-  topicList: IteratorListPager<Topic> = new IteratorListPager();
+  topicPager: IteratorListPager<Topic>;
 
   serverTitle: string;
 
   constructor(private navigationService: NavigationService,
               private xmppService: XmppService,
               private topicOverviewService: TopicOverviewService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              configService: ConfigService) {
+    this.topicPager = new IteratorListPager<Topic>(configService.getConfig().pageSize);
   }
 
   ngOnInit() {
@@ -39,7 +42,7 @@ export class TopicOverviewComponent implements OnInit {
         iterator = this.topicOverviewService.allCollections();
         break;
     }
-    this.topicList.useIterator(iterator);
+    this.topicPager.useIterator(iterator);
   }
 
   createNew(what: string) {

@@ -63,6 +63,7 @@ A minimal configuration example can be found in this repository under link:../st
 *** `password`
 *** `resource`
 *** `timeout`
+* `pageSize`: The number of elements to list, eg. topics, persisted items.
 
 == Production Build
 

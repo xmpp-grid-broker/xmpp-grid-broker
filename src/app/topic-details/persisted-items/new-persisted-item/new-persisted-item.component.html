@@ -4,11 +4,13 @@
       ngForm
       #f="ngForm">
   <textarea
+    xgbSetFocus
     name="body"
     class="item-content"
     placeholder="Enter XML-payload here"
     xgbFormInput
     ngModel
+    (keyup.control.enter)="submit(f)"
     required></textarea>
   <xgb-action-bar>
     <button xgbActionButton

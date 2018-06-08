@@ -20,9 +20,9 @@ export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key:
     }
   }
   if (error instanceof Error) {
-    return new XmppError(`An unknown error has occurred: ${error.message}!`, undefined);
+    return new XmppError(`An unknown error has occurred: ${error.message}`, undefined);
   }
-  return new XmppError(`An unknown error has occurred: ${JSON.stringify(error)}!`, undefined);
+  return new XmppError(`An unknown error has occurred: ${JSON.stringify(error)}`, undefined);
 }
 
 /**
@@ -34,10 +34,7 @@ export function JxtErrorToXmppError(error: any, conditionToErrorMapping: { [key:
 export function ErrorToString(error: any): string {
   if (error instanceof XmppError) {
     return error.message;
-  } else  // noinspection SuspiciousInstanceOfGuard
-  if (error instanceof Error) {
-    return `An unknown error has occurred: ${error.message}`;
   } else {
-    return `An unknown error has occurred: ${JSON.stringify(error)}`;
+    return JxtErrorToXmppError(error, {}).message;
   }
 }

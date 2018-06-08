@@ -2,7 +2,7 @@ import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing'
 
 import {CurrentTopicDetailService, SubtopicsOrParentsComponent, SubtopicsOrParentsService} from '..';
 import {ActivatedRoute} from '@angular/router';
-import {CollectionTopic, Topic} from '../../core';
+import {CollectionTopic, Config, ConfigService, Topic} from '../../core';
 import {NavigationService} from '../../core';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {IteratorListPager} from '../../shared';
@@ -15,7 +15,7 @@ describe(SubtopicsOrParentsComponent.name, () => {
   let navigationService: jasmine.SpyObj<NavigationService>;
   let service: jasmine.SpyObj<SubtopicsOrParentsService>;
   let detailsService: jasmine.SpyObj<CurrentTopicDetailService>;
-  let iterator: IteratorListPager<Topic>;
+  let pager: IteratorListPager<Topic>;
 
   beforeEach(fakeAsync(() => {
     const route = {
@@ -27,6 +27,8 @@ describe(SubtopicsOrParentsComponent.name, () => {
     navigationService = createSpyObj(NavigationService.name, ['goToTopic']);
     service = createSpyObj(SubtopicsOrParentsService.name, ['subtopics', 'parents']);
     detailsService = createSpyObj(CurrentTopicDetailService.name, ['currentTopic']);
+    const configService = jasmine.createSpyObj(ConfigService.name, ['getConfig']);
+    configService.getConfig.and.returnValue(new Config(undefined, 10));
 
     TestBed.configureTestingModule({
       imports: [TopicWidgetsModule],
@@ -35,7 +37,8 @@ describe(SubtopicsOrParentsComponent.name, () => {
         {provide: ActivatedRoute, useValue: route},
         {provide: NavigationService, useValue: navigationService},
         {provide: SubtopicsOrParentsService, useValue: service},
-        {provide: CurrentTopicDetailService, useValue: detailsService}
+        {provide: CurrentTopicDetailService, useValue: detailsService},
+        {provide: ConfigService, useValue: configService},
       ]
     });
   }));
@@ -43,11 +46,11 @@ describe(SubtopicsOrParentsComponent.name, () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SubtopicsOrParentsComponent);
     component = fixture.componentInstance;
-    iterator = component.iterator;
+    pager = component.topicPager;
   });
 
   it('should use subtopics service method for subtopics', fakeAsync(() => {
-    const iteratorSpy = spyOn(iterator, 'useIterator').and.callThrough();
+    const iteratorSpy = spyOn(pager, 'useIterator').and.callThrough();
     detailsService.currentTopic.and.returnValue(new CollectionTopic('testing'));
 
     fixture.detectChanges();
@@ -61,7 +64,7 @@ describe(SubtopicsOrParentsComponent.name, () => {
 
   it('should use parents service method for parent collections', fakeAsync(() => {
     TestBed.get(ActivatedRoute).snapshot.data.subtopics = true;
-    const iteratorSpy = spyOn(iterator, 'useIterator').and.callThrough();
+    const iteratorSpy = spyOn(pager, 'useIterator').and.callThrough();
     detailsService.currentTopic.and.returnValue(new CollectionTopic('testing'));
 
 
@@ -75,7 +78,7 @@ describe(SubtopicsOrParentsComponent.name, () => {
   }));
 
   it('should redirect when topic is clicked', fakeAsync(() => {
-    const iteratorSpy = spyOn(iterator, 'useIterator').and.callThrough();
+    const iteratorSpy = spyOn(pager, 'useIterator').and.callThrough();
     detailsService.currentTopic.and.returnValue(new CollectionTopic('testing'));
     service.parents.and.callFake(async function* () {
       yield new CollectionTopic('coll1');

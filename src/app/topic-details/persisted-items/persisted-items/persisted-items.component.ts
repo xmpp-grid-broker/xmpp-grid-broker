@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {CurrentTopicDetailService} from '../../current-topic-detail.service';
 import {PersistedItemsService} from '../persisted-items.service';
 import {IteratorListPager} from '../../../shared';
-import {ErrorToString, NotificationService, PersistedItem, Topic} from '../../../core';
+import {ConfigService, ErrorToString, NotificationService, PersistedItem, Topic} from '../../../core';
 
 @Component({
   selector: 'xgb-persisted-items',
@@ -14,18 +14,20 @@ export class PersistedItemsComponent implements OnInit {
   // Map used to keep track which items are "un-collapsed"
   toggleMap: { [key: number]: boolean; } = {};
 
-  persistedItemsList = new IteratorListPager<PersistedItem>();
+  persistedItemsPager: IteratorListPager<PersistedItem>;
 
   topic: undefined | Topic;
 
   constructor(private detailsService: CurrentTopicDetailService,
               private service: PersistedItemsService,
-              private notificationService: NotificationService) {
+              private notificationService: NotificationService,
+              configService: ConfigService) {
+    this.persistedItemsPager = new IteratorListPager<PersistedItem>(configService.getConfig().pageSize);
   }
 
   ngOnInit() {
     this.topic = this.detailsService.currentTopic();
-    this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title));
+    this.persistedItemsPager.useIterator(this.service.persistedItems(this.topic.title));
   }
 
   async itemClicked(item: PersistedItem) {
@@ -66,16 +68,16 @@ export class PersistedItemsComponent implements OnInit {
   }
 
   private setError(err) {
-    this.persistedItemsList.hasError = true;
-    this.persistedItemsList.errorMessage = ErrorToString(err);
+    this.persistedItemsPager.hasError = true;
+    this.persistedItemsPager.errorMessage = ErrorToString(err);
   }
 
   private async executeAndRefreshIterator(promise: Promise<void>) {
     try {
       await promise;
-      this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title));
+      this.persistedItemsPager.useIterator(this.service.persistedItems(this.topic.title));
     } catch (err) {
-      this.persistedItemsList.useIterator(this.service.persistedItems(this.topic.title))
+      this.persistedItemsPager.useIterator(this.service.persistedItems(this.topic.title))
         .then(() => this.setError(err))
         .catch(() => this.setError(err));
     }

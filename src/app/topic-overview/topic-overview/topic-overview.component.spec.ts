@@ -5,7 +5,7 @@ import {TopicOverviewComponent, TopicOverviewService} from '..';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 import {SharedModule} from '../../shared/shared.module';
 import {ActivatedRoute} from '@angular/router';
-import {NavigationService, XmppService} from '../../core';
+import {Config, ConfigService, NavigationService, XmppService} from '../../core';
 import {LeafTopic} from '../../core';
 import SpyObj = jasmine.SpyObj;
 import createSpyObj = jasmine.createSpyObj;
@@ -27,6 +27,8 @@ describe('TopicOverviewComponent', () => {
     const activatedRouteMock = {
       snapshot: {url: [{path: route}], data: {filter: route}}
     };
+    const configService = jasmine.createSpyObj(ConfigService.name, ['getConfig']);
+    configService.getConfig.and.returnValue(new Config(undefined, 10));
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, TopicWidgetsModule, SharedModule],
@@ -35,7 +37,8 @@ describe('TopicOverviewComponent', () => {
         {provide: NavigationService},
         {provide: TopicOverviewService, useValue: mockTopicOverviewService},
         {provide: XmppService, useValue: mockXmppService},
-        {provide: ActivatedRoute, useValue: activatedRouteMock}
+        {provide: ActivatedRoute, useValue: activatedRouteMock},
+        {provide: ConfigService, useValue: configService},
       ]
     });
 
