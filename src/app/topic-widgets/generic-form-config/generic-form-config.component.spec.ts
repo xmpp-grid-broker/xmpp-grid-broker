@@ -5,7 +5,6 @@ import {By} from '@angular/platform-browser';
 import {FormFieldNamePipe, GenericFormConfigComponent, JidMultiComponent} from '..';
 import {ListOption, XmppDataForm, XmppDataFormField, XmppDataFormFieldType} from '../../core';
 import {FormFieldComponent} from '../../shared';
-
 import {SharedModule} from '../../shared/shared.module';
 
 const TEST_FIELD_TEXT_SINGLE = new XmppDataFormField(

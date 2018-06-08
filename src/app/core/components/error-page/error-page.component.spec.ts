@@ -4,7 +4,6 @@ import {RouterTestingModule} from '@angular/router/testing';
 import 'rxjs/add/observable/of';
 import {Observable} from 'rxjs/Observable';
 
-
 import {ErrorPageComponent} from './';
 
 describe(ErrorPageComponent.name, () => {

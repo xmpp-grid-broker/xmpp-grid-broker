@@ -7,7 +7,6 @@ import {ActivatedRoute} from '@angular/router';
 import {TopicCreationComponent, TopicCreationService} from '..';
 import {NavigationService, XmppError, XmppErrorCondition} from '../../core';
 import {ToastDirective} from '../../shared';
-
 import {SharedModule} from '../../shared/shared.module';
 import {TopicWidgetsModule} from '../../topic-widgets/topic-widgets.module';
 

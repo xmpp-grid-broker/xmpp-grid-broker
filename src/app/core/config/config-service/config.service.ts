@@ -1,8 +1,8 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+
 import {environment} from '../../../../environments';
 import {XmppService} from '../../xmpp';
-
 import {Config} from '../config';
 
 /**

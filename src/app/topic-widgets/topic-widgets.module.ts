@@ -11,7 +11,6 @@ import {
   TopicIteratorHelperService,
   TopicListComponent
 } from '.';
-
 import {SharedModule} from '../shared/shared.module';
 
 const EXPORTED_DECLARATIONS = [

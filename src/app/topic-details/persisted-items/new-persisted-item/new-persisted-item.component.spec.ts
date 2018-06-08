@@ -3,6 +3,7 @@ import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/t
 import {FormsModule} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
+
 import {NavigationService, XmppError, XmppErrorCondition} from '../../../core';
 import {SharedModule} from '../../../shared/shared.module';
 import {PersistedItemsService} from '../persisted-items.service';

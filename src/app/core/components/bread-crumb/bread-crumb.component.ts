@@ -3,8 +3,8 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {distinctUntilChanged, filter, map} from 'rxjs/operators';
-import {ErrorLogService} from '../../errors';
 
+import {ErrorLogService} from '../../errors';
 import {XmppService} from '../../xmpp';
 import {BreadCrumb, BreadCrumbs} from './bread-crumb';
 import {getAllUrlParameters, getUrlFromRoute, placeParamsIn} from './bread-crumb-utils';

@@ -20,18 +20,21 @@ export class TopicConfigComponent implements DoCheck {
    * The label of the submit button.
    */
   @Input() public submitLabel: string;
+
   /**
    * Event to bind to when the form is submitted.
    * The changed fields will be passed in the
    * form of an {XmppDataForm}.
    */
   @Output() public configSubmitted = new EventEmitter<XmppDataForm>();
+
   /**
    * A subset of the xmppDataForm that contains
    * all fields, for which no specific widgets
    * have been specified.
    */
   advancedConfigForm: XmppDataForm;
+
   /**
    * Fields, for which a specialized widget / validation takes place.
    */
@@ -40,6 +43,7 @@ export class TopicConfigComponent implements DoCheck {
     'pubsub#children': undefined,
     'pubsub#collection': undefined
   };
+
   /**
    * The Angular Form group used for form
    * binding (and eventually validation)

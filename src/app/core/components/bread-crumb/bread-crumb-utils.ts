@@ -1,5 +1,4 @@
 import {ActivatedRoute, ParamMap} from '@angular/router';
-
 import {OperatorFunction} from 'rxjs/interfaces';
 import {Observable} from 'rxjs/Observable';
 import {combineLatest} from 'rxjs/observable/combineLatest';
