@@ -25,6 +25,6 @@ describe(BreadCrumbTitleService.name, () => {
 
     tick();
 
-    return expect(titleService.setTitle).toHaveBeenCalledWith('XMPP-Grid Broker: Random → Stuff')
+    return expect(titleService.setTitle).toHaveBeenCalledWith('XMPP-Grid Broker: Random → Stuff');
   }));
 });
