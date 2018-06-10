@@ -23,11 +23,15 @@ export class AppComponent {
 
   constructor(notificationService: NotificationService,
               viewContainerRef: ViewContainerRef,
+              breadCrumbService: BreadCrumbService,
+              breadCrumbTitleService: BreadCrumbTitleService,
               private router: Router) {
     notificationService.setRootViewContainerRef(viewContainerRef);
     router.events.subscribe((event: RouterEvent) => {
       this.navigationInterceptor(event);
     });
+
+    breadCrumbTitleService.init(breadCrumbService.getBreadCrumbs());
   }
 
   /**
