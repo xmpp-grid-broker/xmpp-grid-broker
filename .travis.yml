@@ -12,6 +12,7 @@ node_js:
   - "8"
 script:
   - bash build.bash
+  - npm run e2e
 
 before_deploy:
   - cp -a dist $RELEASE_NAME
