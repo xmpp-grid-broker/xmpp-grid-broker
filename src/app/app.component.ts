@@ -1,7 +1,7 @@
 import {Component, ViewContainerRef} from '@angular/core';
 import {NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterEvent} from '@angular/router';
 
-import {NotificationService} from './core';
+import {BreadCrumbService, BreadCrumbTitleService, NotificationService} from './core';
 
 /**
  * Root-Component of the xmpp-grid broker app.
@@ -23,11 +23,14 @@ export class AppComponent {
 
   constructor(notificationService: NotificationService,
               viewContainerRef: ViewContainerRef,
+              breadCrumbTitleService: BreadCrumbTitleService,
               private router: Router) {
     notificationService.setRootViewContainerRef(viewContainerRef);
     router.events.subscribe((event: RouterEvent) => {
       this.navigationInterceptor(event);
     });
+
+    breadCrumbTitleService.activate();
   }
 
   /**

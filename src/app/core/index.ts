@@ -1,3 +1,4 @@
+export * from './bread-crumb';
 export * from './components';
 export * from './config/';
 export * from './errors';

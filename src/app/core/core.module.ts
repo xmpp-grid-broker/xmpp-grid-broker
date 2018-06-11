@@ -6,6 +6,8 @@ import {RouterModule} from '@angular/router';
 import {
   AlertNotificationComponent,
   BreadCrumbComponent,
+  BreadCrumbService,
+  BreadCrumbTitleService,
   ConfigService,
   ConfirmNotificationComponent,
   ErrorLogService,
@@ -41,6 +43,8 @@ const EXPORTED_DECLARATIONS = [
     ConfirmNotificationComponent
   ],
   providers: [
+    BreadCrumbService,
+    BreadCrumbTitleService,
     {provide: ErrorHandler, useClass: GlobalErrorHandlerService},
     NotificationService,
     NavigationService,
