@@ -1,7 +1,6 @@
 import {browser, by, ElementArrayFinder, ElementFinder, ExpectedConditions} from 'protractor';
-import {Locatable} from './locatable';
-import {Presence} from './presence';
-import {toPromise} from '../helpers';
+
+import {Component, promisePresenceOf, toPromise} from '../utilities';
 
 export class ToastContent {
   constructor(
@@ -11,9 +10,9 @@ export class ToastContent {
   }
 }
 
-export class Toast implements Locatable, Presence {
+export class Toast implements Component {
 
-  constructor(public parentElement: Locatable & Presence) {
+  constructor(public parentElement: Component) {
   }
 
   get locator(): ElementFinder {
@@ -25,25 +24,25 @@ export class Toast implements Locatable, Presence {
   }
 
   get messages(): Promise<ToastContent[]> {
-    const waitOnToast = toPromise(browser.wait(ExpectedConditions.and(
-      ExpectedConditions.presenceOf(this.toastLocators.first()),
-      ExpectedConditions.visibilityOf(this.toastLocators.first())
-    )));
-
-
-    return waitOnToast
+    return this.awaitFirstToastPresence()
       .then(() => toPromise(this.toastLocators
-        .map<ToastContent>(async toastElement => {
-          const text = await toPromise(toastElement.getText().then(v => v));
-          const success = await this.elementHasClass(toastElement, 'toast-success');
-          return new ToastContent(text, success);
-        })
-      ));
+        .map(async toastElement => new ToastContent(
+          await toPromise(toastElement.getText()),
+          await this.elementHasClass(toastElement, 'toast-success')
+        ))
+      ))
+      .then(promises => Promise.all(promises));
   }
 
   public awaitPresence(): Promise<void> {
-    return this.parentElement.awaitPresence()
-      .then(() => toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator))));
+    return this.parentElement.awaitPresence().then(() => promisePresenceOf(this.locator));
+  }
+
+  public awaitFirstToastPresence(): Promise<void> {
+    return toPromise(browser.wait(ExpectedConditions.and(
+      ExpectedConditions.presenceOf(this.toastLocators.first()),
+      ExpectedConditions.visibilityOf(this.toastLocators.first())
+    )));
   }
 
   public awaitFullPresence(): Promise<void> {
@@ -51,9 +50,8 @@ export class Toast implements Locatable, Presence {
   }
 
   private elementHasClass(element: ElementFinder, cls: string): Promise<boolean> {
-    return toPromise(element.getAttribute('class')).then((classes) => {
-      return classes.split(' ').includes(cls);
-    });
+    const classAttribute = toPromise(element.getAttribute('class'));
+    return classAttribute.then((classes) => classes.split(' ').includes(cls));
   }
 
 }

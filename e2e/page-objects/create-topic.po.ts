@@ -1,6 +1,6 @@
-import {UrlAddressableComponent} from '../page-elements';
-import {browser, by, element, ElementFinder, ExpectedConditions} from 'protractor';
-import {toPromise} from '../helpers';
+import {by, element, ElementFinder} from 'protractor';
+
+import {promisePresenceOf, UrlAddressableComponent} from '../utilities';
 
 export class CreateTopicPage extends UrlAddressableComponent {
   get landingUrl(): string {
@@ -12,7 +12,7 @@ export class CreateTopicPage extends UrlAddressableComponent {
   }
 
   public awaitPresence(): Promise<void> {
-    return toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator)));
+    return promisePresenceOf(this.locator);
   }
 
   public awaitFullPresence(): Promise<void> {

@@ -1,14 +1,14 @@
-import {browser, by, element, ElementFinder, ExpectedConditions} from 'protractor';
+import {by, element, ElementFinder} from 'protractor';
 
-import {List, Locatable, Presence, Tab, UrlAddressableComponent} from '../page-elements';
+import {List, Tab} from '../page-elements';
 import {CreateCollectionPage} from './create-collection.po';
 import {CreateTopicPage} from './create-topic.po';
-import {toPromise} from '../helpers';
+import {Component, promisePresenceOf, toPromise, UrlAddressableComponent} from '../utilities';
 
 type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 
 export class TopicOverviewRootCollectionsTab extends Tab {
-  constructor(parentElement: Locatable & Presence) {
+  constructor(parentElement: Component) {
     super(parentElement);
   }
 
@@ -39,7 +39,7 @@ export class TopicOverviewRootCollectionsTab extends Tab {
 }
 
 export class TopicOverviewAllTopicsTab extends Tab {
-  constructor(parentElement: Locatable & Presence) {
+  constructor(parentElement: Component) {
     super(parentElement);
   }
 
@@ -66,7 +66,7 @@ export class TopicOverviewAllTopicsTab extends Tab {
 }
 
 export class TopicOverviewAllCollectionsTab extends Tab {
-  constructor(parentElement: Locatable & Presence) {
+  constructor(parentElement: Component) {
     super(parentElement);
   }
 
@@ -92,7 +92,7 @@ export class TopicOverviewAllCollectionsTab extends Tab {
   }
 }
 
-export class TopicsOverviewPage extends UrlAddressableComponent implements Locatable, Presence {
+export class TopicsOverviewPage extends UrlAddressableComponent {
   get landingUrl(): string {
     return '/topics';
   }
@@ -124,7 +124,7 @@ export class TopicsOverviewPage extends UrlAddressableComponent implements Locat
   }
 
   public awaitPresence(): Promise<void> {
-    return toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator)));
+    return promisePresenceOf(this.locator);
   }
 
   public awaitFullPresence(): Promise<void> {

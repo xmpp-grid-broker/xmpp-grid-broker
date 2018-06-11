@@ -1,8 +1,10 @@
 import {browser} from 'protractor';
-import {Presence} from './presence';
-import {toPromise} from '../helpers';
+import {Component} from './component';
+import {toPromise} from './helpers';
 
-export abstract class UrlAddressableComponent implements Presence {
+export abstract class UrlAddressableComponent implements Component {
+
+  abstract get locator();
 
   abstract get landingUrl();
 
@@ -11,6 +13,7 @@ export abstract class UrlAddressableComponent implements Presence {
   }
 
   public abstract awaitPresence(): Promise<void>;
+
   public abstract awaitFullPresence(): Promise<void>;
 
   /**

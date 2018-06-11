@@ -1,7 +1,7 @@
-import {browser, by, element, ElementFinder, ExpectedConditions} from 'protractor';
+import {by, element, ElementFinder} from 'protractor';
 
-import {Form, List, Locatable, Presence, Tab, Toast, UrlAddressableComponent} from '../page-elements';
-import {toPromise} from '../helpers';
+import {Form, List, Tab, Toast} from '../page-elements';
+import {Component, promisePresenceOf, toPromise, UrlAddressableComponent} from '../utilities';
 
 type TopicDetailsTab = TopicDetailsConfigurationTab | TopicDetailsAffiliationTab;
 
@@ -30,7 +30,7 @@ export class AffiliationListElement {
 }
 
 export class TopicDetailsConfigurationTab extends Tab {
-  constructor(readonly topicId: string, parentElement: Locatable & Presence) {
+  constructor(readonly topicId: string, parentElement: Component) {
     super(parentElement);
   }
 
@@ -72,7 +72,7 @@ export class TopicDetailsConfigurationTab extends Tab {
 }
 
 export class TopicDetailsAffiliationTab extends Tab {
-  constructor(readonly topicId: string, parentElement: Locatable & Presence) {
+  constructor(readonly topicId: string, parentElement: Component) {
     super(parentElement);
   }
 
@@ -140,7 +140,7 @@ export class TopicDetailsAffiliationTab extends Tab {
   }
 }
 
-export class TopicDetailsPage extends UrlAddressableComponent implements Locatable, Presence {
+export class TopicDetailsPage extends UrlAddressableComponent {
   constructor(readonly topicId: string) {
     super();
   }
@@ -168,7 +168,7 @@ export class TopicDetailsPage extends UrlAddressableComponent implements Locatab
   }
 
   public awaitPresence(): Promise<void> {
-    return toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator)));
+    return promisePresenceOf(this.locator);
   }
 
   public awaitFullPresence(): Promise<void> {

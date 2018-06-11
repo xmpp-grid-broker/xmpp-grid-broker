@@ -1,8 +1,8 @@
-import {Locatable, Presence, UrlAddressableComponent} from '../page-elements';
-import {browser, by, element, ElementFinder, ExpectedConditions} from 'protractor';
-import {toPromise} from '../helpers';
+import {by, element, ElementFinder} from 'protractor';
 
-export class CreateCollectionPage extends UrlAddressableComponent implements Locatable, Presence {
+import {promisePresenceOf, UrlAddressableComponent} from '../utilities';
+
+export class CreateCollectionPage extends UrlAddressableComponent {
   get landingUrl(): string {
     return '/topics/new/collection';
   }
@@ -12,7 +12,7 @@ export class CreateCollectionPage extends UrlAddressableComponent implements Loc
   }
 
   public awaitPresence(): Promise<void> {
-    return toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator)));
+    return promisePresenceOf(this.locator);
   }
 
   public awaitFullPresence(): Promise<void> {

@@ -1,11 +1,9 @@
-import {browser, by, ElementFinder, ExpectedConditions} from 'protractor';
-import {Locatable} from './locatable';
-import {Presence} from './presence';
-import {toPromise} from '../helpers';
+import {by, ElementFinder} from 'protractor';
 
+import {Component, promisePresenceOf, toPromise} from '../utilities';
 
-export class Form implements Locatable, Presence {
-  constructor(readonly parentElement: Locatable & Presence, readonly _locator: (parent: Locatable) => ElementFinder) {
+export class Form implements Component {
+  constructor(readonly parentElement: Component, readonly _locator: (parent: Component) => ElementFinder) {
   }
 
   get locator(): ElementFinder {
@@ -13,8 +11,7 @@ export class Form implements Locatable, Presence {
   }
 
   public awaitPresence(): Promise<void> {
-    return this.parentElement.awaitPresence()
-      .then(() => toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator))));
+    return this.parentElement.awaitPresence().then(() => promisePresenceOf(this.locator));
   }
 
   public awaitFullPresence(): Promise<void> {
@@ -22,11 +19,11 @@ export class Form implements Locatable, Presence {
   }
 
   public async getFieldValue(fieldId: string): Promise<string> {
-    return toPromise(this.getInputElement(fieldId).getAttribute('value').then(v => v));
+    return toPromise(this.getInputElement(fieldId).getAttribute('value'));
   }
 
   public async setFieldValue(fieldId: string, newValue: any): Promise<void> {
-    return toPromise(this.getInputElement(fieldId).sendKeys(newValue).then(v => v));
+    return toPromise(this.getInputElement(fieldId).sendKeys(newValue));
   }
 
   private getInputElement(fieldId: string): ElementFinder {

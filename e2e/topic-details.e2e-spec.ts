@@ -1,4 +1,5 @@
 import {browser} from 'protractor';
+
 import {ToastContent} from './page-elements';
 import {TopicDetailsAffiliationTab, TopicDetailsConfigurationTab, TopicDetailsPage} from './page-objects';
 
