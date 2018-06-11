@@ -1,18 +1,26 @@
 import {Injectable} from '@angular/core';
 import {Title} from '@angular/platform-browser';
-import {Observable} from 'rxjs/Observable';
 import {combineLatest} from 'rxjs/observable/combineLatest';
 import {flatMap, map, take} from 'rxjs/operators';
 
-import {BreadCrumbs} from './bread-crumb';
+import {BreadCrumbService} from './bread-crumb.service';
 
+/**
+ * This service can be used to update the page title to represent
+ * the bread crumb value.
+ */
 @Injectable()
 export class BreadCrumbTitleService {
-  constructor(private title: Title) {
+  constructor(private title: Title,
+              private breadCrumbService: BreadCrumbService) {
   }
 
-  init(breadcrumbs$: Observable<BreadCrumbs>) {
-    const path$ = breadcrumbs$.pipe(
+  /**
+   * Call this method (eg. in the root app component) to activate
+   * the service.
+   */
+  public activate() {
+    const path$ = this.breadCrumbService.getBreadCrumbs().pipe(
       map(breadcrumbs => breadcrumbs.map(crumb => crumb.label)),
       flatMap(labels$ => combineLatest(labels$).pipe(take(1))),
       map(labels => labels.join(' → '))
@@ -21,6 +29,5 @@ export class BreadCrumbTitleService {
     path$.subscribe(path => {
       this.title.setTitle(`XMPP-Grid Broker: ${path}`);
     });
-
   }
 }
