@@ -1,7 +1,7 @@
 import {ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {of} from 'rxjs/observable/of';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Observable} from 'rxjs/Observable';
+import {of} from 'rxjs/observable/of';
 
 import {BreadCrumb, BreadCrumbService} from '../../';
 import {BreadCrumbComponent} from './bread-crumb.component';
@@ -35,7 +35,7 @@ describe(BreadCrumbComponent.name, () => {
   }));
 
   it('should render breadcrumbs', () => {
-    const breadcrumbs = el.querySelectorAll('.breadcrumb-item > a');
+    const breadcrumbs: any = el.querySelectorAll('.breadcrumb-item > a');
 
     expect(breadcrumbs.length).toBe(2);
 

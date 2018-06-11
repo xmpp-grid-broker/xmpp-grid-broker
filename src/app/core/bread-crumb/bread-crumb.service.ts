@@ -1,14 +1,14 @@
+import {Injectable} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {Subject} from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
 import {of} from 'rxjs/observable/of';
 import {distinctUntilChanged, filter, map, multicast, refCount} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
+import {Subject} from 'rxjs/Subject';
 
 import {ErrorLogService} from '../errors';
 import {XmppService} from '../xmpp';
 import {BreadCrumb, BreadCrumbs} from './bread-crumb';
 import {getAllUrlParameters, getUrlFromRoute, placeParamsIn} from './bread-crumb-utils';
-import {Observable} from 'rxjs/Observable';
 
 /**
  * Service that provides BreadCrumbs based on routing events.

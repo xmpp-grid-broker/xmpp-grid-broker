@@ -1,8 +1,8 @@
-import {Title} from '@angular/platform-browser';
 import {Injectable} from '@angular/core';
+import {Title} from '@angular/platform-browser';
 import {Observable} from 'rxjs/Observable';
-import {flatMap, map, take} from 'rxjs/operators';
 import {combineLatest} from 'rxjs/observable/combineLatest';
+import {flatMap, map, take} from 'rxjs/operators';
 
 import {BreadCrumbs} from './bread-crumb';
 

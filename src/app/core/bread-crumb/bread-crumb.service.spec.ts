@@ -1,8 +1,8 @@
 import {fakeAsync, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {take} from 'rxjs/operators';
 import {Observable} from 'rxjs/Observable';
+import {take} from 'rxjs/operators';
 
 import {BreadCrumbs, ErrorLogService, XmppService} from '../';
 import {BreadCrumbService} from './bread-crumb.service';

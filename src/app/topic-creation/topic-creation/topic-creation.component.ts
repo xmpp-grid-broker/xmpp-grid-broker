@@ -33,6 +33,12 @@ export class TopicCreationComponent implements OnInit {
               private route: ActivatedRoute) {
   }
 
+  private static removeNodeTypeFromForm(form: XmppDataForm) {
+    return new XmppDataForm(form.fields.filter((field: XmppDataFormField) =>
+      field.name !== 'pubsub#node_type'
+    ));
+  }
+
   ngOnInit(): void {
     this.formProcessing.begin();
     this.creationService.loadDefaultConfig()
@@ -64,12 +70,6 @@ export class TopicCreationComponent implements OnInit {
         this.formProcessing.done({error});
       });
     return false;
-  }
-
-  private static removeNodeTypeFromForm(form: XmppDataForm) {
-    return new XmppDataForm(form.fields.filter((field: XmppDataFormField) =>
-      field.name !== 'pubsub#node_type'
-    ));
   }
 
   private addNodeTypeToForm(configData: XmppDataForm | undefined) {
