@@ -6,7 +6,7 @@ const docker_compose = 'docker-compose --project-name xgb_e2e -f docker-compose.
 
 // noinspection JSUnusedGlobalSymbols
 exports.config = {
-  allScriptsTimeout: 60*1000,
+  allScriptsTimeout: 121*1000,
   specs: [
     './e2e/**/*.e2e-spec.ts'
   ],
@@ -22,7 +22,7 @@ exports.config = {
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 55*1000
+    defaultTimeoutInterval: 120*1000
   },
   SELENIUM_PROMISE_MANAGER: false,
   beforeLaunch() {
