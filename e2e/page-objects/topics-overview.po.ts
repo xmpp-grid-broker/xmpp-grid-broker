@@ -1,13 +1,19 @@
-import {by, element, ElementFinder} from 'protractor';
-import {List, Locatable, Spinner, Tab, UrlAddressableComponent} from '../page-elements';
+import {browser, by, element, ElementFinder, ExpectedConditions} from 'protractor';
+
+import {List, Locatable, Presence, Tab, UrlAddressableComponent} from '../page-elements';
 import {CreateCollectionPage} from './create-collection.po';
 import {CreateTopicPage} from './create-topic.po';
+import {toPromise} from '../helpers';
 
 type TopicsOverviewTab = TopicOverviewRootCollectionsTab | TopicOverviewAllTopicsTab | TopicOverviewAllCollectionsTab;
 
 export class TopicOverviewRootCollectionsTab extends Tab {
-  constructor(parentElement: Locatable) {
+  constructor(parentElement: Locatable & Presence) {
     super(parentElement);
+  }
+
+  get locator(): ElementFinder {
+    return this.parentElement.locator.element(by.tagName('xgb-topics'));
   }
 
   get list(): List {
@@ -26,11 +32,19 @@ export class TopicOverviewRootCollectionsTab extends Tab {
     return 'Root Topics';
   }
 
+  public awaitFullPresence(): Promise<void> {
+    return super.awaitFullPresence()
+      .then(() => this.list.awaitFullPresence());
+  }
 }
 
 export class TopicOverviewAllTopicsTab extends Tab {
-  constructor(parentElement: Locatable) {
+  constructor(parentElement: Locatable & Presence) {
     super(parentElement);
+  }
+
+  get locator(): ElementFinder {
+    return this.parentElement.locator.element(by.tagName('xgb-topics'));
   }
 
   get list(): List {
@@ -44,11 +58,20 @@ export class TopicOverviewAllTopicsTab extends Tab {
   get linkText(): string {
     return 'All Topics';
   }
+
+  public awaitFullPresence(): Promise<void> {
+    return super.awaitFullPresence()
+      .then(() => this.list.awaitFullPresence());
+  }
 }
 
 export class TopicOverviewAllCollectionsTab extends Tab {
-  constructor(parentElement: Locatable) {
+  constructor(parentElement: Locatable & Presence) {
     super(parentElement);
+  }
+
+  get locator(): ElementFinder {
+    return this.parentElement.locator.element(by.tagName('xgb-topics'));
   }
 
   get list(): List {
@@ -62,9 +85,14 @@ export class TopicOverviewAllCollectionsTab extends Tab {
   get linkText(): string {
     return 'All Collections';
   }
+
+  public awaitFullPresence(): Promise<void> {
+    return super.awaitFullPresence()
+      .then(() => this.list.awaitFullPresence());
+  }
 }
 
-export class TopicsOverviewPage extends UrlAddressableComponent implements Locatable {
+export class TopicsOverviewPage extends UrlAddressableComponent implements Locatable, Presence {
   get landingUrl(): string {
     return '/topics';
   }
@@ -95,25 +123,38 @@ export class TopicsOverviewPage extends UrlAddressableComponent implements Locat
     return element(by.cssContainingText('button', 'New Collection'));
   }
 
-  async navigateToTab(tab: TopicsOverviewTab): Promise<void> {
-    await tab.linkElement.click();
-    return Spinner.waitOnNone().then(() => {
-      this.tab = tab;
-    });
+  public awaitPresence(): Promise<void> {
+    return toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator)));
+  }
+
+  public awaitFullPresence(): Promise<void> {
+    return this.tab.awaitFullPresence();
+  }
+
+  public navigateToTab(tab: TopicsOverviewTab): Promise<void> {
+    return toPromise(tab.linkElement.click())
+      .then(() => {
+        this.tab = tab;
+      })
+      .then(() => this.tab.awaitFullPresence());
   }
 
   async clickNewTopic(): Promise<CreateTopicPage> {
-    await this.newTopicButton.click();
-    await Spinner.waitOnNone();
+    await toPromise(this.newTopicButton.click());
 
-    return new CreateTopicPage();
+    const newPage = new CreateTopicPage();
+    await newPage.awaitFullPresence();
+
+    return newPage;
   }
 
   async clickNewCollection(): Promise<CreateCollectionPage> {
-    await this.newCollectionButton.click();
-    await Spinner.waitOnNone();
+    await toPromise(this.newCollectionButton.click());
 
-    return new CreateCollectionPage();
+    const newPage = new CreateCollectionPage();
+    await newPage.awaitFullPresence();
+
+    return newPage;
   }
 
 }

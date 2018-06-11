@@ -1,7 +1,8 @@
-import {by, element, ElementFinder} from 'protractor';
-import {BreadCrumbs, Locatable, UrlAddressableComponent} from '../page-elements';
+import {browser, by, element, ElementFinder, ExpectedConditions} from 'protractor';
+import {BreadCrumbs, Locatable, Presence, UrlAddressableComponent} from '../page-elements';
+import {toPromise} from '../helpers';
 
-export class AppPage extends UrlAddressableComponent implements Locatable {
+export class AppPage extends UrlAddressableComponent implements Locatable, Presence {
   get landingUrl(): string {
     return '/';
   }
@@ -12,5 +13,13 @@ export class AppPage extends UrlAddressableComponent implements Locatable {
 
   get breadCrumbs(): BreadCrumbs {
     return new BreadCrumbs(this);
+  }
+
+  public awaitPresence(): Promise<void> {
+    return toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator)));
+  }
+
+  public awaitFullPresence(): Promise<void> {
+    return this.breadCrumbs.awaitFullPresence();
   }
 }

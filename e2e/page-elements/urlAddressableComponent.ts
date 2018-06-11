@@ -1,7 +1,8 @@
 import {browser} from 'protractor';
-import {Spinner} from './spinner';
+import {Presence} from './presence';
+import {toPromise} from '../helpers';
 
-export abstract class UrlAddressableComponent {
+export abstract class UrlAddressableComponent implements Presence {
 
   abstract get landingUrl();
 
@@ -9,13 +10,16 @@ export abstract class UrlAddressableComponent {
     return browser.baseUrl + this.landingUrl;
   }
 
+  public abstract awaitPresence(): Promise<void>;
+  public abstract awaitFullPresence(): Promise<void>;
+
   /**
    * Navigate to {@member fullUrl} and wait until
    * the page loads and there are no waiting spinners.
    */
-  async navigateTo() {
+  public async navigateTo() {
     browser.waitForAngularEnabled(false);
-    await browser.get(this.landingUrl);
-    await Spinner.waitOnNone();
+    await toPromise(browser.get(this.landingUrl));
+    await this.awaitFullPresence();
   }
 }

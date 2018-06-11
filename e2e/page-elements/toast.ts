@@ -1,6 +1,7 @@
 import {browser, by, ElementArrayFinder, ElementFinder, ExpectedConditions} from 'protractor';
-import {toPromise} from '../helpers';
 import {Locatable} from './locatable';
+import {Presence} from './presence';
+import {toPromise} from '../helpers';
 
 export class ToastContent {
   constructor(
@@ -10,9 +11,9 @@ export class ToastContent {
   }
 }
 
-export class Toast implements Locatable {
+export class Toast implements Locatable, Presence {
 
-  constructor(public parentElement: Locatable) {
+  constructor(public parentElement: Locatable & Presence) {
   }
 
   get locator(): ElementFinder {
@@ -24,16 +25,29 @@ export class Toast implements Locatable {
   }
 
   get messages(): Promise<ToastContent[]> {
-    const waitConditions = ExpectedConditions.and(
+    const waitOnToast = toPromise(browser.wait(ExpectedConditions.and(
       ExpectedConditions.presenceOf(this.toastLocators.first()),
       ExpectedConditions.visibilityOf(this.toastLocators.first())
-    );
-    return toPromise(browser.wait(waitConditions))
-      .then(() => toPromise(this.toastLocators.map<ToastContent>(async toastElement => {
-        const text = await toastElement.getText();
-        const success = await this.elementHasClass(toastElement, 'toast-success');
-        return new ToastContent(text, success);
-      })));
+    )));
+
+
+    return waitOnToast
+      .then(() => toPromise(this.toastLocators
+        .map<ToastContent>(async toastElement => {
+          const text = await toPromise(toastElement.getText().then(v => v));
+          const success = await this.elementHasClass(toastElement, 'toast-success');
+          return new ToastContent(text, success);
+        })
+      ));
+  }
+
+  public awaitPresence(): Promise<void> {
+    return this.parentElement.awaitPresence()
+      .then(() => toPromise(browser.wait(ExpectedConditions.presenceOf(this.locator))));
+  }
+
+  public awaitFullPresence(): Promise<void> {
+    return this.awaitPresence();
   }
 
   private elementHasClass(element: ElementFinder, cls: string): Promise<boolean> {

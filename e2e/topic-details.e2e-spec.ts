@@ -1,5 +1,5 @@
 import {browser} from 'protractor';
-import {Spinner, ToastContent} from './page-elements';
+import {ToastContent} from './page-elements';
 import {TopicDetailsAffiliationTab, TopicDetailsConfigurationTab, TopicDetailsPage} from './page-objects';
 
 
@@ -10,7 +10,6 @@ describe('TopicDetails', () => {
   beforeEach(async () => {
     page = new TopicDetailsPage(defaultTopicId);
     await page.navigateTo();
-    await Spinner.waitOnNone(); // wait for the spinner while loading details
   });
 
   it('should go to the default tab on launch', () => {
@@ -37,7 +36,7 @@ describe('TopicDetails', () => {
       const titleValue = 'julietta';
       await tab.form.setFieldValue('title', titleValue);
       await tab.formSubmit();
-      await Spinner.waitOnNone();
+      await page.awaitFullPresence();
 
       const toastContents = await tab.toast.messages;
       expect(toastContents.length).toBe(1);
@@ -72,7 +71,7 @@ describe('TopicDetails', () => {
       await tab.form.setFieldValue('affiliation', testAffiliation);
 
       await tab.formSubmit();
-      await Spinner.waitOnNone();
+      await tab.awaitFullPresence();
 
       const listObjects = await tab.getListObjectsByJid(testJid);
       expect(listObjects.length).toBe(1);
