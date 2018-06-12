@@ -24,7 +24,7 @@ export class Toast implements Component {
   }
 
   get messages(): Promise<ToastContent[]> {
-    return this.awaitFirstToastPresence()
+    return this.awaitFirstToast()
       .then(() => toPromise(this.toastLocators
         .map(async toastElement => new ToastContent(
           await toPromise(toastElement.getText()),
@@ -34,15 +34,15 @@ export class Toast implements Component {
       .then(promises => Promise.all(promises));
   }
 
-  public awaitPresence(): Promise<void> {
-    return this.parentElement.awaitPresence().then(() => promisePresenceOf(this.locator));
-  }
-
-  public awaitFirstToastPresence(): Promise<void> {
+  public awaitFirstToast(): Promise<void> {
     return toPromise(browser.wait(ExpectedConditions.and(
       ExpectedConditions.presenceOf(this.toastLocators.first()),
       ExpectedConditions.visibilityOf(this.toastLocators.first())
     )));
+  }
+
+  public awaitPresence(): Promise<void> {
+    return this.parentElement.awaitPresence().then(() => promisePresenceOf(this.locator));
   }
 
   public awaitFullyLoaded(): Promise<void> {
