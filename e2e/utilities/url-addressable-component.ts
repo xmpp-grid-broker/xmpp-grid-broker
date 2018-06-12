@@ -14,7 +14,7 @@ export abstract class UrlAddressableComponent implements Component {
 
   public abstract awaitPresence(): Promise<void>;
 
-  public abstract awaitFullPresence(): Promise<void>;
+  public abstract awaitFullyLoaded(): Promise<void>;
 
   /**
    * Navigate to {@member fullUrl} and wait until
@@ -23,6 +23,6 @@ export abstract class UrlAddressableComponent implements Component {
   public async navigateTo() {
     browser.waitForAngularEnabled(false);
     await toPromise(browser.get(this.landingUrl));
-    await this.awaitFullPresence();
+    await this.awaitFullyLoaded();
   }
 }

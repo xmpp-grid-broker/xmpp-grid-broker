@@ -37,7 +37,7 @@ describe('TopicDetails', () => {
       const titleValue = 'julietta';
       await tab.form.setFieldValue('title', titleValue);
       await tab.formSubmit();
-      await page.awaitFullPresence();
+      await page.awaitFullyLoaded();
 
       const toastContents = await tab.toast.messages;
       expect(toastContents.length).toBe(1);
@@ -72,7 +72,7 @@ describe('TopicDetails', () => {
       await tab.form.setFieldValue('affiliation', testAffiliation);
 
       await tab.formSubmit();
-      await tab.awaitFullPresence();
+      await tab.awaitFullyLoaded();
 
       const listObjects = await tab.getListObjectsByJid(testJid);
       expect(listObjects.length).toBe(1);

@@ -27,7 +27,7 @@ export abstract class Tab extends UrlAddressableComponent {
       .then(() => promisePresenceOf(this.tabBarLocator));
   }
 
-  public awaitFullPresence(): Promise<void> {
+  public awaitFullyLoaded(): Promise<void> {
     return this.awaitPresence();
   }
 }

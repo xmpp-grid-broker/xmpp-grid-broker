@@ -32,9 +32,9 @@ export class TopicOverviewRootCollectionsTab extends Tab {
     return 'Root Topics';
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return super.awaitFullPresence()
-      .then(() => this.list.awaitFullPresence());
+  public awaitFullyLoaded(): Promise<void> {
+    return super.awaitFullyLoaded()
+      .then(() => this.list.awaitFullyLoaded());
   }
 }
 
@@ -59,9 +59,9 @@ export class TopicOverviewAllTopicsTab extends Tab {
     return 'All Topics';
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return super.awaitFullPresence()
-      .then(() => this.list.awaitFullPresence());
+  public awaitFullyLoaded(): Promise<void> {
+    return super.awaitFullyLoaded()
+      .then(() => this.list.awaitFullyLoaded());
   }
 }
 
@@ -86,9 +86,9 @@ export class TopicOverviewAllCollectionsTab extends Tab {
     return 'All Collections';
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return super.awaitFullPresence()
-      .then(() => this.list.awaitFullPresence());
+  public awaitFullyLoaded(): Promise<void> {
+    return super.awaitFullyLoaded()
+      .then(() => this.list.awaitFullyLoaded());
   }
 }
 
@@ -127,8 +127,8 @@ export class TopicsOverviewPage extends UrlAddressableComponent {
     return promisePresenceOf(this.locator);
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return this.tab.awaitFullPresence();
+  public awaitFullyLoaded(): Promise<void> {
+    return this.tab.awaitFullyLoaded();
   }
 
   public navigateToTab(tab: TopicsOverviewTab): Promise<void> {
@@ -136,14 +136,14 @@ export class TopicsOverviewPage extends UrlAddressableComponent {
       .then(() => {
         this.tab = tab;
       })
-      .then(() => this.tab.awaitFullPresence());
+      .then(() => this.tab.awaitFullyLoaded());
   }
 
   async clickNewTopic(): Promise<CreateTopicPage> {
     await toPromise(this.newTopicButton.click());
 
     const newPage = new CreateTopicPage();
-    await newPage.awaitFullPresence();
+    await newPage.awaitFullyLoaded();
 
     return newPage;
   }
@@ -152,7 +152,7 @@ export class TopicsOverviewPage extends UrlAddressableComponent {
     await toPromise(this.newCollectionButton.click());
 
     const newPage = new CreateCollectionPage();
-    await newPage.awaitFullPresence();
+    await newPage.awaitFullyLoaded();
 
     return newPage;
   }

@@ -20,7 +20,7 @@ export class BreadCrumbs implements Component {
       .then(() => promisePresenceOf(this.locator));
   }
 
-  public awaitFullPresence(): Promise<void> {
+  public awaitFullyLoaded(): Promise<void> {
     return this.awaitPresence().then(() => promisePresenceOf(this.crumbElements.first()));
   }
 

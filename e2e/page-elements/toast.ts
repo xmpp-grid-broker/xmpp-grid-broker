@@ -45,7 +45,7 @@ export class Toast implements Component {
     )));
   }
 
-  public awaitFullPresence(): Promise<void> {
+  public awaitFullyLoaded(): Promise<void> {
     return this.awaitPresence();
   }
 

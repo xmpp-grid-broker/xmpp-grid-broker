@@ -20,7 +20,7 @@ export class AppPage extends UrlAddressableComponent {
     return promisePresenceOf(this.locator);
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return this.breadCrumbs.awaitFullPresence();
+  public awaitFullyLoaded(): Promise<void> {
+    return this.breadCrumbs.awaitFullyLoaded();
   }
 }

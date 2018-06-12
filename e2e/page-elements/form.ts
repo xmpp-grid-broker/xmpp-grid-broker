@@ -14,7 +14,7 @@ export class Form implements Component {
     return this.parentElement.awaitPresence().then(() => promisePresenceOf(this.locator));
   }
 
-  public awaitFullPresence(): Promise<void> {
+  public awaitFullyLoaded(): Promise<void> {
     return this.awaitPresence();
   }
 

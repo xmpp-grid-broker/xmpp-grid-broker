@@ -18,5 +18,5 @@ export abstract class Component {
   /**
    * Promise resolves if the element is fully loaded (with children)
    */
-  abstract awaitFullPresence(): Promise<void>;
+  abstract awaitFullyLoaded(): Promise<void>;
 }

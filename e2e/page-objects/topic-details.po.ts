@@ -60,14 +60,14 @@ export class TopicDetailsConfigurationTab extends Tab {
   }
 
   public awaitFormSuccess(): Promise<void> {
-    return super.awaitFullPresence()
-      .then(() => this.toast.awaitFullPresence());
+    return super.awaitFullyLoaded()
+      .then(() => this.toast.awaitFullyLoaded());
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return super.awaitFullPresence()
-      .then(() => this.form.awaitFullPresence())
-      .then(() => this.toast.awaitFullPresence());
+  public awaitFullyLoaded(): Promise<void> {
+    return super.awaitFullyLoaded()
+      .then(() => this.form.awaitFullyLoaded())
+      .then(() => this.toast.awaitFullyLoaded());
   }
 }
 
@@ -133,10 +133,10 @@ export class TopicDetailsAffiliationTab extends Tab {
       .click());
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return super.awaitFullPresence()
-      .then(() => this.list.awaitFullPresence())
-      .then(() => this.form.awaitFullPresence());
+  public awaitFullyLoaded(): Promise<void> {
+    return super.awaitFullyLoaded()
+      .then(() => this.list.awaitFullyLoaded())
+      .then(() => this.form.awaitFullyLoaded());
   }
 }
 
@@ -171,8 +171,8 @@ export class TopicDetailsPage extends UrlAddressableComponent {
     return promisePresenceOf(this.locator);
   }
 
-  public awaitFullPresence(): Promise<void> {
-    return this.tab.awaitFullPresence();
+  public awaitFullyLoaded(): Promise<void> {
+    return this.tab.awaitFullyLoaded();
   }
 
   public navigateToTab(tab: TopicDetailsTab): Promise<void> {
@@ -180,6 +180,6 @@ export class TopicDetailsPage extends UrlAddressableComponent {
       .then(() => {
         this.tab = tab;
       })
-      .then(() => this.tab.awaitFullPresence());
+      .then(() => this.tab.awaitFullyLoaded());
   }
 }
